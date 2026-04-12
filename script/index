@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'cgi'
+
+links = Dir['html/*'].sort_by(&:downcase).map do |docset|
+  index = Dir['{,*/}*/index.html', base: docset].first
+  next unless index
+
+  %Q{<li><a href="#{CGI.escapeHTML("#{docset}/#{index}")}">#{CGI.escapeHTML(File.basename(docset))}</a></li>}
+end
+
+puts <<~HTML
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>docsets</title>
+    <style type="text/css">
+      html, body { margin: 0; padding: 0; }
+      body { font: 14px "Myriad Pro", "Helvetica", Arial, sans-serif; margin: 20px; }
+      a { color: #00a; }
+      a:hover { color: #00f; }
+      a:visited { color: #004; }
+    </style>
+  </head>
+  <body>
+    <ul>#{links.join}</ul>
+  </body>
+  </html>
+HTML

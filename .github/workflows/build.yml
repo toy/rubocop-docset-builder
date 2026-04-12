@@ -1,0 +1,59 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+  - cron: '46 8 * * 4'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ruby
+        bundler-cache: true
+    - uses: actions/cache@v5
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+          antora-cache
+        key: dump
+    - run: |
+        go install github.com/technosophos/dashing@172c69f1c58cf6efe5b1813fa06ce29a684b00e4
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+    - run: bundle exec rake
+    - uses: actions/upload-artifact@v7
+      with:
+        name: docsets
+        path: 'docsets/*'
+    - if: github.ref == 'refs/heads/main'
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        branch=gh-pages
+
+        if git fetch --depth=1 origin "$branch"; then
+          git branch "$branch" --track origin/"$branch"
+          git symbolic-ref HEAD refs/heads/"$branch"
+          git reset
+        else
+          git checkout --orphan "$branch"
+          git rm -rf .
+        fi
+
+        touch .nojekyll
+        script/index > index.html
+
+        git add -f .nojekyll html index.html
+        if ! git diff --staged --quiet; then
+          git commit -m "$(date)"
+          git push origin "$branch"
+        fi

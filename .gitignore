@@ -1,0 +1,8 @@
+/*.docset.tgz
+/*.docset/
+/antora-cache/
+/dashing-config/
+/docsets/
+/Gemfile.lock
+/html/
+/playbooks/
