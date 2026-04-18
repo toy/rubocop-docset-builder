@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Plugin Migration Guide :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/plugin_migration_guide.html">
+    <link rel="prev" href="plugin_configuration.html">
+    <link rel="next" href="integration_with_other_tools.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Plugin Migration Guide</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The plugin system was introduced in RuboCop 1.72.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>An improved API for RuboCop extensions, called plugins, is being introduced to provide officially documented ways to extend RuboCop.
+This API is provided by the <a href="https://github.com/standardrb/lint_roller">lint_roller</a> library and is intended to replace previous undocumented
+and unofficial methods that emerged out of necessity.</p>
+</div>
+<div class="paragraph">
+<p>As a user, you will need to adjust your <code>.rubocop.yml</code> to load extensions that support this new API differently than before.
+As an extension developer, you will need to modify your extension accordingly, as explained below.</p>
+</div>
+<div class="paragraph">
+<p>This page provides guidance on migrating to RuboCop extensions using plugins. It is divided into two main sections:
+one for plugin users and the other for plugin developers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="for-plugin-users" data-type="section">
+<a class="anchor" href="#for-plugin-users"></a>For Plugin Users</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Please update the RuboCop extension cops specified in configuration files like <code>.rubocop.yml</code> from <code>require</code> to <code>plugins</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">plugins:
+  - rubocop-performance</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specifically, those that trigger warnings like the following should be updated:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ bundle exec rubocop
+rubocop-performance extension supports plugin, specify `plugins: rubocop-performance`
+instead of `require: rubocop-performance` in /Users/user/src/github.com/rubocop/rubocop/.rubocop.yml.
+For more information, see https://docs.rubocop.org/rubocop/plugin_migration_guide.html.</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Non-plugin extension Ruby files can continue to use <code>require</code> for file requiring.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="for-plugin-developers" data-type="section">
+<a class="anchor" href="#for-plugin-developers"></a>For Plugin Developers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Converting an existing RuboCop extension using <code>Inject.defaults!</code> into a plugin can generally be done in the following three steps.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>Plugin</code> class</p>
+</li>
+<li>
+<p>Update gemspec file</p>
+</li>
+<li>
+<p>Remove <code>Inject.defaults!</code> code</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <code>rubocop-performance</code> extension gem is used as an example here.
+Replace "performance" with the name of your extension as appropriate.</p>
+</div>
+<div class="sect2">
+<h3 id="1-create-plugin-class" data-type="section">
+<a class="anchor" href="#1-create-plugin-class"></a>1. Create <code>Plugin</code> class</h3>
+<div class="paragraph">
+<p>Prepare the plugin class. It is typically placed under the department directory, such as <code>rubocop/performance/plugin.rb</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># frozen_string_literal: true
+
+require 'lint_roller'
+
+module RuboCop
+  module Performance
+    # A plugin that integrates RuboCop Performance with RuboCop's plugin system.
+    class Plugin &lt; LintRoller::Plugin
+      def about
+        LintRoller::About.new(
+          name: 'rubocop-performance',
+          version: VERSION,
+          homepage: 'https://github.com/rubocop/rubocop-performance',
+          description: 'A collection of RuboCop cops to check for performance optimizations in Ruby code.'
+        )
+      end
+
+      def supported?(context)
+        context.engine == :rubocop
+      end
+
+      def rules(_context)
+        LintRoller::Rules.new(
+          type: :path,
+          config_format: :rubocop,
+          value: Pathname.new(__dir__).join('../../../config/default.yml')
+        )
+      end
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For details on configurations, refer to the lint_roller documentation:
+<a href="https://github.com/standardrb/lint_roller?tab=readme-ov-file#how-to-make-a-plugin" class="bare">https://github.com/standardrb/lint_roller?tab=readme-ov-file#how-to-make-a-plugin</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2-update-gemspec-file" data-type="section">
+<a class="anchor" href="#2-update-gemspec-file"></a>2. Update gemspec file</h3>
+<div class="paragraph">
+<p>Set the plugin class name in <code>spec.metadata['default_lint_roller_plugin']</code> and add a runtime dependency on <code>lint_roller</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">spec.metadata['default_lint_roller_plugin'] = 'RuboCop::Performance::Plugin'
+
+spec.add_dependency('lint_roller')</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Update <code>rubocop</code> to a version that supports plugins or higher.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">spec.add_dependency('rubocop', '&gt;= 1.72.0')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="3-replace-inject-defaults-code" data-type="section">
+<a class="anchor" href="#3-replace-inject-defaults-code"></a>3. Replace <code>Inject.defaults!</code> code</h3>
+<div class="paragraph">
+<p>Replace <code>rubocop/performance/inject</code>, where the <code>RuboCop::Performance::Inject</code> class is defined.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ rm 'rubocop/performance/inject'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Remove the call to <code>RuboCop::Performance::Inject.defaults!</code> and the related <code>require_relative</code> code.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">require_relative 'rubocop/performance/inject'
+
+RuboCop::Performance::Inject.defaults!</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And use <code>require_relative</code> for the plugin class file instead of the above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">require_relative 'rubocop/performance/plugin'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

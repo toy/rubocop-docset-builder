@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Including and Excluding Files :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/configuration/include_exclude.html">
+    <link rel="prev" href="inheritance.html">
+    <link rel="next" href="cop_settings.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Including and Excluding Files</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>RuboCop does a recursive file search starting from the directory it is
+run in, or directories given as command line arguments. Files that
+match any pattern listed under <code>AllCops</code>/<code>Include</code> and extensionless
+files with a hash-bang (<code>#!</code>) declaration containing one of the known
+ruby interpreters listed under <code>AllCops</code>/<code>RubyInterpreters</code> are
+inspected, unless the file also matches a pattern in
+<code>AllCops</code>/<code>Exclude</code>. Hidden directories (i.e., directories whose names
+start with a dot) are not searched by default.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example that might be used for a Rails project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'bin/{rails,rake}'
+    - !ruby/regexp /old_and_unused\.rb$/
+
+# other configuration
+# ...</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When inspecting a certain directory (or file)
+given as RuboCop’s command line arguments,
+patterns listed under <code>AllCops</code> / <code>Exclude</code> are also inspected.
+If you want to apply <code>AllCops</code> / <code>Exclude</code> rules in this circumstance,
+add <code>--force-exclusion</code> to the command line argument.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># .rubocop.yml
+AllCops:
+  Exclude:
+    - foo.rb</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>foo.rb</code> is specified as a RuboCop’s command line argument, the result is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># RuboCop inspects foo.rb.
+$ bundle exec rubocop foo.rb
+
+# RuboCop does not inspect foo.rb.
+$ bundle exec rubocop --force-exclusion foo.rb</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="path-relativity" data-type="section">
+<a class="anchor" href="#path-relativity"></a>Path relativity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In <code>.rubocop.yml</code> and any other configuration file beginning with <code>.rubocop</code>,
+files, and directories are specified relative to the directory where the
+configuration file is. In configuration files that don’t begin with <code>.rubocop</code>,
+e.g. <code>our_company_defaults.yml</code>, paths are relative to the directory where
+<code>rubocop</code> is run.</p>
+</div>
+<div class="paragraph">
+<p>This affects cops that have customisable paths: if the default is <code>db/migrate/*.rb</code>,
+and the cop is enabled in <code>db/migrate/.rubocop.yml</code>, the path will need to be
+explicitly set as <code>*.rb</code>, as the default will look for <code>db/migrate/db/migrate/*.rb</code>.
+This is unlikely to be what you wanted.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="unusual-files-that-would-not-be-included-by-default" data-type="section">
+<a class="anchor" href="#unusual-files-that-would-not-be-included-by-default"></a>Unusual files, that would not be included by default</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RuboCop comes with a comprehensive list of common ruby file names and
+extensions. But, if you’d like RuboCop to check files that are not included by
+default, you’ll need to pass them in on the command line, or add entries for
+them under <code>AllCops</code>/<code>Include</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Your configuration files override
+<a href="https://github.com/rubocop/rubocop/blob/master/config/default.yml">RuboCop’s defaults</a>.
+In the following example, we want to include <code>foo.unusual_extension</code>, but we also
+must copy any other patterns we need from the overridden <code>default.yml</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  Include:
+    - foo.unusual_extension
+    - '**/*.rb'
+    - '**/*.gemfile'
+    - '**/*.gemspec'
+    - '**/*.rake'
+    - '**/*.ru'
+    - '**/Gemfile'
+    - '**/Rakefile'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This behavior of <code>Include</code> (overriding <code>default.yml</code>) was introduced in
+<a href="https://github.com/rubocop/rubocop/releases/tag/v0.56.0">0.56.0</a>
+via <a href="https://github.com/rubocop/rubocop/pull/5882">#5882</a>. This change allows
+people to include/exclude precisely what they need to, without the defaults
+getting in the way.</p>
+</div>
+<div class="sect2">
+<h3 id="using-inherit_mode-instead" data-type="section">
+<a class="anchor" href="#using-inherit_mode-instead"></a>Using <code>inherit_mode</code> instead</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">inherit_mode:
+  merge:
+    - Include
+
+AllCops:
+  Include:
+    - foo.unusual_extension</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="inheritance.html#merging-arrays-using-inherit-mode" class="xref page">"Merging arrays using inherit_mode"</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deprecated-patterns" data-type="section">
+<a class="anchor" href="#deprecated-patterns"></a>Deprecated patterns</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Patterns that are just a file name, e.g. <code>Rakefile</code>, will match
+that file name in any directory, but this pattern style is deprecated. The
+correct way to match the file in any directory, including the current, is
+<code>**/Rakefile</code>.</p>
+</div>
+<div class="paragraph">
+<p>The pattern <code>config/**</code> will match any file recursively under
+<code>config</code>, but this pattern style is deprecated and should be replaced by
+<code>config/**/*</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="include-and-exclude-are-relative-to-their-directory" data-type="section">
+<a class="anchor" href="#include-and-exclude-are-relative-to-their-directory"></a><code>Include</code> and <code>Exclude</code> are relative to their directory</h3>
+<div class="paragraph">
+<p>The <code>Include</code> and <code>Exclude</code> parameters are special. They are
+valid for the directory tree starting where they are defined. They are not
+shadowed by the setting of <code>Include</code> and <code>Exclude</code> in other <code>.rubocop.yml</code>
+files in subdirectories. This is different from all other parameters, which
+follow RuboCop’s general principle that configuration for an inspected file
+is taken from the nearest <code>.rubocop.yml</code>, searching upwards.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This behavior
+will be overridden if you specify the <code>--ignore-parent-exclusion</code> command line
+argument.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cop-specific-include-and-exclude" data-type="section">
+<a class="anchor" href="#cop-specific-include-and-exclude"></a>Cop-specific <code>Include</code> and <code>Exclude</code>
+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cops can be run only on specific sets of files when that’s needed (for
+instance you might want to run some Rails model checks only on files whose
+paths match <code>app/models/*.rb</code>). All cops support the
+<code>Include</code> param.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Rails/HasAndBelongsToMany:
+  Include:
+    - app/models/*.rb</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cops can also exclude only specific sets of files when that’s needed (for
+instance you might want to run some cop only on a specific file). All cops support the
+<code>Exclude</code> param.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Rails/HasAndBelongsToMany:
+  Exclude:
+    - app/models/problematic.rb</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

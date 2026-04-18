@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ThreadSafety :: RuboCop ThreadSafety</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-thread_safety/rubocop-thread_safety/cops_threadsafety.html">
+    <link rel="prev" href="cops.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../_/css/site.css">
+<link rel="stylesheet" href="../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">ThreadSafety</h1>
+<div class="sect1">
+<h2 id="threadsafetyclassandmoduleattributes" data-type="test">
+<a class="anchor" href="#threadsafetyclassandmoduleattributes"></a>ThreadSafety/ClassAndModuleAttributes</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid mutating class and module attributes.</p>
+</div>
+<div class="paragraph">
+<p>They are implemented by class variables, which are not thread-safe.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetyclassandmoduleattributes">
+<a class="anchor" href="#examples-threadsafetyclassandmoduleattributes"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+class User
+  cattr_accessor :current_user
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-threadsafetyclassandmoduleattributes">
+<a class="anchor" href="#configurable-attributes-threadsafetyclassandmoduleattributes"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveSupportClassAttributeAllowed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetyclassinstancevariable" data-type="test">
+<a class="anchor" href="#threadsafetyclassinstancevariable"></a>ThreadSafety/ClassInstanceVariable</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid class instance variables.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetyclassinstancevariable">
+<a class="anchor" href="#examples-threadsafetyclassinstancevariable"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+class User
+  def self.notify(info)
+    @info = validate(info)
+    Notifier.new(@info).deliver
+  end
+end
+
+class Model
+  class &lt;&lt; self
+    def table_name(name)
+      @table_name = name
+    end
+  end
+end
+
+class Host
+  %i[uri port].each do |key|
+    define_singleton_method("#{key}=") do |value|
+      instance_variable_set("@#{key}", value)
+    end
+  end
+end
+
+module Example
+  module ClassMethods
+    def test(params)
+      @params = params
+    end
+  end
+end
+
+module Example
+  class_methods do
+    def test(params)
+      @params = params
+    end
+  end
+end
+
+module Example
+  module_function
+
+  def test(params)
+    @params = params
+  end
+end
+
+module Example
+  def test(params)
+    @params = params
+  end
+
+  module_function :test
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetydirchdir" data-type="test">
+<a class="anchor" href="#threadsafetydirchdir"></a>ThreadSafety/DirChdir</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid using <code>Dir.chdir</code> due to its process-wide effect.
+If <code>AllowCallWithBlock</code> (disabled by default) option is enabled,
+calling <code>Dir.chdir</code> with block will be allowed.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetydirchdir">
+<a class="anchor" href="#examples-threadsafetydirchdir"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Dir.chdir("/var/run")
+
+# bad
+FileUtils.chdir("/var/run")</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowcallwithblock_-false-_default_-threadsafetydirchdir" title="ThreadSafety/DirChdir: AllowCallWithBlock: false (default)" data-type="setting">
+<a class="anchor" href="#allowcallwithblock_-false-_default_-threadsafetydirchdir"></a>AllowCallWithBlock: false (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+Dir.chdir("/var/run") do
+  puts Dir.pwd
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowcallwithblock_-true-threadsafetydirchdir" title="ThreadSafety/DirChdir: AllowCallWithBlock: true" data-type="setting">
+<a class="anchor" href="#allowcallwithblock_-true-threadsafetydirchdir"></a>AllowCallWithBlock: true</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Dir.chdir("/var/run") do
+  puts Dir.pwd
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-threadsafetydirchdir">
+<a class="anchor" href="#configurable-attributes-threadsafetydirchdir"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowCallWithBlock</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetymutableclassinstancevariable" data-type="test">
+<a class="anchor" href="#threadsafetymutableclassinstancevariable"></a>ThreadSafety/MutableClassInstanceVariable</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks whether some class instance variable isn’t a
+mutable literal (e.g. array or hash).</p>
+</div>
+<div class="paragraph">
+<p>It is based on Style/MutableConstant from RuboCop.
+See <a href="https://github.com/rubocop/rubocop/blob/master/lib/rubocop/cop/style/mutable_constant.rb" class="bare">https://github.com/rubocop/rubocop/blob/master/lib/rubocop/cop/style/mutable_constant.rb</a></p>
+</div>
+<div class="paragraph">
+<p>Class instance variables are a risk to threaded code as they are shared
+between threads. A mutable object such as an array or hash may be
+updated via an attr_reader so would not be detected by the
+ThreadSafety/ClassAndModuleAttributes cop.</p>
+</div>
+<div class="paragraph">
+<p>Strict mode can be used to freeze all class instance variables, rather
+than just literals.
+Strict mode is considered an experimental feature. It has not been
+updated with an exhaustive list of all methods that will produce frozen
+objects so there is a decent chance of getting some false positives.
+Luckily, there is no harm in freezing an already frozen object.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetymutableclassinstancevariable">
+<a class="anchor" href="#examples-threadsafetymutableclassinstancevariable"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-literals-_default_-threadsafetymutableclassinstancevariable" title="ThreadSafety/MutableClassInstanceVariable: EnforcedStyle: literals (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-literals-_default_-threadsafetymutableclassinstancevariable"></a>EnforcedStyle: literals (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+class Model
+  @list = [1, 2, 3]
+end
+
+# good
+class Model
+  @list = [1, 2, 3].freeze
+end
+
+# good
+class Model
+  @var = &lt;&lt;~TESTING.freeze
+    This is a heredoc
+  TESTING
+end
+
+# good
+class Model
+  @var = Something.new
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-strict-threadsafetymutableclassinstancevariable" title="ThreadSafety/MutableClassInstanceVariable: EnforcedStyle: strict" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-strict-threadsafetymutableclassinstancevariable"></a>EnforcedStyle: strict</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+class Model
+  @var = Something.new
+end
+
+# bad
+class Model
+  @var = Struct.new do
+    def foo
+      puts 1
+    end
+  end
+end
+
+# good
+class Model
+  @var = Something.new.freeze
+end
+
+# good
+class Model
+  @var = Struct.new do
+    def foo
+      puts 1
+    end
+  end.freeze
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-threadsafetymutableclassinstancevariable">
+<a class="anchor" href="#configurable-attributes-threadsafetymutableclassinstancevariable"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>literals</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>literals</code>, <code>strict</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetynewthread" data-type="test">
+<a class="anchor" href="#threadsafetynewthread"></a>ThreadSafety/NewThread</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid starting new threads.</p>
+</div>
+<div class="paragraph">
+<p>Let a framework like Sidekiq handle the threads.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetynewthread">
+<a class="anchor" href="#examples-threadsafetynewthread"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Thread.new { do_work }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetyrackmiddlewareinstancevariable" data-type="test">
+<a class="anchor" href="#threadsafetyrackmiddlewareinstancevariable"></a>ThreadSafety/RackMiddlewareInstanceVariable</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid instance variables in rack middleware.</p>
+</div>
+<div class="paragraph">
+<p>Middlewares are initialized once, meaning any instance variables are shared between executor threads.
+To avoid potential race conditions, it’s recommended to design middlewares to be stateless
+or to implement proper synchronization mechanisms.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetyrackmiddlewareinstancevariable">
+<a class="anchor" href="#examples-threadsafetyrackmiddlewareinstancevariable"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+class CounterMiddleware
+  def initialize(app)
+    @app = app
+    @counter = 0
+  end
+
+  def call(env)
+    app.call(env)
+  ensure
+    @counter += 1
+  end
+end
+
+# good
+class CounterMiddleware
+  def initialize(app)
+    @app = app
+    @counter = Concurrent::AtomicReference.new(0)
+  end
+
+  def call(env)
+    app.call(env)
+  ensure
+    @counter.update { |ref| ref + 1 }
+  end
+end
+
+class IdentityMiddleware
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    app.call(env)
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-threadsafetyrackmiddlewareinstancevariable">
+<a class="anchor" href="#configurable-attributes-threadsafetyrackmiddlewareinstancevariable"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>app/middleware/**/*.rb</code>, <code>lib/middleware/**/*.rb</code>, <code>app/middlewares/**/*.rb</code>, <code>lib/middlewares/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedIdentifiers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

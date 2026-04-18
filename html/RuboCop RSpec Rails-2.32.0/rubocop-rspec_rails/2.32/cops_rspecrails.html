@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RSpecRails :: RuboCop RSpec Rails</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-rspec_rails/rubocop-rspec_rails/2.32/cops_rspecrails.html">
+    <link rel="prev" href="development.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">RSpecRails</h1>
+<div class="sect1">
+<h2 id="rspecrailsavoidsetuphook" data-type="test">
+<a class="anchor" href="#rspecrailsavoidsetuphook"></a>RSpecRails/AvoidSetupHook</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks that tests use RSpec <code>before</code> hook over Rails <code>setup</code> method.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailsavoidsetuphook">
+<a class="anchor" href="#examples-rspecrailsavoidsetuphook"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+setup do
+  allow(foo).to receive(:bar)
+end
+
+# good
+before do
+  allow(foo).to receive(:bar)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailsavoidsetuphook">
+<a class="anchor" href="#references-rspecrailsavoidsetuphook"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/AvoidSetupHook" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/AvoidSetupHook</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailshavehttpstatus" data-type="test">
+<a class="anchor" href="#rspecrailshavehttpstatus"></a>RSpecRails/HaveHttpStatus</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.27</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks that tests use <code>have_http_status</code> instead of equality matchers.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailshavehttpstatus">
+<a class="anchor" href="#examples-rspecrailshavehttpstatus"></a>Examples</h3>
+<div class="sect3">
+<h4 id="responsemethods_-__response__-_last_response__-_default_-rspecrailshavehttpstatus" title="RSpecRails/HaveHttpStatus: ResponseMethods: ['response', 'last_response'] (default)" data-type="setting">
+<a class="anchor" href="#responsemethods_-__response__-_last_response__-_default_-rspecrailshavehttpstatus"></a>ResponseMethods: ['response', 'last_response'] (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(response.status).to be(200)
+expect(last_response.code).to eq("200")
+
+# good
+expect(response).to have_http_status(200)
+expect(last_response).to have_http_status(200)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="responsemethods_-__foo_response__-rspecrailshavehttpstatus" title="RSpecRails/HaveHttpStatus: ResponseMethods: ['foo_response']" data-type="setting">
+<a class="anchor" href="#responsemethods_-__foo_response__-rspecrailshavehttpstatus"></a>ResponseMethods: ['foo_response']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo_response.status).to be(200)
+
+# good
+expect(foo_response).to have_http_status(200)
+
+# also good
+expect(response).to have_http_status(200)
+expect(last_response).to have_http_status(200)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-rspecrailshavehttpstatus">
+<a class="anchor" href="#configurable-attributes-rspecrailshavehttpstatus"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ResponseMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>response</code>, <code>last_response</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailshavehttpstatus">
+<a class="anchor" href="#references-rspecrailshavehttpstatus"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/HaveHttpStatus" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/HaveHttpStatus</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailshttpstatus" data-type="test">
+<a class="anchor" href="#rspecrailshttpstatus"></a>RSpecRails/HttpStatus</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.20</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces use of symbolic or numeric value to describe HTTP status.</p>
+</div>
+<div class="paragraph">
+<p>This cop inspects only <code>have_http_status</code> calls.
+So, this cop does not check if a method starting with <code>be_*</code> is used
+when setting for <code>EnforcedStyle: symbolic</code> or
+<code>EnforcedStyle: numeric</code>.
+This cop is also capable of detecting unknown HTTP status codes.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailshttpstatus">
+<a class="anchor" href="#examples-rspecrailshttpstatus"></a>Examples</h3>
+<div class="sect3">
+<h4 id="_enforcedstyle_-symbolic_-_default_-rspecrailshttpstatus" title="RSpecRails/HttpStatus: EnforcedStyle: symbolic (default)" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-symbolic_-_default_-rspecrailshttpstatus"></a><code>EnforcedStyle: symbolic</code> (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+it { is_expected.to have_http_status 200 }
+it { is_expected.to have_http_status 404 }
+it { is_expected.to have_http_status "403" }
+
+# good
+it { is_expected.to have_http_status :ok }
+it { is_expected.to have_http_status :not_found }
+it { is_expected.to have_http_status :forbidden }
+it { is_expected.to have_http_status :success }
+it { is_expected.to have_http_status :error }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enforcedstyle_-numeric_-rspecrailshttpstatus" title="RSpecRails/HttpStatus: EnforcedStyle: numeric" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-numeric_-rspecrailshttpstatus"></a><code>EnforcedStyle: numeric</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+it { is_expected.to have_http_status :ok }
+it { is_expected.to have_http_status :not_found }
+it { is_expected.to have_http_status "forbidden" }
+
+# good
+it { is_expected.to have_http_status 200 }
+it { is_expected.to have_http_status 404 }
+it { is_expected.to have_http_status 403 }
+it { is_expected.to have_http_status :success }
+it { is_expected.to have_http_status :error }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enforcedstyle_-be_status_-rspecrailshttpstatus" title="RSpecRails/HttpStatus: EnforcedStyle: be_status" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-be_status_-rspecrailshttpstatus"></a><code>EnforcedStyle: be_status</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+it { is_expected.to have_http_status :ok }
+it { is_expected.to have_http_status :not_found }
+it { is_expected.to have_http_status "forbidden" }
+it { is_expected.to have_http_status 200 }
+it { is_expected.to have_http_status 404 }
+it { is_expected.to have_http_status "403" }
+
+# good
+it { is_expected.to be_ok }
+it { is_expected.to be_not_found }
+it { is_expected.to have_http_status :success }
+it { is_expected.to have_http_status :error }</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+it { is_expected.to have_http_status :oki_doki }
+
+# good
+it { is_expected.to have_http_status :ok }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-rspecrailshttpstatus">
+<a class="anchor" href="#configurable-attributes-rspecrailshttpstatus"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>symbolic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>numeric</code>, <code>symbolic</code>, <code>be_status</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailshttpstatus">
+<a class="anchor" href="#references-rspecrailshttpstatus"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/HttpStatus" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/HttpStatus</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailshttpstatusnameconsistency" data-type="test">
+<a class="anchor" href="#rspecrailshttpstatusnameconsistency"></a>RSpecRails/HttpStatusNameConsistency</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces consistency by using the current HTTP status names.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailshttpstatusnameconsistency">
+<a class="anchor" href="#examples-rspecrailshttpstatusnameconsistency"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+it { is_expected.to have_http_status :unprocessable_entity }
+
+# good
+it { is_expected.to have_http_status :unprocessable_content }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailshttpstatusnameconsistency">
+<a class="anchor" href="#references-rspecrailshttpstatusnameconsistency"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/HttpStatusNameConsistency" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/HttpStatusNameConsistency</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailsinferredspectype" data-type="test">
+<a class="anchor" href="#rspecrailsinferredspectype"></a>RSpecRails/InferredSpecType</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Identifies redundant spec type.</p>
+</div>
+<div class="paragraph">
+<p>After setting up rspec-rails, you will have enabled
+<code>config.infer_spec_type_from_file_location!</code> by default in
+spec/rails_helper.rb. This cop works in conjunction with this config.
+If you disable this config, disable this cop as well.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-rspecrailsinferredspectype">
+<a class="anchor" href="#safety-rspecrailsinferredspectype"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop is marked as unsafe because
+<code>config.infer_spec_type_from_file_location!</code> may not be enabled.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailsinferredspectype">
+<a class="anchor" href="#examples-rspecrailsinferredspectype"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+# spec/models/user_spec.rb
+RSpec.describe User, type: :model do
+end
+
+# good
+# spec/models/user_spec.rb
+RSpec.describe User do
+end
+
+# good
+# spec/models/user_spec.rb
+RSpec.describe User, type: :common do
+end</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_inferences_-configuration-rspecrailsinferredspectype" title="RSpecRails/InferredSpecType: Inferences configuration" data-type="section">
+<a class="anchor" href="#_inferences_-configuration-rspecrailsinferredspectype"></a><code>Inferences</code> configuration</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># .rubocop.yml
+# RSpecRails/InferredSpecType:
+#   Inferences:
+#     services: service
+
+# bad
+# spec/services/user_spec.rb
+RSpec.describe User, type: :service do
+end
+
+# good
+# spec/services/user_spec.rb
+RSpec.describe User do
+end
+
+# good
+# spec/services/user_spec.rb
+RSpec.describe User, type: :common do
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-rspecrailsinferredspectype">
+<a class="anchor" href="#configurable-attributes-rspecrailsinferredspectype"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inferences</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"channels" ⇒ "channel", "controllers" ⇒ "controller", "features" ⇒ "feature", "generator" ⇒ "generator", "helpers" ⇒ "helper", "jobs" ⇒ "job", "mailboxes" ⇒ "mailbox", "mailers" ⇒ "mailer", "models" ⇒ "model", "requests" ⇒ "request", "integration" ⇒ "request", "api" ⇒ "request", "routing" ⇒ "routing", "system" ⇒ "system", "views" ⇒ "view"}</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailsinferredspectype">
+<a class="anchor" href="#references-rspecrailsinferredspectype"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/InferredSpecType" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/InferredSpecType</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailsminitestassertions" data-type="test">
+<a class="anchor" href="#rspecrailsminitestassertions"></a>RSpecRails/MinitestAssertions</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Check if using Minitest-like matchers.</p>
+</div>
+<div class="paragraph">
+<p>Check the use of minitest-like matchers
+starting with <code>assert_</code> or <code>refute_</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailsminitestassertions">
+<a class="anchor" href="#examples-rspecrailsminitestassertions"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+assert_equal(a, b)
+assert_equal a, b, "must be equal"
+assert_not_includes a, b
+refute_equal(a, b)
+assert_nil a
+refute_empty(b)
+assert_true(a)
+assert_false(a)
+assert_response :ok
+
+# good
+expect(b).to eq(a)
+expect(b).to(eq(a), "must be equal")
+expect(a).not_to include(b)
+expect(b).not_to eq(a)
+expect(a).to eq(nil)
+expect(a).not_to be_empty
+expect(a).to be(true)
+expect(a).to be(false)
+expect(response).to have_http_status(:ok)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailsminitestassertions">
+<a class="anchor" href="#references-rspecrailsminitestassertions"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/MinitestAssertions" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/MinitestAssertions</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailsnegationbevalid" data-type="test">
+<a class="anchor" href="#rspecrailsnegationbevalid"></a>RSpecRails/NegationBeValid</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Command-line only (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.29</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces use of <code>be_invalid</code> or <code>not_to</code> for negated be_valid.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-rspecrailsnegationbevalid">
+<a class="anchor" href="#safety-rspecrailsnegationbevalid"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop is unsafe because it cannot guarantee that
+the test target is an instance of <code>ActiveModel::Validations`</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailsnegationbevalid">
+<a class="anchor" href="#examples-rspecrailsnegationbevalid"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-not_to-_default_-rspecrailsnegationbevalid" title="RSpecRails/NegationBeValid: EnforcedStyle: not_to (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-not_to-_default_-rspecrailsnegationbevalid"></a>EnforcedStyle: not_to (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).to be_invalid
+
+# good
+expect(foo).not_to be_valid
+
+# good (with method chain)
+expect(foo).to be_invalid.and be_odd</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-be_invalid-rspecrailsnegationbevalid" title="RSpecRails/NegationBeValid: EnforcedStyle: be_invalid" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-be_invalid-rspecrailsnegationbevalid"></a>EnforcedStyle: be_invalid</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).not_to be_valid
+
+# good
+expect(foo).to be_invalid
+
+# good (with method chain)
+expect(foo).to be_invalid.or be_even</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-rspecrailsnegationbevalid">
+<a class="anchor" href="#configurable-attributes-rspecrailsnegationbevalid"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>not_to</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>not_to</code>, <code>be_invalid</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailsnegationbevalid">
+<a class="anchor" href="#references-rspecrailsnegationbevalid"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/NegationBeValid" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/NegationBeValid</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailstravelaround" data-type="test">
+<a class="anchor" href="#rspecrailstravelaround"></a>RSpecRails/TravelAround</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Prefer to travel in <code>before</code> rather than <code>around</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-rspecrailstravelaround">
+<a class="anchor" href="#safety-rspecrailstravelaround"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop is unsafe because the automatic <code>travel_back</code> is only run
+on test cases that are considered as Rails related.</p>
+</div>
+<div class="paragraph">
+<p>And also, this cop’s autocorrection is unsafe because the order of
+execution will change if other steps exist before traveling in
+<code>around</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailstravelaround">
+<a class="anchor" href="#examples-rspecrailstravelaround"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+around do |example|
+  freeze_time do
+    example.run
+  end
+end
+
+# bad
+around do |example|
+  freeze_time(&amp;example)
+end
+
+# good
+before { freeze_time }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailstravelaround">
+<a class="anchor" href="#references-rspecrailstravelaround"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/TravelAround" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/TravelAround</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

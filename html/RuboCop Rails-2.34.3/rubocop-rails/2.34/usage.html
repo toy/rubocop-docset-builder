@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Usage :: RuboCop Rails</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-rails/rubocop-rails/2.34/usage.html">
+    <link rel="prev" href="installation.html">
+    <link rel="next" href="cops.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Usage</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need to tell RuboCop to load the Rails extension. There are three
+ways to do this:</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rubocop-configuration-file" data-type="section">
+<a class="anchor" href="#rubocop-configuration-file"></a>RuboCop configuration file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Put this into your <code>.rubocop.yml</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">plugins: rubocop-rails</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can run <code>rubocop</code> and it will automatically load the RuboCop Rails
+cops together with the standard cops.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="command-line" data-type="section">
+<a class="anchor" href="#command-line"></a>Command line</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --plugin rubocop-rails</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rake-task" data-type="section">
+<a class="anchor" href="#rake-task"></a>Rake task</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">RuboCop::RakeTask.new do |task|
+  task.plugins &lt;&lt; 'rubocop-rails'
+end</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The plugin system is supported in RuboCop 1.72+. In earlier versions, use <code>require</code> instead of <code>plugins</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rubocop-rails-configuration" data-type="section">
+<a class="anchor" href="#rubocop-rails-configuration"></a>RuboCop Rails configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following settings specific to RuboCop Rails can be configured in <code>.rubocop.yml</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="allcops-targetrailsversion" data-type="section">
+<a class="anchor" href="#allcops-targetrailsversion"></a><code>AllCops: TargetRailsVersion</code>
+</h3>
+<div class="paragraph">
+<p>What version of Rails is the inspected code using? If a value is specified
+for <code>TargetRailsVersion</code> then it is used. Acceptable values are specified
+as a float (e.g., 7.2); the patch version of Rails should not be included.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  TargetRailsVersion: 7.2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>TargetRailsVersion</code> is not set, RuboCop will parse the Gemfile.lock or
+gems.locked file to find the version of Rails that has been bound to the
+application. If neither of those files exist, RuboCop will use Rails 5.0
+as the default.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="allcops-migratedschemaversion" data-type="section">
+<a class="anchor" href="#allcops-migratedschemaversion"></a><code>AllCops: MigratedSchemaVersion</code>
+</h3>
+<div class="paragraph">
+<p>By specifying the <code>MigratedSchemaVersion</code> option, migration files that have already been run can be ignored.
+When <code>MigratedSchemaVersion: '20241225000000'</code> is set, migration files lower than or equal to '20241225000000' will be ignored.
+For example, to ignore db/migrate/20241225000000_create_articles.rb and earlier migrations you would configure it the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  MigratedSchemaVersion: '20241225000000'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This prevents inspecting schema settings for already applied migration files.
+Changing already applied migrations should be avoided because it can lead to the schema getting out of sync
+between your local copy and what it actually is in production, depending on when <code>bin/rails db:migrate</code> was executed.
+If you want to modify your schema to comply with the cops, you should instead create new migrations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rails-configuration-tip" data-type="section">
+<a class="anchor" href="#rails-configuration-tip"></a>Rails configuration tip</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In Rails 6.1+, add the following <code>config.generators.after_generate</code> setting to
+your <code>config/environments/development.rb</code> to apply RuboCop autocorrection to code generated by <code>bin/rails g</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># config/environments/development.rb
+Rails.application.configure do
+  config.generators.after_generate do |files|
+    parsable_files = files.filter { |file| file.end_with?('.rb') }
+    unless parsable_files.empty?
+      system("bundle exec rubocop -A --fail-level=E #{parsable_files.shelljoin}", exception: true)
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It uses <code>rubocop -A</code> to apply <code>Style/FrozenStringLiteralComment</code> and other unsafe autocorrection cops.
+<code>rubocop -A</code> is unsafe autocorrection, but code generated by default is simple and less likely to
+be incompatible with <code>rubocop -A</code>. If you have problems you can replace it with <code>rubocop -a</code> instead.</p>
+</div>
+<div class="paragraph">
+<p>In Rails 7.2+, it is recommended to use <code>config.generators.apply_rubocop_autocorrect_after_generate!</code> instead of the above setting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-diff hljs" data-lang="diff"> # config/environments/development.rb
+ Rails.application.configure do
+   (snip)
+   # Apply autocorrection by RuboCop to files generated by `bin/rails generate`.
+-  # config.generators.apply_rubocop_autocorrect_after_generate!
++  config.generators.apply_rubocop_autocorrect_after_generate!
+ end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You only need to uncomment.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

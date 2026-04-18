@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Contributing :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/contributing.html">
+    <link rel="prev" href="development.html">
+    <link rel="next" href="support.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Contributing</h1>
+<div class="sect1">
+<h2 id="issues" data-type="section">
+<a class="anchor" href="#issues"></a>Issues</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Report issues and suggest features and improvements on the
+<a href="https://github.com/rubocop/rubocop/issues">GitHub issue tracker</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you want to file an issue (bug report or feature request), please provide all
+the necessary info listed in our issue reporting template (it’s loaded
+automatically when you create a new GitHub issue).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Please, don’t ask support-like questions on the issue tracker (e.g. "How
+can I configure RuboCop to do X?") - use the <a href="support.html" class="xref page">support channels</a>
+instead.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="code-contributions" data-type="section">
+<a class="anchor" href="#code-contributions"></a>Code contributions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Patches in any form are always welcome! GitHub pull requests are even better! :-)</p>
+</div>
+<div class="paragraph">
+<p>Before submitting a pull request make sure all tests are
+passing and that your patch is in line with the <a href="https://github.com/rubocop/rubocop/blob/master/CONTRIBUTING.md">contribution
+guidelines</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="quick-start" data-type="section">
+<a class="anchor" href="#quick-start"></a>Quick start</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ git clone https://github.com/rubocop/rubocop.git
+$ cd rubocop
+$ bundle install
+$ bundle exec rake              # run the full CI suite</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A typical contribution workflow:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Pick an issue from the <a href="https://github.com/rubocop/rubocop/issues">issue tracker</a> (look for <code>good first issue</code> or <code>help wanted</code> labels).</p>
+</li>
+<li>
+<p>Create a feature branch: <code>git checkout -b fix-1234-short-description</code>.</p>
+</li>
+<li>
+<p>Make your changes and add tests (see <a href="development.html" class="xref page">Development</a>).</p>
+</li>
+<li>
+<p>Run the full test suite: <code>bundle exec rake</code>.</p>
+</li>
+<li>
+<p>Add a changelog entry: <code>bundle exec rake changelog:fix</code> (or <code>changelog:new</code> / <code>changelog:change</code>).</p>
+</li>
+<li>
+<p>Open a pull request.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="documentation" data-type="section">
+<a class="anchor" href="#documentation"></a>Documentation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Good documentation is just as important as good code.
+Please, help us improve RuboCop’s documentation.</p>
+</div>
+<div class="paragraph">
+<p>You should also check out the
+<a href="development.html#documentation" class="xref page">cop documentation section</a> of the docs and consider
+adding or improving Cop descriptions.</p>
+</div>
+<div class="sect2">
+<h3 id="working-on-the-docs" data-type="section">
+<a class="anchor" href="#working-on-the-docs"></a>Working on the Docs</h3>
+<div class="paragraph">
+<p>The manual is generated from the AsciiDoc files in the <a href="https://github.com/rubocop/rubocop/tree/master/docs">docs</a> folder of RuboCop’s GitHub repo and is published to <a href="https://docs.rubocop.org" class="bare">https://docs.rubocop.org</a>.
+<a href="https://antora.org">Antora</a> is used to convert the manual into HTML.
+The filesystem layout is described at <a href="https://docs.antora.org/antora/3.1/standard-directories/" class="bare">https://docs.antora.org/antora/3.1/standard-directories/</a>.</p>
+</div>
+<div class="paragraph">
+<p>To make changes to the manual you simply have to change the files under <code>docs</code>.
+The manual will be regenerated manually periodically.</p>
+</div>
+<div class="paragraph">
+<p>The site configuration and build infrastructure live in a separate repo: <a href="https://github.com/rubocop/docs.rubocop.org">docs.rubocop.org</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="installing-antora" data-type="section">
+<a class="anchor" href="#installing-antora"></a>Installing Antora</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The instructions here assume you already have (the right version of) node.js installed.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Installing Antora is super simple — just clone the docs site repo and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ cd docs.rubocop.org
+$ make install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check out <a href="https://docs.antora.org/antora/3.1/install/install-antora/">the detailed installation instructions</a>
+if you run into any problems.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="building-the-site" data-type="section">
+<a class="anchor" href="#building-the-site"></a>Building the Site</h4>
+<div class="paragraph">
+<p>You can build the documentation locally from the <a href="https://github.com/rubocop/docs.rubocop.org">docs.rubocop.org</a> repo.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ cd docs.rubocop.org
+$ make build</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can preview your changes by opening <code>build/site/index.html</code> in your favourite browser.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The site is automatically deployed to GitHub Pages via a GitHub Action on push to <code>master</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you want to make changes to the manual’s page structure you’ll have to edit
+<a href="https://github.com/rubocop/rubocop/blob/master/docs/modules/ROOT/nav.adoc">nav.adoc</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="working-on-rubocop-org" data-type="section">
+<a class="anchor" href="#working-on-rubocop-org"></a>Working on rubocop.org</h3>
+<div class="paragraph">
+<p>The <a href="https://rubocop.org">rubocop.org</a> landing page is a separate project, built with <a href="https://www.bridgetownrb.com/">Bridgetown</a> and <a href="https://tailwindcss.com/">Tailwind CSS</a>. Its source lives at <a href="https://github.com/rubocop/rubocop.org">github.com/rubocop/rubocop.org</a>.</p>
+</div>
+<div class="paragraph">
+<p>To run the site locally you’ll need Ruby (&gt;= 3.2) and Node.js (&gt;= 20):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ cd rubocop.org
+$ bundle install &amp;&amp; npm install
+$ bin/bridgetown start</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then visit <a href="http://localhost:4000">localhost:4000</a> to preview your changes.</p>
+</div>
+<div class="paragraph">
+<p>The site is automatically deployed to GitHub Pages on push to <code>main</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="funding" data-type="section">
+<a class="anchor" href="#funding"></a>Funding</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While RuboCop is free software and will always be, the project would benefit immensely from some funding.
+Raising a monthly budget of a couple of thousand dollars would make it possible to pay people to work on
+certain complex features, fund other development related stuff (e.g. hardware, conference trips) and so on.
+Raising a monthly budget of over $5000 would open the possibility of someone working full-time on the project
+which would speed up the pace of development significantly.</p>
+</div>
+<div class="paragraph">
+<p>We welcome both individual and corporate sponsors! We also offer a wide array of funding channels to account
+for your preferences (although currently <a href="https://opencollective.com/rubocop">Open Collective</a> is our preferred funding platform).</p>
+</div>
+<div class="paragraph">
+<p>If you’re working in a company that’s making significant use of RuboCop we’d appreciate it if you suggest to your company
+to become a RuboCop sponsor.</p>
+</div>
+<div class="paragraph">
+<p>You can support the development of RuboCop via
+<a href="https://github.com/sponsors/bbatsov">GitHub Sponsors</a>,
+<a href="https://www.patreon.com/bbatsov">Patreon</a>,
+<a href="https://paypal.me/bbatsov">PayPal</a>,
+and <a href="https://opencollective.com/rubocop">Open Collective</a>.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

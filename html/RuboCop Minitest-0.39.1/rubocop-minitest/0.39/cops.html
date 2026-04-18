@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Cops :: RuboCop Minitest</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-minitest/rubocop-minitest/0.39/cops.html">
+    <link rel="prev" href="usage.html">
+    <link rel="next" href="cops_minitest.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Cops</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In RuboCop lingo the various checks performed on the code are called cops.
+Each cop is responsible for detecting one particular offense.
+RuboCop Minitest has only one Minitest department.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="minitest" data-type="section">
+<a class="anchor" href="#minitest"></a>Minitest</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Minitest cops check for Minitest best practices and coding conventions. Many of the them are
+based on the <a href="https://minitest.rubystyle.guide/">Minitest Style Guide</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="department-minitest" data-type="section">
+<a class="anchor" href="#department-minitest"></a>Department <a href="cops_minitest.html" class="xref page">Minitest</a>
+</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="cops_minitest.html#minitestassertempty" class="xref page">Minitest/AssertEmpty</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertemptyliteral" class="xref page">Minitest/AssertEmptyLiteral</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertequal" class="xref page">Minitest/AssertEqual</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertindelta" class="xref page">Minitest/AssertInDelta</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertincludes" class="xref page">Minitest/AssertIncludes</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertinstanceof" class="xref page">Minitest/AssertInstanceOf</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertkindof" class="xref page">Minitest/AssertKindOf</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertmatch" class="xref page">Minitest/AssertMatch</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertnil" class="xref page">Minitest/AssertNil</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertoperator" class="xref page">Minitest/AssertOperator</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertoutput" class="xref page">Minitest/AssertOutput</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertpathexists" class="xref page">Minitest/AssertPathExists</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertpredicate" class="xref page">Minitest/AssertPredicate</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertraisescompoundbody" class="xref page">Minitest/AssertRaisesCompoundBody</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertraiseswithregexpargument" class="xref page">Minitest/AssertRaisesWithRegexpArgument</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertrespondto" class="xref page">Minitest/AssertRespondTo</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertsame" class="xref page">Minitest/AssertSame</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertsilent" class="xref page">Minitest/AssertSilent</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestasserttruthy" class="xref page">Minitest/AssertTruthy</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertwithexpectedargument" class="xref page">Minitest/AssertWithExpectedArgument</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestassertioninlifecyclehook" class="xref page">Minitest/AssertionInLifecycleHook</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestduplicatetestrun" class="xref page">Minitest/DuplicateTestRun</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestemptylinebeforeassertionmethods" class="xref page">Minitest/EmptyLineBeforeAssertionMethods</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestfocus" class="xref page">Minitest/Focus</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestglobalexpectations" class="xref page">Minitest/GlobalExpectations</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestlifecyclehooksorder" class="xref page">Minitest/LifecycleHooksOrder</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestliteralasactualargument" class="xref page">Minitest/LiteralAsActualArgument</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestmultipleassertions" class="xref page">Minitest/MultipleAssertions</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestnoassertions" class="xref page">Minitest/NoAssertions</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestnotestcases" class="xref page">Minitest/NoTestCases</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestnonexecutabletestmethod" class="xref page">Minitest/NonExecutableTestMethod</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestnonpublictestmethod" class="xref page">Minitest/NonPublicTestMethod</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestredundantmessageargument" class="xref page">Minitest/RedundantMessageArgument</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuteempty" class="xref page">Minitest/RefuteEmpty</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuteequal" class="xref page">Minitest/RefuteEqual</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutefalse" class="xref page">Minitest/RefuteFalse</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuteindelta" class="xref page">Minitest/RefuteInDelta</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuteincludes" class="xref page">Minitest/RefuteIncludes</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuteinstanceof" class="xref page">Minitest/RefuteInstanceOf</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutekindof" class="xref page">Minitest/RefuteKindOf</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutematch" class="xref page">Minitest/RefuteMatch</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutenil" class="xref page">Minitest/RefuteNil</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuteoperator" class="xref page">Minitest/RefuteOperator</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutepathexists" class="xref page">Minitest/RefutePathExists</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutepredicate" class="xref page">Minitest/RefutePredicate</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefuterespondto" class="xref page">Minitest/RefuteRespondTo</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestrefutesame" class="xref page">Minitest/RefuteSame</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestreturnintestmethod" class="xref page">Minitest/ReturnInTestMethod</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestskipensure" class="xref page">Minitest/SkipEnsure</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestskipwithoutreason" class="xref page">Minitest/SkipWithoutReason</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitesttestfilename" class="xref page">Minitest/TestFileName</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitesttestmethodname" class="xref page">Minitest/TestMethodName</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestunreachableassertion" class="xref page">Minitest/UnreachableAssertion</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestunspecifiedexception" class="xref page">Minitest/UnspecifiedException</a></p>
+</li>
+<li>
+<p><a href="cops_minitest.html#minitestuselessassertion" class="xref page">Minitest/UselessAssertion</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

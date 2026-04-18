@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Bundler :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/cops_bundler.html">
+    <link rel="prev" href="formatters.html">
+    <link rel="next" href="cops_gemspec.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">Bundler</h1>
+<div class="sect1">
+<h2 id="bundlerduplicatedgem" data-type="test">
+<a class="anchor" href="#bundlerduplicatedgem"></a>Bundler/DuplicatedGem</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.46</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.40</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A Gem’s requirements should be listed only once in a Gemfile.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlerduplicatedgem">
+<a class="anchor" href="#examples-bundlerduplicatedgem"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+gem 'rubocop'
+gem 'rubocop'
+
+# bad
+group :development do
+  gem 'rubocop'
+end
+
+group :test do
+  gem 'rubocop'
+end
+
+# good
+group :development, :test do
+  gem 'rubocop'
+end
+
+# good
+gem 'rubocop', groups: [:development, :test]
+
+# good - conditional declaration
+if Dir.exist?(local)
+  gem 'rubocop', path: local
+elsif ENV['RUBOCOP_VERSION'] == 'master'
+  gem 'rubocop', git: 'https://github.com/rubocop/rubocop.git'
+else
+  gem 'rubocop', '~&gt; 0.90.0'
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlerduplicatedgem">
+<a class="anchor" href="#configurable-attributes-bundlerduplicatedgem"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Severity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>warning</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemfile</code>, <code>**/Gemfile</code>, <code>**/gems.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bundlerduplicatedgroup" data-type="test">
+<a class="anchor" href="#bundlerduplicatedgroup"></a>Bundler/DuplicatedGroup</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.56</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A Gem group, or a set of groups, should be listed only once in a Gemfile.</p>
+</div>
+<div class="paragraph">
+<p>For example, if the values of <code>source</code>, <code>git</code>, <code>platforms</code>, or <code>path</code>
+surrounding <code>group</code> are different, no offense will be registered:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">platforms :ruby do
+  group :default do
+    gem 'openssl'
+  end
+end
+
+platforms :jruby do
+  group :default do
+    gem 'jruby-openssl'
+  end
+end</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlerduplicatedgroup">
+<a class="anchor" href="#examples-bundlerduplicatedgroup"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+group :development do
+  gem 'rubocop'
+end
+
+group :development do
+  gem 'rubocop-rails'
+end
+
+# bad (same set of groups declared twice)
+group :development, :test do
+  gem 'rubocop'
+end
+
+group :test, :development do
+  gem 'rspec'
+end
+
+# good
+group :development do
+  gem 'rubocop'
+end
+
+group :development, :test do
+  gem 'rspec'
+end
+
+# good
+gem 'rubocop', groups: [:development, :test]
+gem 'rspec', groups: [:development, :test]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlerduplicatedgroup">
+<a class="anchor" href="#configurable-attributes-bundlerduplicatedgroup"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Severity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>warning</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemfile</code>, <code>**/Gemfile</code>, <code>**/gems.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bundlergemcomment" data-type="test">
+<a class="anchor" href="#bundlergemcomment"></a>Bundler/GemComment</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.59</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.85</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each gem in the Gemfile should have a comment explaining
+its purpose in the project, or the reason for its version
+or source.</p>
+</div>
+<div class="paragraph">
+<p>The optional "OnlyFor" configuration array
+can be used to only register offenses when the gems
+use certain options or have version specifiers.</p>
+</div>
+<div class="paragraph">
+<p>When "version_specifiers" is included, a comment
+will be enforced if the gem has any version specifier.</p>
+</div>
+<div class="paragraph">
+<p>When "restrictive_version_specifiers" is included, a comment
+will be enforced if the gem has a version specifier that
+holds back the version of the gem.</p>
+</div>
+<div class="paragraph">
+<p>For any other value in the array, a comment will be enforced for
+a gem if an option by the same name is present.
+A useful use case is to enforce a comment when using
+options that change the source of a gem:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>bitbucket</code></p>
+</li>
+<li>
+<p><code>gist</code></p>
+</li>
+<li>
+<p><code>git</code></p>
+</li>
+<li>
+<p><code>github</code></p>
+</li>
+<li>
+<p><code>source</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For a full list of options supported by bundler,
+see <a href="https://bundler.io/man/gemfile.5.html" class="bare">https://bundler.io/man/gemfile.5.html</a>
+.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlergemcomment">
+<a class="anchor" href="#examples-bundlergemcomment"></a>Examples</h3>
+<div class="sect3">
+<h4 id="onlyfor_-__-_default_-bundlergemcomment" title="Bundler/GemComment: OnlyFor: [] (default)" data-type="setting">
+<a class="anchor" href="#onlyfor_-__-_default_-bundlergemcomment"></a>OnlyFor: [] (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+
+gem 'foo'
+
+# good
+
+# Helpers for the foo things.
+gem 'foo'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="onlyfor_-__version_specifiers__-bundlergemcomment" title="Bundler/GemComment: OnlyFor: ['version_specifiers']" data-type="setting">
+<a class="anchor" href="#onlyfor_-__version_specifiers__-bundlergemcomment"></a>OnlyFor: ['version_specifiers']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+
+gem 'foo', '&lt; 2.1'
+
+# good
+
+# Version 2.1 introduces breaking change baz
+gem 'foo', '&lt; 2.1'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="onlyfor_-__restrictive_version_specifiers__-bundlergemcomment" title="Bundler/GemComment: OnlyFor: ['restrictive_version_specifiers']" data-type="setting">
+<a class="anchor" href="#onlyfor_-__restrictive_version_specifiers__-bundlergemcomment"></a>OnlyFor: ['restrictive_version_specifiers']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+
+gem 'foo', '&lt; 2.1'
+
+# good
+
+gem 'foo', '&gt;= 1.0'
+
+# Version 2.1 introduces breaking change baz
+gem 'foo', '&lt; 2.1'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="onlyfor_-__version_specifiers__-_github__-bundlergemcomment" title="Bundler/GemComment: OnlyFor: ['version_specifiers', 'github']" data-type="setting">
+<a class="anchor" href="#onlyfor_-__version_specifiers__-_github__-bundlergemcomment"></a>OnlyFor: ['version_specifiers', 'github']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+
+gem 'foo', github: 'some_account/some_fork_of_foo'
+
+gem 'bar', '&lt; 2.1'
+
+# good
+
+# Using this fork because baz
+gem 'foo', github: 'some_account/some_fork_of_foo'
+
+# Version 2.1 introduces breaking change baz
+gem 'bar', '&lt; 2.1'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlergemcomment">
+<a class="anchor" href="#configurable-attributes-bundlergemcomment"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemfile</code>, <code>**/Gemfile</code>, <code>**/gems.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IgnoredGems</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OnlyFor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bundlergemfilename" data-type="test">
+<a class="anchor" href="#bundlergemfilename"></a>Bundler/GemFilename</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Verifies that a project contains Gemfile or gems.rb file and correct
+associated lock file based on the configuration.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlergemfilename">
+<a class="anchor" href="#examples-bundlergemfilename"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-gemfile-_default_-bundlergemfilename" title="Bundler/GemFilename: EnforcedStyle: Gemfile (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-gemfile-_default_-bundlergemfilename"></a>EnforcedStyle: Gemfile (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Project contains gems.rb and gems.locked files
+
+# bad
+Project contains Gemfile and gems.locked file
+
+# good
+Project contains Gemfile and Gemfile.lock</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-gems_rb-bundlergemfilename" title="Bundler/GemFilename: EnforcedStyle: gems.rb" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-gems_rb-bundlergemfilename"></a>EnforcedStyle: gems.rb</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Project contains Gemfile and Gemfile.lock files
+
+# bad
+Project contains gems.rb and Gemfile.lock file
+
+# good
+Project contains gems.rb and gems.locked files</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlergemfilename">
+<a class="anchor" href="#configurable-attributes-bundlergemfilename"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Gemfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Gemfile</code>, <code>gems.rb</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/Gemfile</code>, <code>**/gems.rb</code>, <code>**/Gemfile.lock</code>, <code>**/gems.locked</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bundlergemversion" data-type="test">
+<a class="anchor" href="#bundlergemversion"></a>Bundler/GemVersion</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforce that Gem version specifications or a commit reference (branch,
+ref, or tag) are either required or forbidden.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlergemversion">
+<a class="anchor" href="#examples-bundlergemversion"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-required-_default_-bundlergemversion" title="Bundler/GemVersion: EnforcedStyle: required (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-required-_default_-bundlergemversion"></a>EnforcedStyle: required (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+gem 'rubocop'
+
+# good
+gem 'rubocop', '~&gt; 1.12'
+
+# good
+gem 'rubocop', '&gt;= 1.10.0'
+
+# good
+gem 'rubocop', '&gt;= 1.5.0', '&lt; 1.10.0'
+
+# good
+gem 'rubocop', branch: 'feature-branch'
+
+# good
+gem 'rubocop', ref: '74b5bfbb2c4b6fd6cdbbc7254bd7084b36e0c85b'
+
+# good
+gem 'rubocop', tag: 'v1.17.0'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-forbidden-bundlergemversion" title="Bundler/GemVersion: EnforcedStyle: forbidden" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-forbidden-bundlergemversion"></a>EnforcedStyle: forbidden</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+gem 'rubocop'
+
+# bad
+gem 'rubocop', '~&gt; 1.12'
+
+# bad
+gem 'rubocop', '&gt;= 1.10.0'
+
+# bad
+gem 'rubocop', '&gt;= 1.5.0', '&lt; 1.10.0'
+
+# bad
+gem 'rubocop', branch: 'feature-branch'
+
+# bad
+gem 'rubocop', ref: '74b5bfbb2c4b6fd6cdbbc7254bd7084b36e0c85b'
+
+# bad
+gem 'rubocop', tag: 'v1.17.0'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlergemversion">
+<a class="anchor" href="#configurable-attributes-bundlergemversion"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code>, <code>forbidden</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemfile</code>, <code>**/Gemfile</code>, <code>**/gems.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedGems</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bundlerinsecureprotocolsource" data-type="test">
+<a class="anchor" href="#bundlerinsecureprotocolsource"></a>Bundler/InsecureProtocolSource</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.40</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Passing symbol arguments to <code>source</code> (e.g. <code>source :rubygems</code>) is
+deprecated because they default to using HTTP requests. Instead, specify
+<code>'https://rubygems.org'</code> if possible, or <code>'http://rubygems.org'</code> if not.</p>
+</div>
+<div class="paragraph">
+<p>When autocorrecting, this cop will replace symbol arguments with
+<code>'https://rubygems.org'</code>.</p>
+</div>
+<div class="paragraph">
+<p>This cop will not replace existing sources that use <code>http://</code>. This may
+be necessary where HTTPS is not available. For example, where using an
+internal gem server via an intranet, or where HTTPS is prohibited.
+However, you should strongly prefer <code>https://</code> where possible, as it is
+more secure.</p>
+</div>
+<div class="paragraph">
+<p>If you don’t allow <code>http://</code>, please set <code>false</code> to <code>AllowHttpProtocol</code>.
+This option is <code>true</code> by default for safe autocorrection.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlerinsecureprotocolsource">
+<a class="anchor" href="#examples-bundlerinsecureprotocolsource"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+source :gemcutter
+source :rubygems
+source :rubyforge
+
+# good
+source 'https://rubygems.org' # strongly recommended</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowhttpprotocol_-true-_default_-bundlerinsecureprotocolsource" title="Bundler/InsecureProtocolSource: AllowHttpProtocol: true (default)" data-type="setting">
+<a class="anchor" href="#allowhttpprotocol_-true-_default_-bundlerinsecureprotocolsource"></a>AllowHttpProtocol: true (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+source 'http://rubygems.org' # use only if HTTPS is unavailable</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowhttpprotocol_-false-bundlerinsecureprotocolsource" title="Bundler/InsecureProtocolSource: AllowHttpProtocol: false" data-type="setting">
+<a class="anchor" href="#allowhttpprotocol_-false-bundlerinsecureprotocolsource"></a>AllowHttpProtocol: false</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+source 'http://rubygems.org'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlerinsecureprotocolsource">
+<a class="anchor" href="#configurable-attributes-bundlerinsecureprotocolsource"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Severity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>warning</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowHttpProtocol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemfile</code>, <code>**/Gemfile</code>, <code>**/gems.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bundlerorderedgems" data-type="test">
+<a class="anchor" href="#bundlerorderedgems"></a>Bundler/OrderedGems</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.46</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.47</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Gems should be alphabetically sorted within groups.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-bundlerorderedgems">
+<a class="anchor" href="#examples-bundlerorderedgems"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+gem 'rubocop'
+gem 'rspec'
+
+# good
+gem 'rspec'
+gem 'rubocop'
+
+# good
+gem 'rubocop'
+
+gem 'rspec'</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="treatcommentsasgroupseparators_-true-_default_-bundlerorderedgems" title="Bundler/OrderedGems: TreatCommentsAsGroupSeparators: true (default)" data-type="setting">
+<a class="anchor" href="#treatcommentsasgroupseparators_-true-_default_-bundlerorderedgems"></a>TreatCommentsAsGroupSeparators: true (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+# For code quality
+gem 'rubocop'
+# For tests
+gem 'rspec'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="treatcommentsasgroupseparators_-false-bundlerorderedgems" title="Bundler/OrderedGems: TreatCommentsAsGroupSeparators: false" data-type="setting">
+<a class="anchor" href="#treatcommentsasgroupseparators_-false-bundlerorderedgems"></a>TreatCommentsAsGroupSeparators: false</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+# For code quality
+gem 'rubocop'
+# For tests
+gem 'rspec'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-bundlerorderedgems">
+<a class="anchor" href="#configurable-attributes-bundlerorderedgems"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TreatCommentsAsGroupSeparators</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ConsiderPunctuation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemfile</code>, <code>**/Gemfile</code>, <code>**/gems.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

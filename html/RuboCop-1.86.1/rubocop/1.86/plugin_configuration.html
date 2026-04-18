@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Plugin Configuration :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/plugin_configuration.html">
+    <link rel="prev" href="plugins.html">
+    <link rel="next" href="plugin_migration_guide.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Plugin Configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you’re developing a plugin, you can tie its configuration into RuboCop.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="config-obsoletions" data-type="section">
+<a class="anchor" href="#config-obsoletions"></a>Config Obsoletions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When a cop that has been released is later renamed or removed, or one of its parameters is, RuboCop can output error messages letting users know to update their configuration to the newest values. If any obsolete configurations are encountered, RuboCop will output an error message and quit.</p>
+</div>
+<div class="paragraph">
+<p>You can tie your plugin into this system by creating your own <code>obsoletions.yml</code> file and letting RuboCop know where to find it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">RuboCop::ConfigObsoletion.files &lt;&lt; File.expand_path(filename)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are currently three types of obsoletions that can be defined for cops:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>renamed</code>: A cop was changed to have a new name, or moved to a different department.</p>
+</li>
+<li>
+<p><code>removed</code>: A cop was deleted (usually this is configured with <code>alternatives</code> or a <code>reason</code> why it was removed).</p>
+</li>
+<li>
+<p><code>split</code>: A cop was removed and replaced with multiple other cops.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Two additional types are available to be defined for parameter changes. These configurations can apply to multiple cops and multiple parameters at the same time (so they are expressed in YAML as an array of hashes):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>changed_parameters</code>: A parameter has been renamed.</p>
+</li>
+<li>
+<p><code>changed_enforced_styles</code>: A previously accepted <code>EnforcedStyle</code> value has been changed or removed.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Parameter obsoletions can be set with <code>severity: warning</code> to deprecate an old parameter but still accept it. RuboCop will output a warning but continue to run.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="example-obsoletion-configuration" data-type="section">
+<a class="anchor" href="#example-obsoletion-configuration"></a>Example Obsoletion Configuration</h3>
+<div class="paragraph">
+<p>See <code>config/obsoletion.yml</code> for more examples.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+All plural keys (e.g. <code>cops</code>, <code>parameters</code>, <code>alternatives</code>, etc.) can either take a single value or an array.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">renamed:
+  Layout/AlignArguments: Layout/ArgumentAlignment
+  Lint/BlockAlignment: Layout/BlockAlignment
+
+removed:
+  Layout/SpaceAfterControlKeyword:
+    alternatives: Layout/SpaceAroundKeyword
+  Lint/InvalidCharacterLiteral:
+    reason: it was never actually triggered
+
+split:
+  Style/MethodMissing:
+    alternatives:
+      - Style/MethodMissingSuper
+      - Style/MissingRespondToMissing
+
+changed_parameters: # must be an array of hashes
+  - cops:
+      - Metrics/BlockLength
+      - Metrics/MethodLength
+    parameters: ExcludedMethods
+    alternative: IgnoredMethods
+    severity: warning
+
+changed_enforced_styles: # must be an array of hashes
+  - cops: Layout/IndentationConsistency
+    parameters: EnforcedStyle
+    value: rails
+    reason: &gt;
+      `EnforcedStyle: rails` has been renamed to
+      `EnforcedStyle: indented_internal_methods`</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Autocorrect :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/usage/autocorrect.html">
+    <link rel="prev" href="auto_gen_config.html">
+    <link rel="next" href="caching.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Autocorrect</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In autocorrect mode, RuboCop will try to automatically fix offenses.</p>
+</div>
+<div class="paragraph">
+<p>There are three autocorrect modes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Flag</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-a</code> / <code>--autocorrect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Safe corrections only — won’t change code semantics.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-A</code> / <code>--autocorrect-all</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All corrections, including unsafe ones that may change semantics.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-x</code> / <code>--fix-layout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Layout (formatting) corrections only — never changes logic.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Always review the diff and run your test suite after autocorrecting,
+especially when using <code>-A</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="safe-vs-unsafe" data-type="section">
+<a class="anchor" href="#safe-vs-unsafe"></a>Safe vs. unsafe</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RuboCop distinguishes between safe and unsafe cops and autocorrections:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Safe</strong> (<code>true/false</code>) — indicates whether the cop can yield false positives
+by design.</p>
+</li>
+<li>
+<p><strong>SafeAutoCorrect</strong> (<code>true/false</code>) — indicates whether the autocorrection
+preserves code semantics. If a cop itself is unsafe, its autocorrect is
+automatically considered unsafe as well.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When you run <code>rubocop -a</code>, cops and autocorrections marked as unsafe are
+skipped. When you run <code>rubocop -A</code>, everything is applied.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Some cops may not yet be annotated for safety. Eventually, the safety
+of each cop will be specified in the default configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="example-unsafe-cop" data-type="section">
+<a class="anchor" href="#example-unsafe-cop"></a>Example: unsafe cop</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class Miner
+  def dig(how_deep)
+    # ...
+  end
+end
+
+
+Miner.new.dig(42) # =&gt; Style/SingleArgumentDig
+                  # =&gt; Use Miner.new[] instead of dig</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the wrong diagnostic; this (contrived) use of <code>dig</code> is not an issue,
+and there might not be an alternative. This cop is marked as <code>Safe: false</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example-safe-cop-with-unsafe-autocorrect" data-type="section">
+<a class="anchor" href="#example-safe-cop-with-unsafe-autocorrect"></a>Example: safe cop with unsafe autocorrect</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># example.rb:
+str = 'hello' # =&gt; Missing magic comment `# frozen_string_literal: true`
+str &lt;&lt; 'world'
+
+# autocorrects to:
+# frozen_string_literal: true
+
+str = 'hello'
+str &lt;&lt; 'world' # =&gt; now fails because `str` is frozen
+
+# must be manually corrected to:
+# frozen_string_literal: true
+
+str = +'hello' # =&gt; We want an unfrozen string literal here...
+str &lt;&lt; 'world' # =&gt; ok</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This diagnostic is valid since the magic comment is indeed missing (thus <code>Safe: true</code>),
+but the autocorrection is not; some string literals need to be prefixed with <code>+</code> to avoid
+having them frozen.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="disabling-uncorrectable-offenses" data-type="section">
+<a class="anchor" href="#disabling-uncorrectable-offenses"></a>Disabling uncorrectable offenses</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --autocorrect --disable-uncorrectable</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>--disable-uncorrectable</code> flag generates <code># rubocop:todo</code> comments in the
+code to suppress reporting of offenses that could not be corrected
+automatically. This is useful for gradually adopting new cops.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuring-autocorrect-per-cop" data-type="section">
+<a class="anchor" href="#configuring-autocorrect-per-cop"></a>Configuring autocorrect per cop</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Individual cops can have their autocorrect behavior configured in <code>.rubocop.yml</code>.
+See <a href="../configuration/cop_settings.html#autocorrect" class="xref page">AutoCorrect</a> for the
+available settings: <code>always</code>, <code>contextual</code>, and <code>disabled</code>.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

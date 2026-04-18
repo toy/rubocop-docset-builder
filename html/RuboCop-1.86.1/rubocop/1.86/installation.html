@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Installation :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/installation.html">
+    <link rel="prev" href="index.html">
+    <link rel="next" href="compatibility.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Installation</h1>
+<div class="paragraph">
+<p>RuboCop’s installation is pretty standard:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ gem install rubocop</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you’d rather install RuboCop using <code>bundler</code>, don’t require it in your <code>Gemfile</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-rb hljs" data-lang="rb">gem 'rubocop', require: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RuboCop is stable between major versions, both in terms of API and cop configuration.
+We aim to ease the maintenance of RuboCop extensions and the upgrades between RuboCop
+releases. All big changes are reserved for major releases.
+To prevent an unwanted RuboCop update you might want to use a conservative version lock
+in your <code>Gemfile</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-rb hljs" data-lang="rb">gem 'rubocop', '~&gt; 1.86', require: false</code></pre>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">A Modular RuboCop</div>
+<div class="paragraph">
+<p>Originally RuboCop bundled cops focused on performance and Ruby on Rails, but those were
+extracted into their own gems eventually:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the performance cops were extracted in <code>rubocop-performance</code> and were removed from the main gem in 0.68</p>
+</li>
+<li>
+<p>the Ruby on Rails cops were extracted in <code>rubocop-rails</code> and were removed from the main gem in 0.72</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You’ll need to install those gems separately if you’d like to use them.
+See <a href="https://metaredux.com/posts/2019/05/22/a-modular-rubocop.html">this article</a> for more details.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, RuboCop’s AST logic was extracted to <code>rubocop-ast</code> in RuboCop 0.84. While this change is
+transparent to RuboCop’s users (<code>rubocop-ast</code> is a runtime dependency of <code>rubocop</code>), it’s good to be
+aware that you can leverage RuboCop’s AST node extensions and AST node pattern matching outside of RuboCop.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

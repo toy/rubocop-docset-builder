@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Auto-generating Configuration :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/usage/auto_gen_config.html">
+    <link rel="prev" href="cli_reference.html">
+    <link rel="next" href="autocorrect.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Auto-generating Configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you have a code base with an overwhelming amount of offenses, it can
+be a good idea to use <code>rubocop --auto-gen-config</code>, which creates
+<code>.rubocop_todo.yml</code> and adds <code>inherit_from: .rubocop_todo.yml</code> in your
+<code>.rubocop.yml</code>. The generated file <code>.rubocop_todo.yml</code> contains
+configuration to disable cops that currently detect an offense in the
+code by changing the configuration for the cop, excluding the offending
+files, or disabling the cop altogether once a file count limit has been
+reached.</p>
+</div>
+<div class="paragraph">
+<p>By adding the option <code>--exclude-limit COUNT</code>, e.g., <code>rubocop
+--auto-gen-config --exclude-limit 5</code>, you can change how many files are
+excluded before the cop is entirely disabled. The default COUNT is 15.
+If you don’t want the cop to be entirely disabled regardless of the
+number of files, use the <code>--no-exclude-limit</code> option, e.g.,
+<code>rubocop --auto-gen-config --no-exclude-limit</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="working-through-the-todo" data-type="section">
+<a class="anchor" href="#working-through-the-todo"></a>Working through the TODO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The next step is to cut and paste configuration from <code>.rubocop_todo.yml</code>
+into <code>.rubocop.yml</code> for everything that you think is in line with your
+(organization’s) code style and not a good fit for a todo list.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Pay attention to the comments above each entry in <code>.rubocop_todo.yml</code>.
+They can reveal configuration parameters such as <code>EnforcedStyle</code>, which can
+be used to modify the behavior of a cop instead of disabling it completely.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then you can start removing the entries in the generated
+<code>.rubocop_todo.yml</code> file one by one as you work through all the offenses
+in the code. You can also regenerate your <code>.rubocop_todo.yml</code> using
+the same options by running <code>rubocop --regenerate-todo</code>.</p>
+</div>
+<div class="paragraph">
+<p>Another way of silencing offense reports, aside from configuration, is
+through <a href="source_code_directives.html" class="xref page">source code directives</a>. These can be added manually or
+automatically.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metrics-cops" data-type="section">
+<a class="anchor" href="#metrics-cops"></a>Metrics cops</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The cops in the <code>Metrics</code> department will by default get <code>Max</code> parameters
+generated in <code>.rubocop_todo.yml</code>. The value of these will be just high enough
+so that no offenses are reported the next time you run <code>rubocop</code>. If you
+prefer to exclude files, like for other cops, add <code>--auto-gen-only-exclude</code>
+when running with <code>--auto-gen-config</code>. It will still change the maximum if the
+number of excluded files is higher than the exclude limit.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enforcedstyle" data-type="section">
+<a class="anchor" href="#enforcedstyle"></a>EnforcedStyle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some cops have a configurable option named <code>EnforcedStyle</code>.
+By default, when generating the <code>.rubocop_todo.yml</code>, if one style is used
+for all files, these cops will add the settings for the style being used.
+If you want to exclude on a file-by-file basis,
+add the <code>--no-auto-gen-enforced-style</code> option along with <code>--auto-gen-config</code>.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

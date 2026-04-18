@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Upgrade to Version 3.x :: RuboCop RSpec</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-rspec/rubocop-rspec/3.9/upgrade_to_version_3.html">
+    <link rel="prev" href="upgrade_to_version_2.html">
+    <link rel="next" href="third_party_rspec_syntax_extensions.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Upgrade to Version 3.x</h1>
+<div class="sect1">
+<h2 id="configuration-file-update" data-type="section">
+<a class="anchor" href="#configuration-file-update"></a>Configuration File Update</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In version 3.x:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>cop departments are extracted to another gem. (<code>Capybara</code>, <code>FactoryBot</code>, <code>Rails</code>)</p>
+</li>
+</ul>
+</div>
+<h3 id="extraction-of-cop-departments-capybara-factorybot-rails" class="discrete" data-type="section">Extraction of cop departments. (<code>Capybara</code>, <code>FactoryBot</code>, <code>Rails</code>)</h3>
+<div class="paragraph">
+<p>If you are using the RSpec/Capybara, RSpec/FactoryBot, or RSpec/Rails departments — or have one in a <code>require</code> list in your rubocop.yml — you need to install the corresponding gem and add it to your <code>.rubocop.yml</code> file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Capybara: <code>rubocop-capybara</code></p>
+</li>
+<li>
+<p>FactoryBot: <code>rubocop-factory_bot</code></p>
+</li>
+<li>
+<p>Rails: <code>rubocop-rspec_rails</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, if you are using the RSpec/Capybara department, you need to install the <code>rubocop-capybara</code> gem and add it to your <code>.rubocop.yml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># Gemfile
+group :test do
+  gem 'rubocop-rspec'
+  gem 'rubocop-capybara'
+end</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">require:
+  - rubocop-rspec
+  - rubocop-capybara</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And you need to remove the old department in your <code>.rubocop.yml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RSpec/Capybara:
+  Enabled: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For another example, if you are not using these departments, you don’t need to do anything.
+And when you update to RuboCop RSpec v3.0.0, you need to remove the old departments from your <code>.rubocop.yml</code> file, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">RSpec/Capybara:
+  Enabled: false
+RSpec/FactoryBot:
+  Enabled: false
+RSpec/Rails:
+  Enabled: false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting" data-type="section">
+<a class="anchor" href="#troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you’re seeing <code>cannot load such file</code> when running rubocop, even after installing the gems, restart the server with <code>rubocop --restart-server</code>.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

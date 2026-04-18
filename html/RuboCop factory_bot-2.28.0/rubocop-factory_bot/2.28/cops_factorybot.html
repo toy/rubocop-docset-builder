@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>FactoryBot :: RuboCop factory_bot</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-factory_bot/rubocop-factory_bot/2.28/cops_factorybot.html">
+    <link rel="prev" href="development.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">FactoryBot</h1>
+<div class="sect1">
+<h2 id="factorybotassociationstyle" data-type="test">
+<a class="anchor" href="#factorybotassociationstyle"></a>FactoryBot/AssociationStyle</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.24</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Use a consistent style to define associations.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-factorybotassociationstyle">
+<a class="anchor" href="#safety-factorybotassociationstyle"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop may cause false-positives in <code>EnforcedStyle: explicit</code>
+case. It recognizes any method call that has no arguments as an
+implicit association but it might be a user-defined trait call.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotassociationstyle">
+<a class="anchor" href="#examples-factorybotassociationstyle"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-implicit-_default_-factorybotassociationstyle" title="FactoryBot/AssociationStyle: EnforcedStyle: implicit (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-implicit-_default_-factorybotassociationstyle"></a>EnforcedStyle: implicit (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+factory :post do
+  association :user
+end
+
+# good
+factory :post do
+  user
+end
+
+# bad
+factory :post do
+  association :user, :author
+end
+
+# good
+factory :post do
+  user factory: %i[user author]
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-explicit-factorybotassociationstyle" title="FactoryBot/AssociationStyle: EnforcedStyle: explicit" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-explicit-factorybotassociationstyle"></a>EnforcedStyle: explicit</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+factory :post do
+  user
+end
+
+# good
+factory :post do
+  association :user
+end
+
+# bad
+factory :post do
+  user factory: %i[user author]
+end
+
+# good
+factory :post do
+  association :user, :author
+end
+
+# good (NonImplicitAssociationMethodNames: ['email'])
+sequence :email do |n|
+  "person#{n}@example.com"
+end
+
+factory :user do
+  email
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotassociationstyle">
+<a class="anchor" href="#configurable-attributes-factorybotassociationstyle"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>implicit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>explicit</code>, <code>implicit</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NonImplicitAssociationMethodNames</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;none&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotassociationstyle">
+<a class="anchor" href="#references-factorybotassociationstyle"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/AssociationStyle" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/AssociationStyle</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotattributedefinedstatically" data-type="test">
+<a class="anchor" href="#factorybotattributedefinedstatically"></a>FactoryBot/AttributeDefinedStatically</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.28</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.24</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Always declare attribute values as blocks.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotattributedefinedstatically">
+<a class="anchor" href="#examples-factorybotattributedefinedstatically"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+kind [:active, :rejected].sample
+
+# good
+kind { [:active, :rejected].sample }
+
+# bad
+closed_at 1.day.from_now
+
+# good
+closed_at { 1.day.from_now }
+
+# bad
+count 1
+
+# good
+count { 1 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotattributedefinedstatically">
+<a class="anchor" href="#references-factorybotattributedefinedstatically"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/AttributeDefinedStatically" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/AttributeDefinedStatically</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotconsistentparenthesesstyle" data-type="test">
+<a class="anchor" href="#factorybotconsistentparenthesesstyle"></a>FactoryBot/ConsistentParenthesesStyle</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Use a consistent style for parentheses in factory_bot calls.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotconsistentparenthesesstyle">
+<a class="anchor" href="#examples-factorybotconsistentparenthesesstyle"></a>Examples</h3>
+<div class="sect3">
+<h4 id="_enforcedstyle_-require_parentheses_-_default_-factorybotconsistentparenthesesstyle" title="FactoryBot/ConsistentParenthesesStyle: EnforcedStyle: require_parentheses (default)" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-require_parentheses_-_default_-factorybotconsistentparenthesesstyle"></a><code>EnforcedStyle: require_parentheses</code> (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+create :user
+build :login
+
+# good
+create(:user)
+build(:login)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enforcedstyle_-omit_parentheses_-factorybotconsistentparenthesesstyle" title="FactoryBot/ConsistentParenthesesStyle: EnforcedStyle: omit_parentheses" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-omit_parentheses_-factorybotconsistentparenthesesstyle"></a><code>EnforcedStyle: omit_parentheses</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+create(:user)
+build(:login)
+
+# good
+create :user
+build :login
+
+# also good
+# when method name and first argument are not on same line
+create(
+  :user
+)
+build(
+  :user,
+  name: 'foo'
+)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_explicitonly_-false_-_default_-factorybotconsistentparenthesesstyle" title="FactoryBot/ConsistentParenthesesStyle: ExplicitOnly: false (default)" data-type="setting">
+<a class="anchor" href="#_explicitonly_-false_-_default_-factorybotconsistentparenthesesstyle"></a><code>ExplicitOnly: false</code> (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - with `EnforcedStyle: require_parentheses`
+FactoryBot.create :user
+build :user
+
+# good - with `EnforcedStyle: require_parentheses`
+FactoryBot.create(:user)
+build(:user)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_explicitonly_-true_-factorybotconsistentparenthesesstyle" title="FactoryBot/ConsistentParenthesesStyle: ExplicitOnly: true" data-type="setting">
+<a class="anchor" href="#_explicitonly_-true_-factorybotconsistentparenthesesstyle"></a><code>ExplicitOnly: true</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - with `EnforcedStyle: require_parentheses`
+FactoryBot.create :user
+FactoryBot.build :user
+
+# good - with `EnforcedStyle: require_parentheses`
+FactoryBot.create(:user)
+FactoryBot.build(:user)
+create :user
+build :user</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotconsistentparenthesesstyle">
+<a class="anchor" href="#configurable-attributes-factorybotconsistentparenthesesstyle"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>require_parentheses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>require_parentheses</code>, <code>omit_parentheses</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExplicitOnly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotconsistentparenthesesstyle">
+<a class="anchor" href="#references-factorybotconsistentparenthesesstyle"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/ConsistentParenthesesStyle" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/ConsistentParenthesesStyle</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotcreatelist" data-type="test">
+<a class="anchor" href="#factorybotcreatelist"></a>FactoryBot/CreateList</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Command-line only (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.26</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for create_list usage.</p>
+</div>
+<div class="paragraph">
+<p>This cop can be configured using the <code>EnforcedStyle</code> option</p>
+</div>
+<div class="sect2">
+<h3 id="safety-factorybotcreatelist">
+<a class="anchor" href="#safety-factorybotcreatelist"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop’s autocorrection is unsafe because replacing <code>n.times</code> to
+<code>create_list</code> changes its returned value.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotcreatelist">
+<a class="anchor" href="#examples-factorybotcreatelist"></a>Examples</h3>
+<div class="sect3">
+<h4 id="_enforcedstyle_-create_list_-_default_-factorybotcreatelist" title="FactoryBot/CreateList: EnforcedStyle: create_list (default)" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-create_list_-_default_-factorybotcreatelist"></a><code>EnforcedStyle: create_list</code> (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+3.times { create :user }
+3.times.map { create :user }
+[create(:user), create(:user), create(:user)]
+Array.new(3) { create :user }
+
+# good
+create_list :user, 3
+
+# bad
+3.times { create :user, age: 18 }
+
+# good - index is used to alter the created models attributes
+3.times { |n| create :user, age: n }
+
+# good - contains a method call, may return different values
+3.times { create :user, age: rand }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enforcedstyle_-n_times_-factorybotcreatelist" title="FactoryBot/CreateList: EnforcedStyle: n_times" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-n_times_-factorybotcreatelist"></a><code>EnforcedStyle: n_times</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+create_list :user, 3
+[create(:user), create(:user), create(:user)]
+
+# good
+3.times.map { create :user }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_explicitonly_-false_-_default_-factorybotcreatelist" title="FactoryBot/CreateList: ExplicitOnly: false (default)" data-type="setting">
+<a class="anchor" href="#_explicitonly_-false_-_default_-factorybotcreatelist"></a><code>ExplicitOnly: false</code> (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - with `EnforcedStyle: create_list`
+3.times { FactoryBot.create :user }
+3.times { create :user }
+
+# good - with `EnforcedStyle: create_list`
+FactoryBot.create_list :user, 3
+create_list :user, 3</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_explicitonly_-true_-factorybotcreatelist" title="FactoryBot/CreateList: ExplicitOnly: true" data-type="setting">
+<a class="anchor" href="#_explicitonly_-true_-factorybotcreatelist"></a><code>ExplicitOnly: true</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - with `EnforcedStyle: create_list`
+3.times { FactoryBot.create :user }
+
+# good - with `EnforcedStyle: create_list`
+FactoryBot.create_list :user, 3
+create_list :user, 3
+3.times { create :user }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotcreatelist">
+<a class="anchor" href="#configurable-attributes-factorybotcreatelist"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>create_list</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>create_list</code>, <code>n_times</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExplicitOnly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotcreatelist">
+<a class="anchor" href="#references-factorybotcreatelist"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/CreateList" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/CreateList</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotexcessivecreatelist" data-type="test">
+<a class="anchor" href="#factorybotexcessivecreatelist"></a>FactoryBot/ExcessiveCreateList</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Check for excessive model creation in a list.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotexcessivecreatelist">
+<a class="anchor" href="#examples-factorybotexcessivecreatelist"></a>Examples</h3>
+<div class="sect3">
+<h4 id="maxamount_-10-_default_-factorybotexcessivecreatelist" title="FactoryBot/ExcessiveCreateList: MaxAmount: 10 (default)" data-type="setting">
+<a class="anchor" href="#maxamount_-10-_default_-factorybotexcessivecreatelist"></a>MaxAmount: 10 (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># We do not allow more than 10 items to be created
+
+# bad
+create_list(:merge_request, 1000, state: :opened)
+
+# good
+create_list(:merge_request, 10, state: :opened)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="maxamount_-20-factorybotexcessivecreatelist" title="FactoryBot/ExcessiveCreateList: MaxAmount: 20" data-type="setting">
+<a class="anchor" href="#maxamount_-20-factorybotexcessivecreatelist"></a>MaxAmount: 20</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># We do not allow more than 20 items to be created
+
+# bad
+create_list(:merge_request, 1000, state: :opened)
+
+# good
+create_list(:merge_request, 15, state: :opened)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotexcessivecreatelist">
+<a class="anchor" href="#configurable-attributes-factorybotexcessivecreatelist"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxAmount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotexcessivecreatelist">
+<a class="anchor" href="#references-factorybotexcessivecreatelist"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/ExcessiveCreateList" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/ExcessiveCreateList</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotfactoryassociationwithstrategy" data-type="test">
+<a class="anchor" href="#factorybotfactoryassociationwithstrategy"></a>FactoryBot/FactoryAssociationWithStrategy</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Use definition in factory association instead of hard coding a strategy.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotfactoryassociationwithstrategy">
+<a class="anchor" href="#examples-factorybotfactoryassociationwithstrategy"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - only works for one strategy
+factory :foo do
+  profile { create(:profile) }
+end
+
+# good - implicit
+factory :foo do
+  profile
+end
+
+# good - explicit
+factory :foo do
+  association :profile
+end
+
+# good - inline
+factory :foo do
+  profile { association :profile }
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotfactoryassociationwithstrategy">
+<a class="anchor" href="#configurable-attributes-factorybotfactoryassociationwithstrategy"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotfactoryassociationwithstrategy">
+<a class="anchor" href="#references-factorybotfactoryassociationwithstrategy"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/FactoryAssociationWithStrategy" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/FactoryAssociationWithStrategy</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotfactoryclassname" data-type="test">
+<a class="anchor" href="#factorybotfactoryclassname"></a>FactoryBot/FactoryClassName</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.37</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.24</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Use string value when setting the class attribute explicitly.</p>
+</div>
+<div class="paragraph">
+<p>This cop would promote faster tests by lazy-loading of
+application files. Also, this could help you suppress potential bugs
+in combination with external libraries by avoiding a preload of
+application files from the factory files.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotfactoryclassname">
+<a class="anchor" href="#examples-factorybotfactoryclassname"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+factory :foo, class: Foo do
+end
+
+# good
+factory :foo, class: 'Foo' do
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotfactoryclassname">
+<a class="anchor" href="#references-factorybotfactoryclassname"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/FactoryClassName" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/FactoryClassName</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotfactorynamestyle" data-type="test">
+<a class="anchor" href="#factorybotfactorynamestyle"></a>FactoryBot/FactoryNameStyle</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for name style for argument of FactoryBot::Syntax::Methods.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotfactorynamestyle">
+<a class="anchor" href="#examples-factorybotfactorynamestyle"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-symbol-_default_-factorybotfactorynamestyle" title="FactoryBot/FactoryNameStyle: EnforcedStyle: symbol (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-symbol-_default_-factorybotfactorynamestyle"></a>EnforcedStyle: symbol (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+create('user')
+build "user", username: "NAME"
+
+# good
+create(:user)
+build :user, username: "NAME"
+
+# good - namespaced models
+create('users/internal')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-string-factorybotfactorynamestyle" title="FactoryBot/FactoryNameStyle: EnforcedStyle: string" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-string-factorybotfactorynamestyle"></a>EnforcedStyle: string</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+create(:user)
+build :user, username: "NAME"
+
+# good
+create('user')
+build "user", username: "NAME"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_explicitonly_-false_-_default_-factorybotfactorynamestyle" title="FactoryBot/FactoryNameStyle: ExplicitOnly: false (default)" data-type="setting">
+<a class="anchor" href="#_explicitonly_-false_-_default_-factorybotfactorynamestyle"></a><code>ExplicitOnly: false</code> (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - with `EnforcedStyle: symbol`
+FactoryBot.create('user')
+create('user')
+
+# good - with `EnforcedStyle: symbol`
+FactoryBot.create(:user)
+create(:user)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_explicitonly_-true_-factorybotfactorynamestyle" title="FactoryBot/FactoryNameStyle: ExplicitOnly: true" data-type="setting">
+<a class="anchor" href="#_explicitonly_-true_-factorybotfactorynamestyle"></a><code>ExplicitOnly: true</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - with `EnforcedStyle: symbol`
+FactoryBot.create(:user)
+FactoryBot.build "user", username: "NAME"
+
+# good - with `EnforcedStyle: symbol`
+FactoryBot.create('user')
+FactoryBot.build "user", username: "NAME"
+FactoryBot.create(:user)
+create(:user)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotfactorynamestyle">
+<a class="anchor" href="#configurable-attributes-factorybotfactorynamestyle"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>symbol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>symbol</code>, <code>string</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ExplicitOnly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotfactorynamestyle">
+<a class="anchor" href="#references-factorybotfactorynamestyle"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/FactoryNameStyle" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/FactoryNameStyle</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotidsequence" data-type="test">
+<a class="anchor" href="#factorybotidsequence"></a>FactoryBot/IdSequence</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Do not create a FactoryBot sequence for an id column.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotidsequence">
+<a class="anchor" href="#examples-factorybotidsequence"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - can lead to conflicts between FactoryBot and DB sequences
+factory :foo do
+  sequence :id
+end
+
+# good - a non-id column
+factory :foo do
+  sequence :some_non_id_column
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotidsequence">
+<a class="anchor" href="#references-factorybotidsequence"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/IdSequence" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/IdSequence</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotredundantfactoryoption" data-type="test">
+<a class="anchor" href="#factorybotredundantfactoryoption"></a>FactoryBot/RedundantFactoryOption</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for redundant <code>factory</code> option.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotredundantfactoryoption">
+<a class="anchor" href="#examples-factorybotredundantfactoryoption"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+association :user, factory: :user
+
+# good
+association :user</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotredundantfactoryoption">
+<a class="anchor" href="#configurable-attributes-factorybotredundantfactoryoption"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotredundantfactoryoption">
+<a class="anchor" href="#references-factorybotredundantfactoryoption"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/RedundantFactoryOption" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/RedundantFactoryOption</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="factorybotsyntaxmethods" data-type="test">
+<a class="anchor" href="#factorybotsyntaxmethods"></a>FactoryBot/SyntaxMethods</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Use shorthands from <code>FactoryBot::Syntax::Methods</code> in your specs.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-factorybotsyntaxmethods">
+<a class="anchor" href="#safety-factorybotsyntaxmethods"></a>Safety</h3>
+<div class="paragraph">
+<p>The autocorrection is marked as unsafe because the cop
+cannot verify whether you already include
+<code>FactoryBot::Syntax::Methods</code> in your test suite.</p>
+</div>
+<div class="paragraph">
+<p>If you’re using Rails, add the following configuration to
+<code>spec/support/factory_bot.rb</code> and be sure to require that file in
+<code>rails_helper.rb</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you’re not using Rails:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+
+  config.before(:suite) do
+    FactoryBot.find_definitions
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-factorybotsyntaxmethods">
+<a class="anchor" href="#examples-factorybotsyntaxmethods"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+FactoryBot.create(:bar)
+FactoryBot.build(:bar)
+FactoryBot.attributes_for(:bar)
+
+# good
+create(:bar)
+build(:bar)
+attributes_for(:bar)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-factorybotsyntaxmethods">
+<a class="anchor" href="#configurable-attributes-factorybotsyntaxmethods"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*_spec.rb</code>, <code>**/spec/**/*</code>, <code>**/test/**/*</code>, <code>**/features/support/factories/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-factorybotsyntaxmethods">
+<a class="anchor" href="#references-factorybotsyntaxmethods"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/SyntaxMethods" class="bare">https://www.rubydoc.info/gems/rubocop-factory_bot/RuboCop/Cop/FactoryBot/SyntaxMethods</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

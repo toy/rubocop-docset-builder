@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Profiling :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/usage/profiling.html">
+    <link rel="prev" href="source_code_directives.html">
+    <link rel="next" href="../configuration.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Profiling</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When RuboCop feels slow, profiling helps you find the bottleneck — whether it’s
+a particular cop, a large file, or excessive memory allocation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Profiling requires MRI (CRuby). It is not available on JRuby or Windows.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cpu-profiling-with-profile" data-type="section">
+<a class="anchor" href="#cpu-profiling-with-profile"></a>CPU profiling with <code>--profile</code>
+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>--profile</code> flag uses the <a href="https://github.com/tmm1/stackprof">stackprof</a> gem
+to record wall-time samples while RuboCop runs. Add it to your <code>Gemfile</code> first:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">gem 'stackprof', require: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --profile
+# ...
+Profile report generated at tmp/rubocop-stackprof.dump</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The dump file is written to <code>tmp/rubocop-stackprof.dump</code> in your project root.
+You can inspect it with the <code>stackprof</code> CLI:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Top methods by wall time
+$ stackprof tmp/rubocop-stackprof.dump --limit 20
+
+# Call tree for a specific method
+$ stackprof tmp/rubocop-stackprof.dump --method 'RuboCop::Cop::Style::MethodCallWithArgsParentheses#on_send'
+
+# Flamegraph (open in a browser)
+$ stackprof --flamegraph tmp/rubocop-stackprof.dump &gt; tmp/flamegraph.json
+$ stackprof --flamegraph-viewer tmp/flamegraph.json</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To profile a single cop, combine <code>--profile</code> with <code>--only</code>:
+<code>rubocop --profile --only Style/StringLiterals</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="memory-profiling-with-memory" data-type="section">
+<a class="anchor" href="#memory-profiling-with-memory"></a>Memory profiling with <code>--memory</code>
+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>--memory</code> flag (used together with <code>--profile</code>) additionally tracks memory
+allocations using the
+<a href="https://github.com/SamSaffron/memory_profiler">memory_profiler</a> gem. Add both
+gems to your <code>Gemfile</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">gem 'stackprof', require: false
+gem 'memory_profiler', require: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --profile --memory
+# ...
+Profile report generated at tmp/rubocop-stackprof.dump
+Building memory report...
+Memory report generated at tmp/rubocop-memory_profiler.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The memory report is a human-readable text file showing allocations grouped by
+gem, file, location, and class.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Memory profiling is expensive. On a large codebase it can take a very
+long time and consume significant memory. Limit the scope to a subset of files
+or cops:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --profile --memory app/models/
+$ rubocop --profile --memory --only Layout/LineLength lib/</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tips" data-type="section">
+<a class="anchor" href="#tips"></a>Tips</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Caching is disabled automatically</strong> when profiling, so results reflect
+actual cop execution rather than cache hits.</p>
+</li>
+<li>
+<p><strong>Narrow the scope</strong> — profiling the entire codebase produces noisy results.
+Focus on a single directory or cop to get actionable data.</p>
+</li>
+<li>
+<p><strong>Compare before and after</strong> — if you’re optimizing a cop, profile it in
+isolation (<code>--only</code>) before and after your change to measure the improvement.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reporting-performance-problems" data-type="section">
+<a class="anchor" href="#reporting-performance-problems"></a>Reporting performance problems</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you discover a performance bottleneck in RuboCop, please open an issue or
+pull request with the profiling data. See <a href="../contributing.html" class="xref page">Contributing</a>
+for details.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Security :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/cops_security.html">
+    <link rel="prev" href="cops_naming.html">
+    <link rel="next" href="cops_style.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">Security</h1>
+<div class="sect1">
+<h2 id="securitycompoundhash" data-type="test">
+<a class="anchor" href="#securitycompoundhash"></a>Security/CompoundHash</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.28</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.51</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for implementations of the <code>hash</code> method which combine
+values using custom logic instead of delegating to <code>Array#hash</code>.</p>
+</div>
+<div class="paragraph">
+<p>Manually combining hashes is error prone and hard to follow, especially
+when there are many values. Poor implementations may also introduce
+performance or security concerns if they are prone to collisions.
+Delegating to <code>Array#hash</code> is clearer and safer, although it might be slower
+depending on the use case.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-securitycompoundhash">
+<a class="anchor" href="#safety-securitycompoundhash"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop may be unsafe if the application logic depends on the hash
+value, however this is inadvisable anyway.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-securitycompoundhash">
+<a class="anchor" href="#examples-securitycompoundhash"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+def hash
+  @foo ^ @bar
+end
+
+# good
+def hash
+  [@foo, @bar].hash
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securityeval" data-type="test">
+<a class="anchor" href="#securityeval"></a>Security/Eval</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for the use of <code>Kernel#eval</code> and <code>Binding#eval</code> with
+dynamic strings as arguments. Evaluating non-literal strings
+can enable code injection attacks and makes it difficult to
+reason about what code will actually be executed.</p>
+</div>
+<div class="paragraph">
+<p>Calls to <code>eval</code> with literal strings are not flagged by this cop,
+as they do not pose the same injection risk.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-securityeval">
+<a class="anchor" href="#examples-securityeval"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+eval(something)
+binding.eval(something)
+Kernel.eval(something)
+
+# good - use safer alternatives
+obj.public_send(method_name)
+obj.send(method_name, *args)
+
+# good - literal strings are allowed
+eval("1 + 1")
+binding.eval("foo")</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securityiomethods" data-type="test">
+<a class="anchor" href="#securityiomethods"></a>Security/IoMethods</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for the first argument to <code>IO.read</code>, <code>IO.binread</code>, <code>IO.write</code>, <code>IO.binwrite</code>,
+<code>IO.foreach</code>, and <code>IO.readlines</code>.</p>
+</div>
+<div class="paragraph">
+<p>If argument starts with a pipe character (<code>'|'</code>) and the receiver is the <code>IO</code> class,
+a subprocess is created in the same way as <code>Kernel#open</code>, and its output is returned.
+<code>Kernel#open</code> may allow unintentional command injection, which is the reason these
+<code>IO</code> methods are a security risk.
+Consider to use <code>File.read</code> to disable the behavior of subprocess invocation.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-securityiomethods">
+<a class="anchor" href="#safety-securityiomethods"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop is unsafe because false positive will occur if the variable passed as
+the first argument is a command that is not a file path.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-securityiomethods">
+<a class="anchor" href="#examples-securityiomethods"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+IO.read(path)
+IO.read('path')
+
+# good
+File.read(path)
+File.read('path')
+IO.read('| command') # Allow intentional command invocation.</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securityjsonload" data-type="test">
+<a class="anchor" href="#securityjsonload"></a>Security/JSONLoad</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.43</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.22</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for the use of JSON class methods which have potential
+security issues.</p>
+</div>
+<div class="paragraph">
+<p><code>JSON.load</code> and similar methods allow deserialization of arbitrary ruby objects:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">require 'json/add/string'
+result = JSON.load('{ "json_class": "String", "raw": [72, 101, 108, 108, 111] }')
+pp result # =&gt; "Hello"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Never use <code>JSON.load</code> for untrusted user input. Prefer <code>JSON.parse</code> unless you have
+a concrete use-case for <code>JSON.load</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Starting with <code>json</code> gem version 2.8.0, triggering this behavior without explicitly
+passing the <code>create_additions</code> keyword argument emits a deprecation warning, with the
+goal of being secure by default in the next major version 3.0.0.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="safety-securityjsonload">
+<a class="anchor" href="#safety-securityjsonload"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop’s autocorrection is unsafe because it’s potentially dangerous.
+If using a stream, like <code>JSON.load(open('file'))</code>, you will need to call
+<code>#read</code> manually, like <code>JSON.parse(open('file').read)</code>.
+Other similar issues may apply.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-securityjsonload">
+<a class="anchor" href="#examples-securityjsonload"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+JSON.load('{}')
+JSON.restore('{}')
+
+# good
+JSON.parse('{}')
+JSON.unsafe_load('{}')
+
+# good - explicit use of `create_additions` option
+JSON.load('{}', create_additions: true)
+JSON.load('{}', create_additions: false)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-securityjsonload">
+<a class="anchor" href="#references-securityjsonload"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load" class="bare">https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load</a></p>
+</li>
+<li>
+<p><a href="https://bugs.ruby-lang.org/issues/19528" class="bare">https://bugs.ruby-lang.org/issues/19528</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securitymarshalload" data-type="test">
+<a class="anchor" href="#securitymarshalload"></a>Security/MarshalLoad</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for the use of Marshal class methods which have
+potential security issues leading to remote code execution when
+loading from an untrusted source.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-securitymarshalload">
+<a class="anchor" href="#examples-securitymarshalload"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Marshal.load("{}")
+Marshal.restore("{}")
+
+# good
+Marshal.dump("{}")
+
+# okish - deep copy hack
+Marshal.load(Marshal.dump({}))</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-securitymarshalload">
+<a class="anchor" href="#references-securitymarshalload"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://ruby-doc.org/core-2.7.0/Marshal.html#module-Marshal-label-Security+considerations" class="bare">https://ruby-doc.org/core-2.7.0/Marshal.html#module-Marshal-label-Security+considerations</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securityopen" data-type="test">
+<a class="anchor" href="#securityopen"></a>Security/Open</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.53</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for the use of <code>Kernel#open</code> and <code>URI.open</code> with dynamic
+data.</p>
+</div>
+<div class="paragraph">
+<p><code>Kernel#open</code> and <code>URI.open</code> enable not only file access but also process
+invocation by prefixing a pipe symbol (e.g., <code>open("| ls")</code>).
+So, it may lead to a serious security risk by using variable input to
+the argument of <code>Kernel#open</code> and <code>URI.open</code>. It would be better to use
+<code>File.open</code>, <code>IO.popen</code> or <code>URI.parse#open</code> explicitly.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>open</code> and <code>URI.open</code> with literal strings are not flagged by this
+cop.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="safety-securityopen">
+<a class="anchor" href="#safety-securityopen"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop could register false positives if <code>open</code> is redefined
+in a class and then used without a receiver in that class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-securityopen">
+<a class="anchor" href="#examples-securityopen"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+open(something)
+open("| #{something}")
+open("| foo")
+URI.open(something)
+
+# good
+File.open(something)
+IO.popen(something)
+URI.parse(something).open
+
+# good (literal strings)
+open("foo.text")
+URI.open("http://example.com")
+URI.parse(url).open</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="securityyamlload" data-type="test">
+<a class="anchor" href="#securityyamlload"></a>Security/YAMLLoad</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Requires Ruby version ⇐ 3.0
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for the use of YAML class methods which have
+potential security issues leading to remote code execution when
+loading from an untrusted source.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ruby 3.1+ (Psych 4) uses <code>Psych.load</code> as <code>Psych.safe_load</code> by default.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="safety-securityyamlload">
+<a class="anchor" href="#safety-securityyamlload"></a>Safety</h3>
+<div class="paragraph">
+<p>The behavior of the code might change depending on what was
+in the YAML payload, since <code>YAML.safe_load</code> is more restrictive.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-securityyamlload">
+<a class="anchor" href="#examples-securityyamlload"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+YAML.load("--- !ruby/object:Foo {}") # Psych 3 is unsafe by default
+
+# good
+YAML.safe_load("--- !ruby/object:Foo {}", [Foo])                    # Ruby 2.5  (Psych 3)
+YAML.safe_load("--- !ruby/object:Foo {}", permitted_classes: [Foo]) # Ruby 3.0- (Psych 3)
+YAML.load("--- !ruby/object:Foo {}", permitted_classes: [Foo])      # Ruby 3.1+ (Psych 4)
+YAML.dump(foo)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-securityyamlload">
+<a class="anchor" href="#references-securityyamlload"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security" class="bare">https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

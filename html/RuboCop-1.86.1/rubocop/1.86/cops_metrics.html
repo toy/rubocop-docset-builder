@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Metrics :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/cops_metrics.html">
+    <link rel="prev" href="cops_lint.html">
+    <link rel="next" href="cops_migration.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">Metrics</h1>
+<div class="sect1">
+<h2 id="metricsabcsize" data-type="test">
+<a class="anchor" href="#metricsabcsize"></a>Metrics/AbcSize</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.27</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks that the ABC size of methods is not higher than the
+configured maximum. The ABC size is based on assignments, branches
+(method calls), and conditions. See <a href="http://c2.com/cgi/wiki?AbcMetric" class="bare">http://c2.com/cgi/wiki?AbcMetric</a>
+and <a href="https://en.wikipedia.org/wiki/ABC_Software_Metric" class="bare">https://en.wikipedia.org/wiki/ABC_Software_Metric</a>.</p>
+</div>
+<div class="paragraph">
+<p>Interpreting ABC size:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>⇐ 17</code> satisfactory</p>
+</li>
+<li>
+<p><code>18..30</code> unsatisfactory</p>
+</li>
+<li>
+<p><code>&gt;</code> 30 dangerous</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can have repeated "attributes" calls count as a single "branch".
+For this purpose, attributes are any method with no argument; no attempt
+is meant to distinguish actual <code>attr_reader</code> from other methods.</p>
+</div>
+<div class="paragraph">
+<p>This cop also takes into account <code>AllowedMethods</code> (defaults to <code>[]</code>)
+And <code>AllowedPatterns</code> (defaults to <code>[]</code>)</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsabcsize">
+<a class="anchor" href="#examples-metricsabcsize"></a>Examples</h3>
+<div class="sect3">
+<h4 id="countrepeatedattributes_-false-_default-is-true_-metricsabcsize" title="Metrics/AbcSize: CountRepeatedAttributes: false (default is true)" data-type="setting">
+<a class="anchor" href="#countrepeatedattributes_-false-_default-is-true_-metricsabcsize"></a>CountRepeatedAttributes: false (default is true)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># `model` and `current_user`, referenced 3 times each,
+# are each counted as only 1 branch each if
+# `CountRepeatedAttributes` is set to 'false'
+
+def search
+  @posts = model.active.visible_by(current_user)
+            .search(params[:q])
+  @posts = model.some_process(@posts, current_user)
+  @posts = model.another_process(@posts, current_user)
+
+  render 'pages/search/page'
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsabcsize">
+<a class="anchor" href="#configurable-attributes-metricsabcsize"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedPatterns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountRepeatedAttributes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>17</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-metricsabcsize">
+<a class="anchor" href="#references-metricsabcsize"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.c2.com/?AbcMetric" class="bare">https://wiki.c2.com/?AbcMetric</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/ABC_Software_Metric" class="bare">https://en.wikipedia.org/wiki/ABC_Software_Metric</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsblocklength" data-type="test">
+<a class="anchor" href="#metricsblocklength"></a>Metrics/BlockLength</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.44</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks if the length of a block exceeds some maximum value.
+Comment lines can optionally be ignored.
+The maximum allowed length is configurable.
+The cop can be configured to ignore blocks passed to certain methods.</p>
+</div>
+<div class="paragraph">
+<p>You can set constructs you want to fold with <code>CountAsOne</code>.</p>
+</div>
+<div class="paragraph">
+<p>Available are: 'array', 'hash', 'heredoc', and 'method_call'.
+Each construct will be counted as one line regardless of its actual size.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This cop does not apply for <code>Struct</code> definitions.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>ExcludedMethods</code> configuration is deprecated and only kept
+for backwards compatibility. Please use <code>AllowedMethods</code> and <code>AllowedPatterns</code>
+instead. By default, there are no methods to allowed.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsblocklength">
+<a class="anchor" href="#examples-metricsblocklength"></a>Examples</h3>
+<div class="sect3">
+<h4 id="countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsblocklength" title="Metrics/BlockLength: CountAsOne: ['array', 'hash', 'heredoc', 'method_call']" data-type="setting">
+<a class="anchor" href="#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsblocklength"></a>CountAsOne: ['array', 'hash', 'heredoc', 'method_call']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">something do
+  array = [         # +1
+    1,
+    2
+  ]
+
+  hash = {          # +1
+    key: 'value'
+  }
+
+  msg = &lt;&lt;~HEREDOC  # +1
+    Heredoc
+    content.
+  HEREDOC
+
+  foo(              # +1
+    1,
+    2
+  )
+end                 # 4 points</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsblocklength">
+<a class="anchor" href="#configurable-attributes-metricsblocklength"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountComments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>25</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountAsOne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedPatterns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exclude</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.gemspec</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsblocknesting" data-type="test">
+<a class="anchor" href="#metricsblocknesting"></a>Metrics/BlockNesting</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.65</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for excessive nesting of conditional and looping constructs.
+Deeply nested code is harder to read, understand, and maintain.
+Extracting nested logic into methods improves clarity.</p>
+</div>
+<div class="paragraph">
+<p>You can configure if blocks are considered using the <code>CountBlocks</code> and <code>CountModifierForms</code>
+options. When both are set to <code>false</code> (the default) blocks and modifier forms are not
+counted towards the nesting level. Set them to <code>true</code> to include these in the nesting level
+calculation as well.</p>
+</div>
+<div class="paragraph">
+<p>The maximum level of nesting allowed is configurable.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsblocknesting">
+<a class="anchor" href="#examples-metricsblocknesting"></a>Examples</h3>
+<div class="sect3">
+<h4 id="max_-3-_default_-metricsblocknesting" title="Metrics/BlockNesting: Max: 3 (default)" data-type="setting">
+<a class="anchor" href="#max_-3-_default_-metricsblocknesting"></a>Max: 3 (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+if condition1
+  if condition2
+    if condition3
+      if condition4
+        do_something
+      end
+    end
+  end
+end
+
+# good
+if condition1
+  if condition2
+    if condition3
+      do_something
+    end
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsblocknesting">
+<a class="anchor" href="#configurable-attributes-metricsblocknesting"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountBlocks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountModifierForms</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-metricsblocknesting">
+<a class="anchor" href="#references-metricsblocknesting"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#three-is-the-number-thou-shalt-count" class="bare">https://rubystyle.guide#three-is-the-number-thou-shalt-count</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsclasslength" data-type="test">
+<a class="anchor" href="#metricsclasslength"></a>Metrics/ClassLength</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.87</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks if the length of a class exceeds some maximum value.
+Comment lines can optionally be ignored.
+The maximum allowed length is configurable.</p>
+</div>
+<div class="paragraph">
+<p>You can set constructs you want to fold with <code>CountAsOne</code>.</p>
+</div>
+<div class="paragraph">
+<p>Available are: 'array', 'hash', 'heredoc', and 'method_call'.
+Each construct will be counted as one line regardless of its actual size.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This cop also applies for <code>Struct</code> definitions.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsclasslength">
+<a class="anchor" href="#examples-metricsclasslength"></a>Examples</h3>
+<div class="sect3">
+<h4 id="countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsclasslength" title="Metrics/ClassLength: CountAsOne: ['array', 'hash', 'heredoc', 'method_call']" data-type="setting">
+<a class="anchor" href="#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsclasslength"></a>CountAsOne: ['array', 'hash', 'heredoc', 'method_call']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">class Foo
+  ARRAY = [         # +1
+    1,
+    2
+  ]
+
+  HASH = {          # +1
+    key: 'value'
+  }
+
+  MSG = &lt;&lt;~HEREDOC  # +1
+    Heredoc
+    content.
+  HEREDOC
+
+  foo(              # +1
+    1,
+    2
+  )
+end                 # 4 points</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsclasslength">
+<a class="anchor" href="#configurable-attributes-metricsclasslength"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountComments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountAsOne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricscollectionliterallength" data-type="test">
+<a class="anchor" href="#metricscollectionliterallength"></a>Metrics/CollectionLiteralLength</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for literals with extremely many entries. This is indicative of
+configuration or data that may be better extracted somewhere else, like
+a database, fetched from an API, or read from a non-code file (CSV,
+JSON, YAML, etc.).</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricscollectionliterallength">
+<a class="anchor" href="#examples-metricscollectionliterallength"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+# Huge Array literal
+[1, 2, '...', 999_999_999]
+
+# bad
+# Huge Hash literal
+{ 1 =&gt; 1, 2 =&gt; 2, '...' =&gt; '...', 999_999_999 =&gt; 999_999_999}
+
+# bad
+# Huge Set "literal"
+Set[1, 2, '...', 999_999_999]
+
+# good
+# Reasonably sized Array literal
+[1, 2, '...', 10]
+
+# good
+# Reading huge Array from external data source
+# File.readlines('numbers.txt', chomp: true).map!(&amp;:to_i)
+
+# good
+# Reasonably sized Hash literal
+{ 1 =&gt; 1, 2 =&gt; 2, '...' =&gt; '...', 10 =&gt; 10}
+
+# good
+# Reading huge Hash from external data source
+CSV.foreach('numbers.csv', headers: true).each_with_object({}) do |row, hash|
+  hash[row["key"].to_i] = row["value"].to_i
+end
+
+# good
+# Reasonably sized Set "literal"
+Set[1, 2, '...', 10]
+
+# good
+# Reading huge Set from external data source
+SomeFramework.config_for(:something)[:numbers].to_set</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricscollectionliterallength">
+<a class="anchor" href="#configurable-attributes-metricscollectionliterallength"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LengthThreshold</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>250</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricscyclomaticcomplexity" data-type="test">
+<a class="anchor" href="#metricscyclomaticcomplexity"></a>Metrics/CyclomaticComplexity</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.81</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks that the cyclomatic complexity of methods is not higher
+than the configured maximum. The cyclomatic complexity is the number of
+linearly independent paths through a method. The algorithm counts
+decision points and adds one.</p>
+</div>
+<div class="paragraph">
+<p>An if statement (or unless or ?:) increases the complexity by one. An
+else branch does not, since it doesn’t add a decision point. The &amp;&amp;
+operator (or keyword and) can be converted to a nested if statement,
+and ||/or is shorthand for a sequence of ifs, so they also add one.
+Loops can be said to have an exit condition, so they add one.
+Blocks that are calls to builtin iteration methods
+(e.g. <code>ary.map{…​}</code>) also add one, others are ignored.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricscyclomaticcomplexity">
+<a class="anchor" href="#examples-metricscyclomaticcomplexity"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">def each_child_node(*types)               # count begins: 1
+  unless block_given?                     # unless: +1
+    return to_enum(__method__, *types)
+  end
+
+  children.each do |child|                # each{}: +1
+    next unless child.is_a?(Node)         # unless: +1
+
+    yield child if types.empty? ||        # if: +1, ||: +1
+                   types.include?(child.type)
+  end
+
+  self
+end                                       # total: 6</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricscyclomaticcomplexity">
+<a class="anchor" href="#configurable-attributes-metricscyclomaticcomplexity"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedPatterns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsmethodlength" data-type="test">
+<a class="anchor" href="#metricsmethodlength"></a>Metrics/MethodLength</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks if the length of a method exceeds some maximum value.
+Comment lines can optionally be allowed.
+The maximum allowed length is configurable.</p>
+</div>
+<div class="paragraph">
+<p>You can set constructs you want to fold with <code>CountAsOne</code>.</p>
+</div>
+<div class="paragraph">
+<p>Available are: 'array', 'hash', 'heredoc', and 'method_call'.
+Each construct will be counted as one line regardless of its actual size.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>ExcludedMethods</code> and <code>IgnoredMethods</code> configuration is
+deprecated and only kept for backwards compatibility.
+Please use <code>AllowedMethods</code> and <code>AllowedPatterns</code> instead.
+By default, there are no methods to allowed.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsmethodlength">
+<a class="anchor" href="#examples-metricsmethodlength"></a>Examples</h3>
+<div class="sect3">
+<h4 id="countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsmethodlength" title="Metrics/MethodLength: CountAsOne: ['array', 'hash', 'heredoc', 'method_call']" data-type="setting">
+<a class="anchor" href="#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsmethodlength"></a>CountAsOne: ['array', 'hash', 'heredoc', 'method_call']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">def m
+  array = [       # +1
+    1,
+    2
+  ]
+
+  hash = {        # +1
+    key: 'value'
+  }
+
+  &lt;&lt;~HEREDOC      # +1
+    Heredoc
+    content.
+  HEREDOC
+
+  foo(            # +1
+    1,
+    2
+  )
+end               # 4 points</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsmethodlength">
+<a class="anchor" href="#configurable-attributes-metricsmethodlength"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountComments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountAsOne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedPatterns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-metricsmethodlength">
+<a class="anchor" href="#references-metricsmethodlength"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#short-methods" class="bare">https://rubystyle.guide#short-methods</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsmodulelength" data-type="test">
+<a class="anchor" href="#metricsmodulelength"></a>Metrics/ModuleLength</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.31</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.87</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks if the length of a module exceeds some maximum value.
+Comment lines can optionally be ignored.
+The maximum allowed length is configurable.</p>
+</div>
+<div class="paragraph">
+<p>You can set constructs you want to fold with <code>CountAsOne</code>.</p>
+</div>
+<div class="paragraph">
+<p>Available are: 'array', 'hash', 'heredoc', and 'method_call'.
+Each construct will be counted as one line regardless of its actual size.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsmodulelength">
+<a class="anchor" href="#examples-metricsmodulelength"></a>Examples</h3>
+<div class="sect3">
+<h4 id="countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsmodulelength" title="Metrics/ModuleLength: CountAsOne: ['array', 'hash', 'heredoc', 'method_call']" data-type="setting">
+<a class="anchor" href="#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsmodulelength"></a>CountAsOne: ['array', 'hash', 'heredoc', 'method_call']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">module M
+  ARRAY = [         # +1
+    1,
+    2
+  ]
+
+  HASH = {          # +1
+    key: 'value'
+  }
+
+  MSG = &lt;&lt;~HEREDOC  # +1
+    Heredoc
+    content.
+  HEREDOC
+
+  foo(              # +1
+    1,
+    2
+  )
+end                 # 4 points</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsmodulelength">
+<a class="anchor" href="#configurable-attributes-metricsmodulelength"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountComments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountAsOne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsparameterlists" data-type="test">
+<a class="anchor" href="#metricsparameterlists"></a>Metrics/ParameterLists</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for methods with too many parameters.</p>
+</div>
+<div class="paragraph">
+<p>The maximum number of parameters is configurable.
+Keyword arguments can optionally be excluded from the total count,
+as they add less complexity than positional or optional parameters.</p>
+</div>
+<div class="paragraph">
+<p>Any number of arguments for <code>initialize</code> method inside a block of
+<code>Struct.new</code> and <code>Data.define</code> like this is always allowed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">Struct.new(:one, :two, :three, :four, :five, keyword_init: true) do
+  def initialize(one:, two:, three:, four:, five:)
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is because checking the number of arguments of the <code>initialize</code> method
+does not make sense.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Explicit block argument <code>&amp;block</code> is not counted to prevent
+erroneous change that is avoided by making block argument implicit.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This cop also checks for the maximum number of optional parameters.
+This can be configured using the <code>MaxOptionalParameters</code> config option.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsparameterlists">
+<a class="anchor" href="#examples-metricsparameterlists"></a>Examples</h3>
+<div class="sect3">
+<h4 id="max_-3-metricsparameterlists" title="Metrics/ParameterLists: Max: 3" data-type="setting">
+<a class="anchor" href="#max_-3-metricsparameterlists"></a>Max: 3</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+def foo(a, b, c = 1)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="max_-2-metricsparameterlists" title="Metrics/ParameterLists: Max: 2" data-type="setting">
+<a class="anchor" href="#max_-2-metricsparameterlists"></a>Max: 2</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+def foo(a, b, c = 1)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="countkeywordargs_-true-_default_-metricsparameterlists" title="Metrics/ParameterLists: CountKeywordArgs: true (default)" data-type="setting">
+<a class="anchor" href="#countkeywordargs_-true-_default_-metricsparameterlists"></a>CountKeywordArgs: true (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># counts keyword args towards the maximum
+
+# bad (assuming Max is 3)
+def foo(a, b, c, d: 1)
+end
+
+# good (assuming Max is 3)
+def foo(a, b, c: 1)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="countkeywordargs_-false-metricsparameterlists" title="Metrics/ParameterLists: CountKeywordArgs: false" data-type="setting">
+<a class="anchor" href="#countkeywordargs_-false-metricsparameterlists"></a>CountKeywordArgs: false</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># don't count keyword args towards the maximum
+
+# good (assuming Max is 3)
+def foo(a, b, c, d: 1)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="maxoptionalparameters_-3-_default_-metricsparameterlists" title="Metrics/ParameterLists: MaxOptionalParameters: 3 (default)" data-type="setting">
+<a class="anchor" href="#maxoptionalparameters_-3-_default_-metricsparameterlists"></a>MaxOptionalParameters: 3 (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+def foo(a = 1, b = 2, c = 3)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="maxoptionalparameters_-2-metricsparameterlists" title="Metrics/ParameterLists: MaxOptionalParameters: 2" data-type="setting">
+<a class="anchor" href="#maxoptionalparameters_-2-metricsparameterlists"></a>MaxOptionalParameters: 2</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+def foo(a = 1, b = 2, c = 3)
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsparameterlists">
+<a class="anchor" href="#configurable-attributes-metricsparameterlists"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CountKeywordArgs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxOptionalParameters</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-metricsparameterlists">
+<a class="anchor" href="#references-metricsparameterlists"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#too-many-params" class="bare">https://rubystyle.guide#too-many-params</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="metricsperceivedcomplexity" data-type="test">
+<a class="anchor" href="#metricsperceivedcomplexity"></a>Metrics/PerceivedComplexity</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.81</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Tries to produce a complexity score that’s a measure of the
+complexity the reader experiences when looking at a method. For that
+reason it considers <code>when</code> nodes as something that doesn’t add as much
+complexity as an <code>if</code> or a <code>&amp;&amp;</code>. Except if it’s one of those special
+<code>case</code>/<code>when</code> constructs where there’s no expression after <code>case</code>. Then
+the cop treats it as an <code>if</code>/<code>elsif</code>/<code>elsif</code>…​ and lets all the <code>when</code>
+nodes count. In contrast to the CyclomaticComplexity cop, this cop
+considers <code>else</code> nodes as adding complexity.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-metricsperceivedcomplexity">
+<a class="anchor" href="#examples-metricsperceivedcomplexity"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">def my_method                   # 1
+  if cond                       # 1
+    case var                    # 2 (0.8 + 4 * 0.2, rounded)
+    when 1 then func_one
+    when 2 then func_two
+    when 3 then func_three
+    when 4..10 then func_other
+    end
+  else                          # 1
+    do_something until a &amp;&amp; b   # 2
+  end                           # ===
+end                             # 7 complexity points</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-metricsperceivedcomplexity">
+<a class="anchor" href="#configurable-attributes-metricsperceivedcomplexity"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedPatterns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>8</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

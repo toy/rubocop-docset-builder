@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Plugins :: RuboCop</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop/rubocop/1.86/plugins.html">
+    <link rel="prev" href="cops_style.html">
+    <link rel="next" href="plugin_configuration.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Plugins</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>RuboCop can be extended with additional cops and formatters. There are many
+official plugins maintained by RuboCop’s team, as well as third-party ones.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="loading-plugins" data-type="section">
+<a class="anchor" href="#loading-plugins"></a>Loading Plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since RuboCop 1.72, the recommended way to load extensions is through the
+<strong>plugin</strong> system, which is based on <a href="https://github.com/standardrb/lint_roller">lint_roller</a>. Older extensions that haven’t
+been updated yet can still be loaded via <code>require</code>.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="plugin_migration_guide.html" class="xref page">Plugin Migration Guide</a> when
+migrating existing configurations from <code>require</code> to <code>plugins</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="loading-plugin-extensions" data-type="section">
+<a class="anchor" href="#loading-plugin-extensions"></a>Loading Plugin Extensions</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The plugin system was introduced in RuboCop 1.72.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Besides the <code>--plugin</code> command line option you can also specify ruby
+files that should be loaded with the optional <code>plugins</code> directive in the
+<code>.rubocop.yml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">plugins:
+  - rubocop-performance</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Most extension gems with plugin support should work with the example above.</p>
+</div>
+<div class="paragraph">
+<p>The following is an example of a plugin that is not published as a gem:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">plugins:
+  - rubocop-extension:
+      require_path: path/to/extension/plugin
+      plugin_class_name: RuboCop::Extension::Plugin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are other ways to specify this. For more details, please refer to the <a href="https://github.com/standardrb/lint_roller">lint_roller</a> documentation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="loading-legacy-extensions-via-require" data-type="section">
+<a class="anchor" href="#loading-legacy-extensions-via-require"></a>Loading Legacy Extensions via <code>require</code>
+</h3>
+<div class="paragraph">
+<p>Besides the <code>--require</code> command line option you can also specify ruby
+files that should be loaded with the optional <code>require</code> directive in the
+<code>.rubocop.yml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">require:
+  - ../my/custom/file.rb
+  - rubocop-extension</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The extension loading via <code>require</code> remains compatible with the pre-plugin inject method.
+Since <code>require</code> is used for internal extensions such as custom cops and formatters,
+there are no plans to remove it in the future.
+However, it is recommended that publicly available extension cops in gems migrate to the plugin system.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The paths are directly passed to <code>Kernel.require</code>. If your
+extension file is not in <code>$LOAD_PATH</code>, you need to specify the path as
+relative path prefixed with <code>./</code> explicitly or absolute path. Paths
+starting with a <code>.</code> are resolved relative to <code>.rubocop.yml</code>.
+If a path containing <code>-</code> is given, it will be used as is, but if we
+cannot find the file to load, we will replace <code>-</code> with <code>/</code> and try it
+again as when Bundler loads gems.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="plugin-suggestions" data-type="section">
+<a class="anchor" href="#plugin-suggestions"></a>Plugin Suggestions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Depending on what gems you have in your bundle, RuboCop might suggest plugins
+that can be added to provide further functionality. For instance, if you are using
+<code>rspec</code> without the corresponding <code>rubocop-rspec</code> plugin, RuboCop will suggest
+enabling it.</p>
+</div>
+<div class="paragraph">
+<p>This message can be disabled by adding the following to your configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  SuggestExtensions: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Suggest default extensions if <code>SuggestExtensions: true</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can also opt-out of suggestions for a particular plugin as so (unspecified
+plugins will continue to be notified, as appropriate):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  SuggestExtensions:
+    rubocop-rake: false</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom-cops" data-type="section">
+<a class="anchor" href="#custom-cops"></a>Custom Cops</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can configure the custom cops in your <code>.rubocop.yml</code> just like any
+other cop.</p>
+</div>
+<div class="paragraph">
+<p>If you’d like to create a plugin gem, you can use <a href="https://github.com/rubocop/rubocop-extension-generator">rubocop-extension-generator</a>.</p>
+</div>
+<div class="paragraph">
+<p>For plugin specifications, please refer to <a href="https://github.com/standardrb/lint_roller">lint_roller</a>.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="development.html" class="xref page">Development</a> to learn how to implement a cop.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="available-plugins" data-type="section">
+<a class="anchor" href="#available-plugins"></a>Available Plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The main RuboCop gem focuses on the core Ruby language and doesn’t
+include functionality related to any external Ruby libraries/frameworks.
+There are, however, many RuboCop plugins dedicated to those and
+a few of them are maintained by RuboCop’s Core Team.</p>
+</div>
+<div class="sect2">
+<h3 id="official-plugins" data-type="section">
+<a class="anchor" href="#official-plugins"></a>Official Plugins</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-performance">rubocop-performance</a> -
+Performance optimization analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-rails">rubocop-rails</a> -
+Rails-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-rspec">rubocop-rspec</a> -
+RSpec-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-minitest">rubocop-minitest</a> -
+Minitest-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-rake">rubocop-rake</a> -
+Rake-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-sequel">rubocop-sequel</a> -
+Code style checking for Sequel gem</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-thread_safety">rubocop-thread_safety</a> -
+Thread-safety analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-capybara">rubocop-capybara</a> -
+Capybara-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-factory_bot">rubocop-factory_bot</a> -
+factory_bot-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-rspec_rails">rubocop-rspec_rails</a> -
+RSpec Rails-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/rubocop/rubocop-i18n">rubocop-i18n</a> -
+i18n wrapper function analysis (<code>gettext</code> and <code>rails-i18n</code>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="third-party-plugins" data-type="section">
+<a class="anchor" href="#third-party-plugins"></a>Third-party Plugins</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/milch/rubocop-require_tools">rubocop-require_tools</a> -
+Dynamic analysis for missing <code>require</code> statements</p>
+</li>
+<li>
+<p><a href="https://github.com/chef/cookstyle">cookstyle</a> -
+Custom cops and config defaults for Chef Infra Cookbooks</p>
+</li>
+<li>
+<p><a href="https://github.com/utkarsh2102/rubocop-packaging">rubocop-packaging</a> -
+Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.</p>
+</li>
+<li>
+<p><a href="https://github.com/Shopify/rubocop-sorbet">rubocop-sorbet</a> -
+Sorbet-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/DmitryTsepelev/rubocop-graphql">rubocop-graphql</a> -
+GraphQL-specific analysis</p>
+</li>
+<li>
+<p><a href="https://github.com/dukaev/rubocop-changed">rubocop-changed</a> -
+Reduced CI time by analyzing only changed files</p>
+</li>
+<li>
+<p><a href="https://github.com/SketchUp/rubocop-sketchup">rubocop-sketchup</a> -
+SketchUp Ruby API specific analysis</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Any plugins missing? Send us a Pull Request!</p>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
