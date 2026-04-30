@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Capybara/RSpec :: RuboCop Capybara</title>
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-capybara/rubocop-capybara/2.23/cops_capybara_rspec.html">
+    <link rel="prev" href="cops_capybara.html">
+    <meta name="generator" content="Antora 3.1.14">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">Capybara/RSpec</h1>
+<div class="sect1">
+<h2 id="capybararspeccurrentpathexpectation" data-type="test">
+<a class="anchor" href="#capybararspeccurrentpathexpectation"></a>Capybara/RSpec/CurrentPathExpectation</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks that no expectations are set on Capybara’s <code>current_path</code>.</p>
+</div>
+<div class="paragraph">
+<p>The
+<a href="https://www.rubydoc.info/github/teamcapybara/capybara/master/Capybara/RSpecMatchers#have_current_path-instance_method"><code>have_current_path</code> matcher</a>
+should be used on <code>page</code> to set expectations on Capybara’s
+current path, since it uses
+<a href="https://github.com/teamcapybara/capybara/blob/master/README.md#asynchronous-javascript-ajax-and-friends">Capybara’s waiting functionality</a>
+which ensures that preceding actions (like <code>click_link</code>) have
+completed.</p>
+</div>
+<div class="paragraph">
+<p>This cop does not support autocorrection in some cases.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspeccurrentpathexpectation">
+<a class="anchor" href="#examples-capybararspeccurrentpathexpectation"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(current_path).to eq('/callback')
+expect(page.current_path).to eq('/callback')
+
+# good
+expect(page).to have_current_path('/callback', ignore_query: true)
+
+# bad (does not support autocorrection when `match` with a variable)
+expect(page).to match(variable)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspeccurrentpathexpectation">
+<a class="anchor" href="#references-capybararspeccurrentpathexpectation"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/CurrentPathExpectation" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/CurrentPathExpectation</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspechavecontent" data-type="test">
+<a class="anchor" href="#capybararspechavecontent"></a>Capybara/RSpec/HaveContent</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for usage of <code>have_content</code> and <code>have_no_content</code>.</p>
+</div>
+<div class="paragraph">
+<p>Capybara provides <code>have_text</code> and <code>have_no_text</code> matchers that are
+more concise and preferred over their aliases <code>have_content</code> and
+<code>have_no_content</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspechavecontent">
+<a class="anchor" href="#examples-capybararspechavecontent"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).to have_content('capy')
+expect(page).to have_no_content('bara')
+
+# good
+expect(page).to have_text('capy')
+expect(page).to have_no_text('bara')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspechavecontent">
+<a class="anchor" href="#references-capybararspechavecontent"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/HaveContent" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/HaveContent</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspechaveselector" data-type="test">
+<a class="anchor" href="#capybararspechaveselector"></a>Capybara/RSpec/HaveSelector</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Use <code>have_css</code> or <code>have_xpath</code> instead of <code>have_selector</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspechaveselector">
+<a class="anchor" href="#examples-capybararspechaveselector"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).to have_selector(:css, 'bar')
+
+# good
+expect(foo).to have_css('bar')
+
+# bad
+expect(foo).to have_selector(:xpath, 'bar')
+
+# good
+expect(foo).to have_xpath('bar')</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="defaultselector_-css-_default_-capybararspechaveselector" title="Capybara/RSpec/HaveSelector: DefaultSelector: css (default)" data-type="setting">
+<a class="anchor" href="#defaultselector_-css-_default_-capybararspechaveselector"></a>DefaultSelector: css (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).to have_selector('bar')
+
+# good
+expect(foo).to have_css('bar')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="defaultselector_-xpath-capybararspechaveselector" title="Capybara/RSpec/HaveSelector: DefaultSelector: xpath" data-type="setting">
+<a class="anchor" href="#defaultselector_-xpath-capybararspechaveselector"></a>DefaultSelector: xpath</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).to have_selector('bar')
+
+# good
+expect(foo).to have_xpath('bar')</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-capybararspechaveselector">
+<a class="anchor" href="#configurable-attributes-capybararspechaveselector"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DefaultSelector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>css</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspechaveselector">
+<a class="anchor" href="#references-capybararspechaveselector"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/HaveSelector" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/HaveSelector</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspecmatchstyle" data-type="test">
+<a class="anchor" href="#capybararspecmatchstyle"></a>Capybara/RSpec/MatchStyle</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for usage of deprecated style methods in RSpec matchers.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspecmatchstyle">
+<a class="anchor" href="#examples-capybararspecmatchstyle"></a>Examples</h3>
+<div class="sect3">
+<h4 id="when-using-_has_style__-capybararspecmatchstyle" title="Capybara/RSpec/MatchStyle: when using has_style?" data-type="section">
+<a class="anchor" href="#when-using-_has_style__-capybararspecmatchstyle"></a>when using <code>has_style?</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page.find(:css, 'first')
+  .has_style?(display: 'block')).to be true
+
+# good
+expect(page.find(:css, 'first')
+  .matches_style?(display: 'block')).to be true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="when-using-_have_style_-capybararspecmatchstyle" title="Capybara/RSpec/MatchStyle: when using have_style" data-type="section">
+<a class="anchor" href="#when-using-_have_style_-capybararspecmatchstyle"></a>when using <code>have_style</code>
+</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).to have_style(display: 'block')
+
+# good
+expect(page).to match_style(display: 'block')</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspecmatchstyle">
+<a class="anchor" href="#references-capybararspecmatchstyle"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/MatchStyle" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/MatchStyle</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspecnegationmatcher" data-type="test">
+<a class="anchor" href="#capybararspecnegationmatcher"></a>Capybara/RSpec/NegationMatcher</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces use of <code>have_no_*</code> or <code>not_to</code> for negated expectations.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspecnegationmatcher">
+<a class="anchor" href="#examples-capybararspecnegationmatcher"></a>Examples</h3>
+<div class="sect3">
+<h4 id="enforcedstyle_-have_no-_default_-capybararspecnegationmatcher" title="Capybara/RSpec/NegationMatcher: EnforcedStyle: have_no (default)" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-have_no-_default_-capybararspecnegationmatcher"></a>EnforcedStyle: have_no (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).not_to have_selector 'a'
+expect(page).not_to have_css('a')
+
+# good
+expect(page).to have_no_selector 'a'
+expect(page).to have_no_css('a')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="enforcedstyle_-not_to-capybararspecnegationmatcher" title="Capybara/RSpec/NegationMatcher: EnforcedStyle: not_to" data-type="setting">
+<a class="anchor" href="#enforcedstyle_-not_to-capybararspecnegationmatcher"></a>EnforcedStyle: not_to</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).to have_no_selector 'a'
+expect(page).to have_no_css('a')
+
+# good
+expect(page).not_to have_selector 'a'
+expect(page).not_to have_css('a')</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-capybararspecnegationmatcher">
+<a class="anchor" href="#configurable-attributes-capybararspecnegationmatcher"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>have_no</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>have_no</code>, <code>not_to</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspecnegationmatcher">
+<a class="anchor" href="#references-capybararspecnegationmatcher"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/NegationMatcher" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/NegationMatcher</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspecnegationmatcheraftervisit" data-type="test">
+<a class="anchor" href="#capybararspecnegationmatcheraftervisit"></a>Capybara/RSpec/NegationMatcherAfterVisit</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Do not allow negative matchers to be used immediately after <code>visit</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspecnegationmatcheraftervisit">
+<a class="anchor" href="#examples-capybararspecnegationmatcheraftervisit"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+visit foo_path
+expect(page).to have_no_link('bar')
+expect(page).to have_css('a')
+
+# good
+visit foo_path
+expect(page).to have_css('a')
+expect(page).to have_no_link('bar')
+
+# bad
+visit foo_path
+expect(page).not_to have_link('bar')
+expect(page).to have_css('a')
+
+# good
+visit foo_path
+expect(page).to have_css('a')
+expect(page).not_to have_link('bar')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspecnegationmatcheraftervisit">
+<a class="anchor" href="#references-capybararspecnegationmatcheraftervisit"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/NegationMatcherAfterVisit" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/NegationMatcherAfterVisit</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspecpredicatematcher" data-type="test">
+<a class="anchor" href="#capybararspecpredicatematcher"></a>Capybara/RSpec/PredicateMatcher</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Prefer using predicate matcher over using predicate method directly.</p>
+</div>
+<div class="paragraph">
+<p>Capybara defines magic matchers for predicate methods.
+This cop recommends to use the predicate matcher instead of using
+predicate method directly.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspecpredicatematcher">
+<a class="anchor" href="#examples-capybararspecpredicatematcher"></a>Examples</h3>
+<div class="sect3">
+<h4 id="strict_-true_-enforcedstyle_-inflected-_default_-capybararspecpredicatematcher" title="Capybara/RSpec/PredicateMatcher: Strict: true, EnforcedStyle: inflected (default)" data-type="setting">
+<a class="anchor" href="#strict_-true_-enforcedstyle_-inflected-_default_-capybararspecpredicatematcher"></a>Strict: true, EnforcedStyle: inflected (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo.matches_css?(bar: 'baz')).to be_truthy
+expect(foo.matches_selector?(bar: 'baz')).to be_truthy
+expect(foo.matches_style?(bar: 'baz')).to be_truthy
+expect(foo.matches_xpath?(bar: 'baz')).to be_truthy
+
+# good
+expect(foo).to match_css(bar: 'baz')
+expect(foo).to match_selector(bar: 'baz')
+expect(foo).to match_style(bar: 'baz')
+expect(foo).to match_xpath(bar: 'baz')
+
+# also good - It checks "true" strictly.
+expect(foo.matches_style?(bar: 'baz')).to be(true)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="strict_-false_-enforcedstyle_-inflected-capybararspecpredicatematcher" title="Capybara/RSpec/PredicateMatcher: Strict: false, EnforcedStyle: inflected" data-type="setting">
+<a class="anchor" href="#strict_-false_-enforcedstyle_-inflected-capybararspecpredicatematcher"></a>Strict: false, EnforcedStyle: inflected</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo.matches_style?(bar: 'baz')).to be_truthy
+expect(foo.matches_style?(bar: 'baz')).to be(true)
+
+# good
+expect(foo).to match_style(bar: 'baz')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="strict_-true_-enforcedstyle_-explicit-capybararspecpredicatematcher" title="Capybara/RSpec/PredicateMatcher: Strict: true, EnforcedStyle: explicit" data-type="setting">
+<a class="anchor" href="#strict_-true_-enforcedstyle_-explicit-capybararspecpredicatematcher"></a>Strict: true, EnforcedStyle: explicit</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).to match_style(bar: 'baz')
+
+# good - the above code is rewritten to it by this cop
+expect(foo.matches_style?(bar: 'baz')).to be(true)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="strict_-false_-enforcedstyle_-explicit-capybararspecpredicatematcher" title="Capybara/RSpec/PredicateMatcher: Strict: false, EnforcedStyle: explicit" data-type="setting">
+<a class="anchor" href="#strict_-false_-enforcedstyle_-explicit-capybararspecpredicatematcher"></a>Strict: false, EnforcedStyle: explicit</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(foo).to match_style(bar: 'baz')
+
+# good - the above code is rewritten to it by this cop
+expect(foo.matches_style?(bar: 'baz')).to be_truthy</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-capybararspecpredicatematcher">
+<a class="anchor" href="#configurable-attributes-capybararspecpredicatematcher"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Strict</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inflected</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inflected</code>, <code>explicit</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedExplicitMatchers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspecpredicatematcher">
+<a class="anchor" href="#references-capybararspecpredicatematcher"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/PredicateMatcher" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/PredicateMatcher</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspecspecificmatcher" data-type="test">
+<a class="anchor" href="#capybararspecspecificmatcher"></a>Capybara/RSpec/SpecificMatcher</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for there is a more specific matcher offered by Capybara.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspecspecificmatcher">
+<a class="anchor" href="#examples-capybararspecspecificmatcher"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).to have_selector('button')
+expect(page).to have_no_selector('button.cls')
+expect(page).to have_css('button')
+expect(page).to have_no_css('a.cls', href: 'http://example.com')
+expect(page).to have_css('table.cls')
+expect(page).to have_css('select')
+expect(page).to have_css('input', exact_text: 'foo')
+
+# good
+expect(page).to have_button
+expect(page).to have_no_button(class: 'cls')
+expect(page).to have_button
+expect(page).to have_no_link('foo', class: 'cls', href: 'http://example.com')
+expect(page).to have_table(class: 'cls')
+expect(page).to have_select
+expect(page).to have_field(with: 'foo')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspecspecificmatcher">
+<a class="anchor" href="#references-capybararspecspecificmatcher"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/SpecificMatcher" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/SpecificMatcher</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararspecvisibilitymatcher" data-type="test">
+<a class="anchor" href="#capybararspecvisibilitymatcher"></a>Capybara/RSpec/VisibilityMatcher</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.39</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for boolean visibility in Capybara finders.</p>
+</div>
+<div class="paragraph">
+<p>Capybara lets you find elements that match a certain visibility using
+the <code>:visible</code> option. <code>:visible</code> accepts both boolean and symbols as
+values, however using booleans can have unwanted effects. <code>visible:
+false</code> does not find just invisible elements, but both visible and
+invisible elements. For expressiveness and clarity, use one of the
+symbol values, <code>:all</code>, <code>:hidden</code> or <code>:visible</code>.
+Read more at: <a href="https://www.rubydoc.info/gems/capybara/Capybara%2FNode%2FFinders:all" class="bare">https://www.rubydoc.info/gems/capybara/Capybara%2FNode%2FFinders:all</a></p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararspecvisibilitymatcher">
+<a class="anchor" href="#examples-capybararspecvisibilitymatcher"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).to have_selector('.foo', visible: false)
+expect(page).to have_css('.foo', visible: true)
+expect(page).to have_link('my link', visible: false)
+
+# good
+expect(page).to have_selector('.foo', visible: :visible)
+expect(page).to have_css('.foo', visible: :all)
+expect(page).to have_link('my link', visible: :hidden)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararspecvisibilitymatcher">
+<a class="anchor" href="#references-capybararspecvisibilitymatcher"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/VisibilityMatcher" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RSpec/VisibilityMatcher</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
