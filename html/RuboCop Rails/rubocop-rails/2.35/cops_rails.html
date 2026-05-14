@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Rails :: RuboCop Rails</title>
-    <link rel="canonical" href="https://docs.rubocop.org/rubocop-rails/rubocop-rails/2.34/cops_rails.html">
+    <link rel="canonical" href="https://docs.rubocop.org/rubocop-rails/rubocop-rails/2.35/cops_rails.html">
     <link rel="prev" href="cops.html">
     <meta name="generator" content="Antora 3.1.14">
     <link rel="stylesheet" href="../../_/css/site.css">
@@ -5147,7 +5147,7 @@ get :new, **options</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec/**/*</code>, <code>test/**/*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/spec/**/*</code>, <code>**/test/**/*</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
@@ -5569,7 +5569,7 @@ end</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec/**/*.rb</code>, <code>test/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/spec/**/*.rb</code>, <code>**/test/**/*.rb</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
@@ -5653,6 +5653,28 @@ class PostsController &lt; ApplicationController
   def create
     # ...
     redirect_to root_path, notice: t(".success")
+  end
+end
+
+# bad
+class PostsController &lt; ApplicationController
+  def update
+    # ...
+    redirect_back_or_to root_path, alert: "Failed to update!"
+  end
+end
+
+# good
+# config/locales/en.yml
+# en:
+#   posts:
+#     update:
+#       failure: "Failed to update!"
+
+class PostsController &lt; ApplicationController
+  def update
+    # ...
+    redirect_back_or_to root_path, alert: t(".failure")
   end
 end
 
@@ -8010,9 +8032,12 @@ a.blank? ? nil : a.foo
 !a.blank? ? a.foo : nil
 
 # good
-a.presence&amp;.foo
-
-# good
+a.presence&amp;.foo</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
 a.present? ? a[1] : nil
 
 # good
@@ -8020,7 +8045,12 @@ a[:key] = value if a.present?
 
 # good
 a.present? ? a &gt; 1 : nil
-a &lt;= 0 if a.present?</code></pre>
+
+# good
+a &lt;= 0 if a.present?
+
+# good
+a &lt;&lt; "bar" if a.present?</code></pre>
 </div>
 </div>
 </div>
@@ -9015,7 +9045,7 @@ end</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec/**/*.rb</code>, <code>test/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/spec/**/*.rb</code>, <code>**/test/**/*.rb</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
@@ -9684,12 +9714,15 @@ so you still have to use <code>JSON.parse(response.body)</code> there.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
 JSON.parse(response.body)
-
-# bad
+Nokogiri::HTML(response.body)
+Nokogiri::HTML4(response.body)
+Nokogiri::HTML5(response.body)
 Nokogiri::HTML.parse(response.body)
-
-# bad
+Nokogiri::HTML4.parse(response.body)
 Nokogiri::HTML5.parse(response.body)
+Nokogiri::HTML::Document.parse(response.body)
+Nokogiri::HTML4::Document.parse(response.body)
+Nokogiri::HTML5::Document.parse(response.body)
 
 # good
 response.parsed_body</code></pre>
@@ -9715,7 +9748,7 @@ response.parsed_body</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec/controllers/**/*.rb</code>, <code>spec/requests/**/*.rb</code>, <code>test/controllers/**/*.rb</code>, <code>test/integration/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/spec/controllers/**/*.rb</code>, <code>**/spec/requests/**/*.rb</code>, <code>**/test/controllers/**/*.rb</code>, <code>**/test/integration/**/*.rb</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
@@ -11339,6 +11372,26 @@ Requires Rails version 8.0
 <div class="paragraph">
 <p>Enforces the use of <code>ActionController::Parameters#expect</code> as a method for strong parameter handling.</p>
 </div>
+<div class="paragraph">
+<p>In the following cases, <code>params[:key]</code> is treated as a key that is expected to be passed from the HTTP client,
+and the cop detects it using the <code>expect</code> method.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Method calls on <code>params[:key]</code> without comparison methods</p>
+</li>
+<li>
+<p>Passing <code>params[:key]</code> as an argument to finder methods that raise on missing records</p>
+</li>
+<li>
+<p>Strong parameter methods using <code>require</code> or <code>permit</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other cases are not detected, as they are cases where <code>params[:key]</code> may not be passed from the HTTP client.</p>
+</div>
 <div class="sect2">
 <h3 id="safety-railsstrongparametersexpect">
 <a class="anchor" href="#safety-railsstrongparametersexpect"></a>Safety</h3>
@@ -11355,6 +11408,24 @@ strong parameter conventions.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+params[:key].do_something
+
+# good
+params.expect(:key).do_something
+
+# bad
+Model.find(params[:id])
+
+# good
+Model.find(params.expect(:id))
+
+# bad
+Model.find_by!(key: params[:key])
+
+# good
+Model.find_by!(key: params.expect(:key))
+
+# bad
 params.require(:user).permit(:name, :age)
 params.permit(user: [:name, :age]).require(:user)
 
@@ -11809,7 +11880,7 @@ end</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Include</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec/**/*.rb</code>, <code>test/**/*.rb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/spec/**/*.rb</code>, <code>**/test/**/*.rb</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
@@ -12520,10 +12591,27 @@ More can be added to the <code>Environments</code> config parameter.</p>
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
 Rails.env.proudction?
 Rails.env == 'proudction'
+Rails.env != 'proudction'
 
 # good
 Rails.env.production?
-Rails.env == 'production'</code></pre>
+Rails.env == 'production'
+Rails.env != 'production'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+case Rails.env
+when 'proudction'
+  do_something
+end
+
+# good
+case Rails.env
+when 'production'
+  do_something
+end</code></pre>
 </div>
 </div>
 </div>

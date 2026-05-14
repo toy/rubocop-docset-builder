@@ -5401,8 +5401,8 @@ Person.ancestors
 </tbody>
 </table>
 <div class="paragraph">
-<p>Checks for consistent usage of the <code>DateTime</code> class over the
-<code>Time</code> class. This cop is disabled by default since these classes,
+<p>Checks for consistent usage of the <code>Time</code> class over the
+<code>DateTime</code> class. This cop is disabled by default since these classes,
 although highly overlapping, have particularities that make them not
 replaceable in certain situations when dealing with multiple timezones
 and/or DST.</p>
@@ -16429,6 +16429,22 @@ instance methods in the module, then check if a given method is inside that
 array, while <code>method_defined?</code> will do direct method lookup, which is much
 faster and consumes less memory.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>constants.include?</code> is not handled by this cop because
+<code>Module#const_defined?</code> has different lookup behavior than
+<code>Module#constants</code> - <code>const_defined?</code> searches up to <code>Object</code>
+(top-level constants like <code>String</code>, <code>Integer</code>, etc.) while
+<code>constants</code> does not, which can cause behavior changes after autocorrection.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="examples-stylemodulememberexistencecheck">
 <a class="anchor" href="#examples-stylemodulememberexistencecheck"></a>Examples</h3>
@@ -16448,14 +16464,12 @@ Array.method_defined?(:find, false)
 
 # bad
 Array.class_variables.include?(:foo)
-Array.constants.include?(:foo)
 Array.private_instance_methods.include?(:foo)
 Array.protected_instance_methods.include?(:foo)
 Array.public_instance_methods.include?(:foo)
 
 # good
 Array.class_variable_defined?(:foo)
-Array.const_defined?(:foo)
 Array.private_method_defined?(:foo)
 Array.protected_method_defined?(:foo)
 Array.public_method_defined?(:foo)</code></pre>
@@ -31620,6 +31634,11 @@ end
 # good
 x += 1 while x &lt; 10
 
+# good
+while x &lt; 10
+  y += 1 if x.odd?
+end
+
 # bad
 until x &gt; 10
   x += 1
@@ -31627,6 +31646,11 @@ end
 
 # good
 x += 1 until x &gt; 10
+
+# good
+until x &gt; 10
+  y += 1 unless x.even?
+end
 
 # bad
 x += 100 while x &lt; 500 # a long comment that makes code too long if it were a single line
