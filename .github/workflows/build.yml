@@ -9,11 +9,19 @@ on:
 
 jobs:
   build:
+    env:
+      CONTRIBUTIONS_REPO: Dash-User-Contributions
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
     steps:
     - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.DASH_USER_CONTRIBUTIONS_PAT }}
+        repository: Kapeli/${{ env.CONTRIBUTIONS_REPO }}
+        path: ${{ env.CONTRIBUTIONS_REPO }}
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ruby
@@ -33,7 +41,41 @@ jobs:
       with:
         name: docsets
         path: 'docsets/*'
-    - if: github.ref == 'refs/heads/main'
+    - name: create/update branch for PR if there are changes
+      if: github.ref == 'refs/heads/main'
+      run: |
+        changes=()
+        for docset_json in docsets/*/docset.json; do
+          if ! diff -u $docset_json "$CONTRIBUTIONS_REPO/$docset_json"; then
+            docset="$(dirname $docset_json)"
+            rsync --archive --delete "$docset/" "$CONTRIBUTIONS_REPO/$docset/"
+            git -C "$CONTRIBUTIONS_REPO" add "$docset"
+            changes+=("$(jq --raw-output '.name + " " + .version' "$docset_json")")
+          fi
+        done
+
+        if (( ${#changes[@]} != 0 )); then
+          owner="${{ github.repository_owner }}"
+          branch=rubocop-docset-updates
+          message="$(ruby -e 'puts ARGV.join(", ")' -- "${changes[@]}")"
+
+          git -C "$CONTRIBUTIONS_REPO" checkout -b "$branch"
+          git -C "$CONTRIBUTIONS_REPO" \
+              -c user.name="$(git log -1 --format=%an)" \
+              -c user.email="$(git log -1 --format=%ae)" \
+              commit --message "$message"
+          git -C "$CONTRIBUTIONS_REPO" push --force "https://github.com/$owner/$CONTRIBUTIONS_REPO" HEAD
+
+          pr_url="https://github.com/Kapeli/$CONTRIBUTIONS_REPO/compare/master...$owner:$CONTRIBUTIONS_REPO:$branch?quick_pull=1"
+          gh issue create \
+            --title "$message" \
+            --body "$pr_url" \
+            --assignee "$owner"
+        fi
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - name: commit changes to gh-pages
+      if: github.ref == 'refs/heads/main'
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
