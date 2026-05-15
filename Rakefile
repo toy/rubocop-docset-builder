@@ -97,7 +97,6 @@ private
     object = {
       site: {
         title: name,
-        url: "https://docs.rubocop.org/#{File.basename(url, '.git')}",
       },
       content: {
         sources: [
@@ -187,8 +186,6 @@ private
       --cache-dir #{ANTORA_CACHE_DIR}
       #{playbook_path}
     ])
-
-    (html_path / '404.html').unlink
   end
 
   def prepare_html
