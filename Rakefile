@@ -5,6 +5,8 @@ require 'nokogiri'
 require 'fspath'
 
 FSPath.class_eval do
+  def done = self / '.done'
+
   def carefull_write(content)
     content = content&.to_s
 
@@ -18,12 +20,18 @@ FSPath.class_eval do
 end
 
 class RubocopDocBuilder
+  include Rake::DSL
+  extend Rake::DSL
+
   CLEAN_DIRS = [
-    PLAYBOOKS_DIR = 'playbooks',
+    ANTORA_PLAYBOOKS_DIR = 'antora-playbooks',
     ANTORA_CACHE_DIR = 'antora-cache',
+    ANTORA_HTML_DIR = 'antora-html',
     HTML_DIR = 'html',
-    DASHING_CONFIG_DIR = 'dashing-config',
+    DASHING_CONFIGS_DIR = 'dashing-configs',
     DOCSETS_DIR = 'docsets',
+    ARCHIVES_DIR = 'archives',
+    RESULTS_DIR = 'results',
   ]
 
   IGNORE_TITLES = [
@@ -34,8 +42,6 @@ class RubocopDocBuilder
   ]
 
   def self.all
-    return to_enum(__method__) unless block_given?
-
     yield new 'RuboCop',              'https://github.com/rubocop/rubocop.git'
     yield new 'RuboCop Capybara',     'https://github.com/rubocop/rubocop-capybara.git'
     yield new 'RuboCop factory_bot',  'https://github.com/rubocop/rubocop-factory_bot.git'
@@ -48,60 +54,146 @@ class RubocopDocBuilder
     yield new 'RuboCop ThreadSafety', 'https://github.com/rubocop/rubocop-thread_safety.git'
   end
 
+  def self.define_tasks
+    all(&:define_tasks)
+
+    task :clean do
+      rm_rf CLEAN_DIRS
+    end
+  end
+
   attr_reader :name, :url
-  attr_reader :name, :package, :name_n_version
-  attr_reader :playbook_path, :html_path, :dashing_config_path, :docset_path, :archive_path
+  attr_reader :tag, :version
+  attr_reader :package, :package_n_version
+  attr_reader :antora_playbook_path, :dashing_config_path
+  attr_reader :antora_html_path, :html_path, :docset_path, :archive_path, :result_path
 
   def initialize(name, url)
     @name = name
     @url = url
 
+    @tag = fetch_latest_tag
+    @version = tag.delete_prefix('v')
+
     @package = name.tr(' ', '_')
-    @name_n_version = "#{name}-#{version}"
+    @package_n_version = "#{package}-#{version}"
 
-    @playbook_path = FSPath(PLAYBOOKS_DIR) / "#{name_n_version}.json"
-    @html_path = FSPath(HTML_DIR) / name
-    @dashing_config_path = FSPath(DASHING_CONFIG_DIR) / "#{name_n_version}.json"
-    @docset_path = FSPath("#{package}.docset")
-    @archive_path = FSPath(DOCSETS_DIR) / package / "#{package}.docset.tgz"
+    @antora_playbook_path = FSPath(ANTORA_PLAYBOOKS_DIR) / "#{package_n_version}.json"
+    @antora_html_path = FSPath(ANTORA_HTML_DIR) / package
+    @html_path = FSPath(HTML_DIR) / package
+    @dashing_config_path = FSPath(DASHING_CONFIGS_DIR) / "#{package_n_version}.json"
+    @docset_path = FSPath(DOCSETS_DIR) / "#{package}.docset"
+    @archive_path = FSPath(ARCHIVES_DIR) / "#{package}.docset.tgz"
+    @result_path = FSPath(RESULTS_DIR) / package
   end
 
-  def tag
-    @tag ||=
-      IO.popen(%W[git ls-remote --tags --refs --sort v:refname #{url}], &:read)
-        .split("\n")
-        .map{ _1.split('/').last }
-        .grep(/\Av\d+(\.\d+)+\z/)
-        .last
-  end
+  def define_tasks
+    file antora_playbook_path do
+      antora_playbook_path.carefull_write(antora_playbook)
+    end
 
-  def version
-    @version ||= tag.delete_prefix('v')
-  end
+    dir antora_html_path => antora_playbook_path do
+      sh(*docker_run_args('antora/antora') + %W[
+        --fetch
+        --cache-dir #{ANTORA_CACHE_DIR}
+        #{antora_playbook_path}
+      ])
+    end
 
-  def build
-    run_antora
+    dir html_path => antora_html_path.done do
+      mkdir_p html_path
 
-    prepare_html
+      cp_r antora_html_path.glob('*'), html_path
 
-    run_dashing
+      prepare_html
+    end
 
-    create_archive
+    file dashing_config_path => html_path.done do
+      dashing_config_path.carefull_write(dashing_config)
+    end
 
-    fill_docsets_dir
+    dir docset_path => [dashing_config_path, html_path.done] do
+      mkdir_p docset_path.dirname
+
+      sh(*%W[dashing build --source #{html_path} --config #{dashing_config_path}])
+
+      mv docset_path.basename, docset_path.dirname
+
+      %w[icon.png icon@2x.png].each do |icon_basename|
+        ln icon_basename, docset_path
+      end
+    end
+
+    file archive_path => docset_path.done do
+      mkdir_p archive_path.dirname
+
+      sh(*docker_run_args('debian') + %W[
+        tar
+        --directory=#{docset_path.dirname}
+        --exclude=.DS_Store
+        -cvzf
+        #{archive_path}
+        #{docset_path.basename}
+      ])
+    end
+
+    docset_meta_path = result_path / 'docset.json'
+
+    results = {
+      result_path / archive_path.basename => archive_path,
+      **%w[README.md icon.png icon@2x.png].to_h do |basename|
+        [result_path / basename, basename]
+      end,
+    }
+
+    file docset_meta_path => results.values do
+      rm_rf result_path
+      mkdir_p result_path
+
+      results.each do |dst, src|
+        ln src, dst
+      end
+
+      docset_meta_path.carefull_write(docset_meta)
+    end
+
+    task default: docset_meta_path
   end
 
 private
 
-  def playbook
-    object = {
+  def dir(arg)
+    fail ArgumentError, 'expected Hash with 1 pair' unless arg.is_a?(Hash) && arg.length == 1
+
+    dir, dependencies = arg.first
+    done = dir.done
+
+    file done => dependencies do
+      rm_rf dir
+
+      yield
+
+      touch done
+    end
+  end
+
+  def fetch_latest_tag
+    IO.popen(%W[git ls-remote --tags --refs --sort v:refname #{url}], &:read)
+      .split("\n")
+      .map{ _1.split('/').last }
+      .grep(/\Av\d+(\.\d+)+\z/)
+      .last
+  end
+
+  def antora_playbook
+    JSON.pretty_generate({
       site: {
         title: name,
       },
       content: {
         sources: [
           {
-            url: url,
+            url:,
             branches: nil,
             tags: tag,
             start_path: 'docs',
@@ -126,11 +218,9 @@ private
         supplemental_files: 'supplemental-ui',
       },
       output: {
-        dir: html_path,
+        dir: antora_html_path,
       },
-    }
-
-    JSON.pretty_generate(object)
+    })
   end
 
   def dashing_config
@@ -150,42 +240,26 @@ private
       selectors["[data-type=#{type}][title]"] = {attr: 'title', type: type.capitalize}
     end
 
-    config = {
-      name: name,
-      package: package,
-      index: index,
+    JSON.pretty_generate({
+      name:,
+      package:,
+      index:,
       externalURL: url,
-      selectors: selectors,
+      selectors:,
       allowJS: true, # sadly required for highlighting and alternatives are currently not easy with antora
-    }
-
-    JSON.pretty_generate(config)
+    })
   end
 
   def docset_meta
-    meta = {
-      name: name,
-      version: version,
+    JSON.pretty_generate({
+      name:,
+      version:,
       archive: archive_path.basename,
       author: {
         name: 'Ivan Kuchin',
         link: 'https://github.com/toy',
       },
-    }
-
-    JSON.pretty_generate(meta)
-  end
-
-  def run_antora
-    playbook_path.carefull_write(playbook)
-
-    html_path.rmtree
-
-    abort unless system(*docker_run_args('antora/antora') + %W[
-      --fetch
-      --cache-dir #{ANTORA_CACHE_DIR}
-      #{playbook_path}
-    ])
+    })
   end
 
   def prepare_html
@@ -231,43 +305,6 @@ private
     end
   end
 
-  def run_dashing
-    dashing_config_path.carefull_write(dashing_config)
-
-    docset_path.rmtree
-
-    abort unless system(*%W[dashing build --source #{html_path} --config #{dashing_config_path}])
-
-    %w[icon.png icon@2x.png].each do |icon_basename|
-      (docset_path / icon_basename).make_link(icon_basename)
-    end
-  end
-
-  def create_archive
-    abort unless system(*docker_run_args('debian') + %W[
-      tar
-      --exclude=.DS_Store
-      -cvzf
-      #{archive_path.basename}
-      #{docset_path}
-    ])
-  end
-
-  def fill_docsets_dir
-    archive_dir = archive_path.dirname
-
-    archive_dir.rmtree
-    archive_dir.mkpath
-
-    archive_path.make_link(archive_path.basename)
-
-    %w[README.md icon.png icon@2x.png].each do |basename|
-      (archive_dir / basename).make_link(basename)
-    end
-
-    (archive_dir / 'docset.json').carefull_write(docset_meta)
-  end
-
   def docker_run_args(image)
     %W[
       docker run
@@ -281,10 +318,4 @@ private
   end
 end
 
-task :default do
-  RubocopDocBuilder.all(&:build)
-end
-
-task :clean do
-  rm_rf RubocopDocBuilder::CLEAN_DIRS + Dir[*%w[*.docset *.docset.tgz]]
-end
+RubocopDocBuilder.define_tasks
