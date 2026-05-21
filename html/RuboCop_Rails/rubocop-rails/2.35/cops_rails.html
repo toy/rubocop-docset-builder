@@ -8550,7 +8550,7 @@ which can affect their behavior.</p>
 <h3 id="safety-railsredundantactiverecordallmethod">
 <a class="anchor" href="#safety-railsredundantactiverecordallmethod"></a>Safety</h3>
 <div class="paragraph">
-<p>This cop is unsafe for autocorrection if the receiver for <code>all</code> is not an Active Record object.</p>
+<p>This cop is unsafe because false positives will occur if the receiver is not an Active Record object.</p>
 </div>
 </div>
 <div class="sect2">
@@ -11378,7 +11378,10 @@ and the cop detects it using the <code>expect</code> method.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Method calls on <code>params[:key]</code> without comparison methods</p>
+<p>Method calls on <code>params[:key]</code> without comparison methods, methods that are safe to call
+on <code>nil</code> (such as <code>to_i</code>, <code>to_s</code>, or <code>is_a?</code>), key-check methods such as <code>key?</code>,
+collection methods such as <code>keys</code>, <code>merge</code>, or <code>slice</code>, or block-style calls such as
+<code>params[:key].each { …​ }</code> or <code>params[:key].map(&amp;:to_s)</code></p>
 </li>
 <li>
 <p>Passing <code>params[:key]</code> as an argument to finder methods that raise on missing records</p>
