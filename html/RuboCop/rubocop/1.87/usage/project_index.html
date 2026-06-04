@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Project Index :: RuboCop</title>
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">Project Index</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The project index feature was introduced in RuboCop 1.87.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This feature is experimental and should not be considered stable. Changes to its behavior or interface may occur.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>RuboCop can optionally use <a href="https://github.com/Shopify/rubydex">Rubydex</a> to build
+a project-wide index of declarations and references. When enabled, cops that opt in can
+consult the index to detect issues that span multiple files.</p>
+</div>
+<div class="paragraph">
+<p>This integration is <strong>opt-in and experimental</strong>. The default behavior of RuboCop is unchanged.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enabling" data-type="section">
+<a class="anchor" href="#enabling"></a>Enabling</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add <code>rubydex</code> to your <code>Gemfile</code> and <code>bundle install</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">gem 'rubydex', require: false</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Set the flag in your <code>.rubocop.yml</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  UseProjectIndex: true</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If <code>UseProjectIndex</code> is <code>true</code> but the <code>rubydex</code> gem is not installed, or the running Ruby
+is older than the version <code>rubydex</code> supports, RuboCop prints a warning and falls back to
+its standard file-local behavior.</p>
+</div>
+<div class="paragraph">
+<p>The integration requires Ruby 3.2 or later. On Ruby 3.1 and older, <code>AllCops/UseProjectIndex</code>
+has no effect even if set to <code>true</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="what-it-enables" data-type="section">
+<a class="anchor" href="#what-it-enables"></a>What it enables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>Lint/ConstantReassignment</code> reports reassignments whose previous definition lives in another file.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># a.rb
+CROSS_FILE_CONST = :first
+
+# b.rb
+CROSS_FILE_CONST = :second</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With <code>UseProjectIndex: true</code>, RuboCop reports a <code>Lint/ConstantReassignment</code> offense referencing the other file.
+Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notes" data-type="section">
+<a class="anchor" href="#notes"></a>Notes</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>rubydex</code> requires Ruby 3.2 or newer and ships native (Rust) extensions.</p>
+</li>
+<li>
+<p>Parallel inspection is currently disabled on Windows when <code>UseProjectIndex</code> is on;
+use serial inspection (omit <code>--parallel</code>).</p>
+</li>
+<li>
+<p>The index is rebuilt once per <code>rubocop</code> invocation; no on-disk index is shared between runs.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

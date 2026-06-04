@@ -527,7 +527,7 @@ keyword is. If it’s set to <code>begin</code>, the <code>end</code> shall be a
 <p><code>Layout/EndAlignment</code> cop aligns with keywords (e.g. <code>if</code>, <code>while</code>, <code>case</code>)
 by default. On the other hand, <code>||= begin</code> that this cop targets tends to
 align with the start of the line, it defaults to <code>EnforcedStyleAlignWith: start_of_line</code>.
-These style can be configured by each cop.</p>
+These styles can be configured by each cop.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-layoutbeginendalignment">
@@ -1131,7 +1131,7 @@ you must define both <code>ExpectedOrder</code> <strong>and</strong> <code>Categ
 </div>
 </div>
 <div class="paragraph">
-<p>Instead of putting all literals in the expected order, is also
+<p>Instead of putting all literals in the expected order, it is also
 possible to group categories of macros. Visibility levels are handled
 automatically.</p>
 </div>
@@ -2183,8 +2183,10 @@ end</code></pre>
 <p>Enforces empty line after guard clause.</p>
 </div>
 <div class="paragraph">
-<p>This cop allows <code># :nocov:</code> directive after guard clause because
-SimpleCov excludes code from the coverage report by wrapping it in <code># :nocov:</code>:</p>
+<p>This cop allows a SimpleCov directive comment after guard clause because
+SimpleCov excludes code from the coverage report by wrapping it in such directives.
+Both the legacy <code># :nocov:</code> comment and the newer <code># simplecov:disable</code> /
+<code># simplecov:enable</code> comments are recognized:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2192,6 +2194,13 @@ SimpleCov excludes code from the coverage report by wrapping it in <code># :noco
   # :nocov:
   return if condition
   # :nocov:
+  bar
+end
+
+def foo
+  # simplecov:disable
+  return if condition
+  # simplecov:enable
   bar
 end</code></pre>
 </div>
@@ -3887,10 +3896,10 @@ start of the line where the matching keyword appears.</p>
 <div class="paragraph">
 <p>This <code>Layout/EndAlignment</code> cop aligns with keywords (e.g. <code>if</code>, <code>while</code>, <code>case</code>)
 by default. On the other hand, <code>Layout/BeginEndAlignment</code> cop aligns with
-<code>EnforcedStyleAlignWith: start_of_line</code> by default due to <code>||= begin</code> tends
+<code>EnforcedStyleAlignWith: start_of_line</code> by default because <code>||= begin</code> tends
 to align with the start of the line. <code>Layout/DefEndAlignment</code> cop also aligns with
 <code>EnforcedStyleAlignWith: start_of_line</code> by default.
-These style can be configured by each cop.</p>
+These styles can be configured by each cop.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-layoutendalignment">
@@ -10547,7 +10556,7 @@ foo.map{ |a|
 </table>
 <div class="paragraph">
 <p>Checks for space between the name of a receiver and a left
-brackets.</p>
+bracket.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-layoutspacebeforebrackets">
@@ -12294,8 +12303,8 @@ is available on the following Layout cops:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Those cops ignore their respective expressions if all or the elements of
-the expression are on the same line. If <code>AllowMultilineFinalElement</code> is
+<p>Those cops ignore their respective expressions if all of the elements
+of the expression are on the same line. If <code>AllowMultilineFinalElement</code> is
 set to <code>true</code>, the cop will also ignore multiline expressions if the last
 element starts on the same line, but ends on a different one.</p>
 </div>

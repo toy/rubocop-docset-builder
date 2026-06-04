@@ -59,7 +59,7 @@ but not necessary as long as the cop name is unique across all types.
 <div class="paragraph">
 <p>Most cops are enabled by default. Cops, introduced or significantly updated
 between major versions, are in a special pending status (read more in
-<a href="../versioning.html" class="xref page">"Versioning"</a>). Some cops, configured the above <code>Enabled: false</code>
+<a href="../versioning.html" class="xref page">"Versioning"</a>). Some cops, configured with <code>Enabled: false</code>
 in <a href="https://github.com/rubocop/rubocop/blob/master/config/default.yml">config/default.yml</a>,
 are disabled by default.</p>
 </div>
@@ -91,6 +91,13 @@ also possible to enable entire departments by adding for example</p>
 <p>All cops in the <code>Style</code> department are then enabled. In this case, only the cops
 in the <code>Style</code> department that are enabled by default will be enabled.
 The cops in the <code>Style</code> department that are disabled by default will remain disabled.</p>
+</div>
+<div class="paragraph">
+<p>The same effects can be obtained from the command line using <code>--disable-all-cops</code>
+and <code>--enable-all-cops</code>. These options take precedence over the configuration
+files, which is useful when you want to inspect the source with a different cop
+set without modifying <code>.rubocop.yml</code>. Note that <code>--disable-all-cops</code> does not
+disable <code>Lint/Syntax</code>, which is always enabled.</p>
 </div>
 <div class="paragraph">
 <p>If a department is disabled, cops in that department can still be individually
