@@ -7,10 +7,10 @@
     <title>RSpec :: RuboCop RSpec</title>
     <link rel="prev" href="development.html">
     <meta name="generator" content="Antora 3.1.15">
-    <link rel="stylesheet" href="../../_/css/site.css">
-<link rel="stylesheet" href="../../_/css/fixes.css">
+    <link rel="stylesheet" href="../_/css/site.css">
+<link rel="stylesheet" href="../_/css/fixes.css">
 <style>:root{--docsearch-primary-color: #bd362f} </style>
-<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
   </head>
   <body class="article">
 
@@ -1105,10 +1105,13 @@ expect(object).to be_a_kind_of(String)</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
-it { is_expected.to contain_exactly(*array1, *array2) }
+it { is_expected.to contain_exactly(*array) }
 
 # good
-it { is_expected.to match_array(array1 + array2) }
+it { is_expected.to match_array(array) }
+
+# good
+it { is_expected.to contain_exactly(*array1, *array2) }
 
 # good
 it { is_expected.to contain_exactly(content, *array) }</code></pre>
@@ -2041,6 +2044,113 @@ end</code></pre>
 <ul>
 <li>
 <p><a href="https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Dialect" class="bare">https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Dialect</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecdiscardedmatcher" data-type="test">
+<a class="anchor" href="#rspecdiscardedmatcher"></a>RSpec/DiscardedMatcher</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for matchers that are used in void context.</p>
+</div>
+<div class="paragraph">
+<p>Matcher calls like <code>change</code>, <code>receive</code>, etc. that appear as
+standalone expressions have their result silently discarded.
+This usually means a missing <code>.and</code> to chain compound matchers.</p>
+</div>
+<div class="paragraph">
+<p>The list of matcher methods can be configured
+with <code>CustomMatcherMethods</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecdiscardedmatcher">
+<a class="anchor" href="#examples-rspecdiscardedmatcher"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+specify do
+  expect { result }
+    .to change { obj.foo }.from(1).to(2)
+    change { obj.bar }.from(3).to(4)
+end
+
+# good
+specify do
+  expect { result }
+    .to change { obj.foo }.from(1).to(2)
+    .and change { obj.bar }.from(3).to(4)
+end
+
+# good
+specify do
+  expect { result }.to change { obj.foo }.from(1).to(2)
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-rspecdiscardedmatcher">
+<a class="anchor" href="#configurable-attributes-rspecdiscardedmatcher"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CustomMatcherMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-rspecdiscardedmatcher">
+<a class="anchor" href="#references-rspecdiscardedmatcher"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DiscardedMatcher" class="bare">https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DiscardedMatcher</a></p>
 </li>
 </ul>
 </div>
@@ -3495,7 +3605,9 @@ expect(pattern).to eq(/foo/)
 expect(name).to eq("John")
 
 # bad (not supported autocorrection)
-expect(false).to eq(true)</code></pre>
+expect(42).to be_even
+expect(false).to eq(true)
+expect("user").to be_present</code></pre>
 </div>
 </div>
 </div>
@@ -3564,7 +3676,7 @@ expect(false).to eq(true)</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.22</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.10</p></td>
 </tr>
 </tbody>
 </table>
@@ -3577,6 +3689,11 @@ or a block.</p>
 </div>
 <div class="paragraph">
 <p>This cop can be configured using the <code>EnforcedStyle</code> option.</p>
+</div>
+<div class="paragraph">
+<p>When using compound expectations with <code>change</code> and a negated matcher
+(e.g., <code>not_change</code>), you can configure the <code>NegatedMatcher</code> option
+to ensure consistent style enforcement across both matchers.</p>
 </div>
 <div class="sect2">
 <h3 id="safety-rspecexpectchange">
@@ -3637,6 +3754,19 @@ expect { run }.to change { Foo.bar }</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_negatedmatcher_-not_change_-_with-compound-expectations_-rspecexpectchange" title="RSpec/ExpectChange: NegatedMatcher: not_change (with compound expectations)" data-type="setting">
+<a class="anchor" href="#_negatedmatcher_-not_change_-_with-compound-expectations_-rspecexpectchange"></a><code>NegatedMatcher: not_change</code> (with compound expectations)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect { run }.to change(Foo, :bar).and not_change { Foo.baz }
+
+# good
+expect { run }.to change(Foo, :bar).and not_change(Foo, :baz)</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="configurable-attributes-rspecexpectchange">
@@ -3659,6 +3789,11 @@ expect { run }.to change { Foo.bar }</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>method_call</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>method_call</code>, <code>block</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NegatedMatcher</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;none&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
@@ -5892,6 +6027,79 @@ it { is_expected.to match_array(%w(tremble in fear foolish mortals)) }</code></p
 <ul>
 <li>
 <p><a href="https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MatchArray" class="bare">https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MatchArray</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecmatchwithsimpleregex" data-type="test">
+<a class="anchor" href="#rspecmatchwithsimpleregex"></a>RSpec/MatchWithSimpleRegex</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces the use of <code>include</code> matcher instead of <code>match</code> when the
+matcher is a simple string literal without regex-specific features.</p>
+</div>
+<div class="paragraph">
+<p>When <code>match</code> is used with a regex that contains only literal characters
+(no anchors, character classes, quantifiers, alternations, or
+metacharacters), it’s clearer to use the <code>include</code> matcher instead.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecmatchwithsimpleregex">
+<a class="anchor" href="#examples-rspecmatchwithsimpleregex"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect('foobar').to match(/foo/)
+expect(response.body).to match(/http:\/\/example\.com/)
+
+# good
+expect('foobar').to include('foo')
+expect(response.body).to include('http://example.com')
+
+# good - regex features needed
+expect('foobar').to match(/^foo/)     # anchor
+expect('foobar').to match(/foo\d+/)   # quantifier
+expect('foobar').to match(/foo[ob]/)  # character class</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecmatchwithsimpleregex">
+<a class="anchor" href="#references-rspecmatchwithsimpleregex"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MatchWithSimpleRegex" class="bare">https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MatchWithSimpleRegex</a></p>
 </li>
 </ul>
 </div>
@@ -9124,11 +9332,11 @@ end
 
 # good
 describe Foo do
-  subject { Foo }
-  before { prepare }
   let(:foo) { 1 }
   let(:bar) { 2 }
   let!(:baz) { 3 }
+  subject { Foo }
+  before { prepare }
 end</code></pre>
 </div>
 </div>
@@ -9261,7 +9469,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.13</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.10</p></td>
 </tr>
 </tbody>
 </table>
@@ -9271,6 +9479,10 @@ end</code></pre>
 <div class="paragraph">
 <p>If there are no examples defined, use shared_context.
 If there is no setup defined, use shared_examples.</p>
+</div>
+<div class="paragraph">
+<p>With <code>Strict: true</code>, <code>shared_context</code> is flagged whenever it contains
+any examples, even if it also contains setup code.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-rspecsharedcontext">
@@ -9321,6 +9533,56 @@ RSpec.shared_context 'only setup here' do
 end</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="strict_-true-rspecsharedcontext" title="RSpec/SharedContext: Strict: true" data-type="setting">
+<a class="anchor" href="#strict_-true-rspecsharedcontext"></a>Strict: true</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - shared_context with examples is flagged
+RSpec.shared_context 'setup and examples' do
+  let(:foo) { :bar }
+
+  it 'does x' do
+  end
+end
+
+# good - split into separate shared_context and shared_examples
+RSpec.shared_context 'setup' do
+  let(:foo) { :bar }
+end
+
+RSpec.shared_examples 'examples' do
+  it 'does x' do
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-rspecsharedcontext">
+<a class="anchor" href="#configurable-attributes-rspecsharedcontext"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Strict</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="references-rspecsharedcontext">
@@ -10015,7 +10277,7 @@ expect(foo).to receive(:bar).with(42)</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
 </tr>
@@ -10964,7 +11226,7 @@ expect(foo).to receive(:bar).and_yield(1)</code></pre>
   <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
   <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
 </footer>
-<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
-<script async src="../../_/js/vendor/highlight.js"></script>
+<script id="site-script" src="../_/js/site.js" data-ui-root-path="../_"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
   </body>
 </html>

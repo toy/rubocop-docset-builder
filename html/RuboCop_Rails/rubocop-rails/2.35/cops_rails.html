@@ -11403,6 +11403,20 @@ from 500 to 400 when handling invalid parameters. This change, however, reflects
 incompatibility introduced for valid reasons by the <code>expect</code> method, which aligns better with
 strong parameter conventions.</p>
 </div>
+<div class="paragraph">
+<p>It is also unsafe because <code>expect</code> is stricter about the structure of the parameters than
+<code>require</code>/<code>permit</code>. Nested attributes that hold an array of records need an extra array wrapper,
+such as <code>expect(user: [{ pets_attributes: <a id=":name"></a> }])</code>. The cop cannot tell a single nested hash
+from an array of nested hashes, so it always generates the single-hash form, which can turn
+a previously successful request into a failure.</p>
+</div>
+<div class="paragraph">
+<p>It is also unsafe when <code>params[:key]</code> is passed to a finder method such as <code>find</code>, because
+<code>find</code> accepts an array of IDs. <code>Model.find(params[:id])</code> loads every record for an array of IDs,
+but the corrected <code>Model.find(params.expect(:id))</code> raises <code>ActionController::ParameterMissing</code>
+for an array value, since <code>expect</code> requires a scalar. The cop cannot tell a scalar ID from
+an array of IDs, so the autocorrection can turn a previously successful request into a failure.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-railsstrongparametersexpect">
