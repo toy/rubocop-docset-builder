@@ -5903,7 +5903,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.52</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
@@ -5914,7 +5914,7 @@ cop disables on wide ranges of code, that later contributors to
 a file wouldn’t be aware of.</p>
 </div>
 <div class="paragraph">
-<p>You can set <code>MaximumRangeSize</code> to define the maximum number of
+<p>You can set <code>MaxRangeSize</code> to define the maximum number of
 consecutive lines a cop can be disabled for.</p>
 </div>
 <div class="ulist">
@@ -5941,8 +5941,8 @@ a = 1
 <h3 id="examples-lintmissingcopenabledirective">
 <a class="anchor" href="#examples-lintmissingcopenabledirective"></a>Examples</h3>
 <div class="sect3">
-<h4 id="maximumrangesize_-_inf-_default_-lintmissingcopenabledirective" title="Lint/MissingCopEnableDirective: MaximumRangeSize: .inf (default)" data-type="setting">
-<a class="anchor" href="#maximumrangesize_-_inf-_default_-lintmissingcopenabledirective"></a>MaximumRangeSize: .inf (default)</h4>
+<h4 id="maxrangesize_-_inf-_default_-lintmissingcopenabledirective" title="Lint/MissingCopEnableDirective: MaxRangeSize: .inf (default)" data-type="setting">
+<a class="anchor" href="#maxrangesize_-_inf-_default_-lintmissingcopenabledirective"></a>MaxRangeSize: .inf (default)</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
@@ -5960,8 +5960,8 @@ x= 0
 </div>
 </div>
 <div class="sect3">
-<h4 id="maximumrangesize_-2-lintmissingcopenabledirective" title="Lint/MissingCopEnableDirective: MaximumRangeSize: 2" data-type="setting">
-<a class="anchor" href="#maximumrangesize_-2-lintmissingcopenabledirective"></a>MaximumRangeSize: 2</h4>
+<h4 id="maxrangesize_-2-lintmissingcopenabledirective" title="Lint/MissingCopEnableDirective: MaxRangeSize: 2" data-type="setting">
+<a class="anchor" href="#maxrangesize_-2-lintmissingcopenabledirective"></a>MaxRangeSize: 2</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
@@ -5998,7 +5998,7 @@ x += 1
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MaximumRangeSize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaxRangeSize</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Infinity</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Float</p></td>
 </tr>
@@ -7060,7 +7060,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.53</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
@@ -7168,8 +7168,8 @@ bar.send { |i| Complex(i) }</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="ignoredclasses_-_time_-datetime_-_default_-lintnumberconversion" title="Lint/NumberConversion: IgnoredClasses: [Time, DateTime] (default)" data-type="setting">
-<a class="anchor" href="#ignoredclasses_-_time_-datetime_-_default_-lintnumberconversion"></a>IgnoredClasses: [Time, DateTime] (default)</h4>
+<h4 id="allowedclasses_-_time_-datetime_-_default_-lintnumberconversion" title="Lint/NumberConversion: AllowedClasses: [Time, DateTime] (default)" data-type="setting">
+<a class="anchor" href="#allowedclasses_-_time_-datetime_-_default_-lintnumberconversion"></a>AllowedClasses: [Time, DateTime] (default)</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
@@ -7206,7 +7206,7 @@ Time.now.to_datetime.to_i</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IgnoredClasses</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedClasses</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Time</code>, <code>DateTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
@@ -7946,7 +7946,7 @@ end</code></pre>
 </table>
 <div class="paragraph">
 <p>Checks for <code>rand(1)</code> calls.
-Such calls always return <code>0</code>.</p>
+Such calls always return <code>0</code>, and so do <code>rand(-1)</code>, <code>rand(1.0)</code>, and <code>rand(-1.0)</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-lintrandone">
@@ -8864,6 +8864,9 @@ or with <code>String.new</code> or <code>String()</code>.</p>
 <p><code>to_f</code> when called on a float literal or with <code>Float()</code>.</p>
 </li>
 <li>
+<p><code>to_d</code> when called with <code>BigDecimal()</code>.</p>
+</li>
+<li>
 <p><code>to_r</code> when called on a rational literal or with <code>Rational()</code>.</p>
 </li>
 <li>
@@ -8924,6 +8927,12 @@ Integer(var)
 # good - chaining to a type constructor with exceptions suppressed
 # in this case, `Integer()` could return `nil`
 Integer(var, exception: false).to_i
+
+# bad
+BigDecimal(var).to_d
+
+# good
+BigDecimal(var)
 
 # bad - chaining the same conversion
 foo.to_s.to_s
@@ -9031,14 +9040,23 @@ end</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.51</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Checks for redundant <code>with_object</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-lintredundantwithobject">
+<a class="anchor" href="#safety-lintredundantwithobject"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop’s autocorrection is unsafe because the return value changes:
+<code>each_with_object</code> returns the memo object, while the corrected <code>each</code> returns
+the receiver. This matters when the result of the expression is used.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-lintredundantwithobject">
@@ -9106,9 +9124,9 @@ Requires Ruby version 3.1
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.27</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
@@ -9239,10 +9257,20 @@ end</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Checks for expressions where there is a call to a predicate
-method with at least one argument, where no parentheses are used around
-the parameter list, and a boolean operator, &amp;&amp; or ||, is used in the
-last argument.</p>
+<p>Checks for method calls with at least one argument where no parentheses
+are used around the parameter list, and the call could be misread as an
+operand of a boolean operator (<code>&amp;&amp;</code> or <code>||</code>). Two forms are flagged:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a predicate method whose last argument is a <code>&amp;&amp;</code>/<code>||</code> expression, and</p>
+</li>
+<li>
+<p>any method whose first argument is a ternary expression with a
+<code>&amp;&amp;</code>/<code>||</code> condition.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The idea behind warning for these constructs is that the user might
@@ -9262,7 +9290,13 @@ end
 # good
 if day.is?(:tuesday) &amp;&amp; month == :jan
   # ...
-end</code></pre>
+end
+
+# bad
+foo a &amp;&amp; b ? c : d
+
+# good
+foo(a &amp;&amp; b ? c : d)</code></pre>
 </div>
 </div>
 </div>

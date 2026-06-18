@@ -8691,7 +8691,7 @@ trailing zeroes.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.28</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
@@ -8762,7 +8762,7 @@ ENV['X'].some_method # (e.g. `.nil?`)</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedVars</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedVariables</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
@@ -11530,6 +11530,24 @@ modify the receiver.</p>
 <div class="paragraph">
 <p>This cop is unsafe because it cannot be guaranteed that the receiver
 is a <code>Hash</code> or responds to the replacement method.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, the replacement may change the order of the resulting
+hash: <code>Hash#slice</code> returns entries in the order the keys are given,
+whereas <code>select</code>, <code>filter</code>, and <code>reject</code> preserve the entry order of
+the receiver.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">hash = {foo: 1, bar: 2, baz: 3}
+keys = %i[baz foo]
+
+hash.select { |k, _v| keys.include?(k) } # =&gt; {foo: 1, baz: 3}
+hash.slice(*keys)                        # =&gt; {baz: 3, foo: 1}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -17255,13 +17273,22 @@ foo if a == 'a' || a == 'b'</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.34</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Checks whether some constant value isn’t a
 mutable literal (e.g. array or hash).</p>
+</div>
+<div class="paragraph">
+<p>When the <code>Recursive</code> option is enabled, mutable literals nested inside
+arrays and hashes are also frozen, so an offense on the outermost
+unfrozen literal will autocorrect every nested mutable literal as well.
+When the outer literal already has <code>.freeze</code> appended, the cop descends
+into it and reports each outermost unfrozen literal underneath. The
+option is disabled by default to preserve existing behavior; opt in to
+get strict nested freezing.</p>
 </div>
 <div class="paragraph">
 <p>Strict mode can be used to freeze all constants, rather than
@@ -17351,6 +17378,29 @@ CONST = Something.new</code></pre>
 </div>
 </div>
 <div class="sect3">
+<h4 id="recursive_-false-_default_-stylemutableconstant" title="Style/MutableConstant: Recursive: false (default)" data-type="setting">
+<a class="anchor" href="#recursive_-false-_default_-stylemutableconstant"></a>Recursive: false (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good - only the outer container needs to be frozen
+CONST = [{ a: [], b: 'foo' }].freeze</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="recursive_-true-stylemutableconstant" title="Style/MutableConstant: Recursive: true" data-type="setting">
+<a class="anchor" href="#recursive_-true-stylemutableconstant"></a>Recursive: true</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - nested mutable literals must be frozen too
+CONST = [{ a: [], b: 'foo' }].freeze
+
+# good
+CONST = [{ a: [].freeze, b: 'foo'.freeze }.freeze].freeze</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="enforcedstyle_-strict-stylemutableconstant" title="Style/MutableConstant: EnforcedStyle: strict" data-type="setting">
 <a class="anchor" href="#enforcedstyle_-strict-stylemutableconstant"></a>EnforcedStyle: strict</h4>
 <div class="listingblock">
@@ -17411,6 +17461,11 @@ CONST = [1, 2, 3]</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>literals</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>literals</code>, <code>strict</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recursive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 </tr>
 </tbody>
 </table>
@@ -32221,8 +32276,10 @@ replaced by <code>receiver.empty?</code> and <code>!receiver.empty?</code>.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<code>File</code>, <code>Tempfile</code>, and <code>StringIO</code> do not have <code>empty?</code>
-so allow <code>size == 0</code> and <code>size.zero?</code>.
+<code>File</code>, <code>Tempfile</code>, <code>StringIO</code>, and <code>File::Stat</code> do not have <code>empty?</code>
+so allow <code>size == 0</code> and <code>size.zero?</code>. Note that when a <code>File::Stat</code> object
+is stored in a variable (e.g. <code>stat = File.stat(path); stat.size.zero?</code>),
+the cop cannot detect the type and may still register a false positive.
 </td>
 </tr>
 </table>
