@@ -3694,18 +3694,29 @@ enum status: [:active, :archived]</code></pre>
 <div class="paragraph">
 <p>Checks for usage of <code>Rails.env</code> which can be replaced with Feature Flags</p>
 </div>
+<div class="paragraph">
+<p>The cop does not flag <code>Rails.env.local?</code>, the built-in alias for
+"development or test" introduced in Rails 7.1. Unlike per-environment
+predicates such as <code>development?</code> or <code>production?</code>, <code>local?</code> expresses
+the intent of guarding code that must only ever run in development or
+test (sanity checks, devtools, seed data) rather than gating an
+environment rollout, so a Feature Flag is not a suitable replacement.</p>
+</div>
 <div class="sect2">
 <h3 id="examples-railsenv">
 <a class="anchor" href="#examples-railsenv"></a>Examples</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
-Rails.env.production? || Rails.env.local?
+Rails.env.production? || Rails.env.development?
 
 # good
 if FeatureFlag.enabled?(:new_feature)
   # new feature code
-end</code></pre>
+end
+
+# good
+raise 'This should never run in production' unless Rails.env.local?</code></pre>
 </div>
 </div>
 </div>

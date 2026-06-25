@@ -112,11 +112,11 @@ click_button('foo')</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -150,131 +150,6 @@ page.find(:css, '#first').assert_matches_style(display: 'block')</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="capybaraclicklinkorbuttonstyle" data-type="test">
-<a class="anchor" href="#capybaraclicklinkorbuttonstyle"></a>Capybara/ClickLinkOrButtonStyle</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Enabled by default</th>
-<th class="tableblock halign-left valign-top">Safe</th>
-<th class="tableblock halign-left valign-top">Supports autocorrection</th>
-<th class="tableblock halign-left valign-top">Version Added</th>
-<th class="tableblock halign-left valign-top">Version Changed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.19</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.22</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Checks for methods of button or link clicks.</p>
-</div>
-<div class="paragraph">
-<p>This cop is deprecated.
-We plan to remove this in the next major version update to 3.0.</p>
-</div>
-<div class="paragraph">
-<p>The migration target is <code>Capybara/AmbiguousClick</code>.
-It is only migration target when <code>EnforcedStyle: strict</code>.
-If you are using this cop, please plan for migration.
-There is no migration target when <code>EnforcedStyle: link_or_button</code>.</p>
-</div>
-<div class="paragraph">
-<p>By default, prefer to use <code>click_link_or_button</code> or <code>click_on</code>.
-These methods offer a weaker coupling between the test and HTML,
-allowing for a more faithful reflection of how the user behaves.</p>
-</div>
-<div class="paragraph">
-<p>You can set <code>EnforcedStyle: strict</code> to prefer the use of
-<code>click_link</code> and <code>click_button</code>, but this is a deprecated setting.</p>
-</div>
-<div class="sect2">
-<h3 id="examples-capybaraclicklinkorbuttonstyle">
-<a class="anchor" href="#examples-capybaraclicklinkorbuttonstyle"></a>Examples</h3>
-<div class="sect3">
-<h4 id="enforcedstyle_-link_or_button-_default_-capybaraclicklinkorbuttonstyle" title="Capybara/ClickLinkOrButtonStyle: EnforcedStyle: link_or_button (default)" data-type="setting">
-<a class="anchor" href="#enforcedstyle_-link_or_button-_default_-capybaraclicklinkorbuttonstyle"></a>EnforcedStyle: link_or_button (default)</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
-click_link('foo')
-click_button('foo')
-
-# good
-click_link_or_button('foo')
-click_on('foo')</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="enforcedstyle_-strict-capybaraclicklinkorbuttonstyle" title="Capybara/ClickLinkOrButtonStyle: EnforcedStyle: strict" data-type="setting">
-<a class="anchor" href="#enforcedstyle_-strict-capybaraclicklinkorbuttonstyle"></a>EnforcedStyle: strict</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
-click_link_or_button('foo')
-click_on('foo')
-
-# good
-click_link('foo')
-click_button('foo')</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="configurable-attributes-capybaraclicklinkorbuttonstyle">
-<a class="anchor" href="#configurable-attributes-capybaraclicklinkorbuttonstyle"></a>Configurable attributes</h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Configurable values</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>link_or_button</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>link_or_button</code>, <code>strict</code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="references-capybaraclicklinkorbuttonstyle">
-<a class="anchor" href="#references-capybaraclicklinkorbuttonstyle"></a>References</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/ClickLinkOrButtonStyle" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/ClickLinkOrButtonStyle</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="capybarafindallfirst" data-type="test">
 <a class="anchor" href="#capybarafindallfirst"></a>Capybara/FindAllFirst</h2>
 <div class="sectionbody">
@@ -297,11 +172,11 @@ click_button('foo')</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.22</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -371,11 +246,11 @@ first('a')</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.20</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -445,11 +320,11 @@ end</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.14</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -511,11 +386,11 @@ find('div').click_button</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2.13</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
 </tr>
 </tbody>
 </table>
