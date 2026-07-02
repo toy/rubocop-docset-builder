@@ -14317,15 +14317,30 @@ end</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.30</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.88</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Prefer <code>select</code> or <code>reject</code> over <code>map { …​ }.compact</code>.
 This cop also handles <code>filter_map { …​ }</code>, similar to <code>map { …​ }.compact</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-stylemapcompactwithconditionalblock">
+<a class="anchor" href="#safety-stylemapcompactwithconditionalblock"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop is unsafe because <code>compact</code> also removes <code>nil</code> elements that
+were already present in the receiver, whereas <code>select</code>/<code>reject</code> keep
+them. The result therefore differs when the collection contains <code>nil</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">[nil, 1].map { |e| e if e }.compact # =&gt; [1]
+[nil, 1].select { |e| e }           # =&gt; [nil, 1]</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-stylemapcompactwithconditionalblock">
@@ -18597,6 +18612,21 @@ end</code></pre>
 <p>Checks for lambdas and procs that always return nil,
 which can be replaced with an empty lambda or proc instead.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A <code>proc</code> that returns nil via an explicit <code>return</code> is allowed,
+because in a <code>proc</code> <code>return</code> exits the enclosing method, so removing it
+would change behavior. A lambda is still reported, since there <code>return</code>
+only exits the lambda itself.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="examples-stylenillambda">
 <a class="anchor" href="#examples-stylenillambda"></a>Examples</h3>
@@ -20975,7 +21005,7 @@ default.</p>
 <div class="paragraph">
 <p>Looks for uses of Perl-style regexp match
 backreferences and their English versions like
-$1, $2, $&amp;, &amp;+, $MATCH, $PREMATCH, etc.</p>
+$1, $2, $&amp;, $MATCH, $PREMATCH, etc.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-styleperlbackrefs">

@@ -4854,10 +4854,10 @@ styles are 'consistent' and 'align_braces'. Here are examples:</p>
 # bad
 hash = {
   key: :value
-}
-and_in_a_method_call({
-  no: :difference
-                     })
+       }
+in_a_method_call({
+  foo: :bar
+})
 takes_multi_pairs_hash(x: {
   a: 1,
   b: 2
@@ -4868,13 +4868,12 @@ takes_multi_pairs_hash(x: {
                        })
 
 # good
-special_inside_parentheses
 hash = {
   key: :value
 }
-but_in_a_method_call({
-                       its_like: :this
-                     })
+in_a_method_call({
+                   foo: :bar
+                 })
 takes_multi_pairs_hash(x: {
                          a: 1,
                          b: 2
@@ -4899,17 +4898,17 @@ takes_multi_pairs_hash(x: {
 # bad
 hash = {
   key: :value
-}
-but_in_a_method_call({
-                       its_like: :this
-                      })
+       }
+in_a_method_call({
+                  foo: :bar
+                })
 
 # good
 hash = {
   key: :value
 }
-and_in_a_method_call({
-  no: :difference
+in_a_method_call({
+  foo: :bar
 })</code></pre>
 </div>
 </div>
@@ -6422,6 +6421,19 @@ class A
     puts 'hello'
   end
 end</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+value = (
+foo - bar
+)
+
+# good
+value = (
+  foo - bar
+)</code></pre>
 </div>
 </div>
 </div>
