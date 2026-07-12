@@ -10358,8 +10358,10 @@ if the target Ruby version is set to 2.3+</p>
 foo.try!(:bar)
 foo.try!(:bar, baz)
 foo.try!(:bar) { |e| e.baz }
+foo.try!(&amp;:bar)
 
 foo.try!(:[], 0)
+foo.try!(:==, baz)
 
 # good
 foo.try(:bar)
@@ -10368,7 +10370,9 @@ foo.try(:bar) { |e| e.baz }
 
 foo&amp;.bar
 foo&amp;.bar(baz)
-foo&amp;.bar { |e| e.baz }</code></pre>
+foo&amp;.bar { |e| e.baz }
+foo&amp;.[](0)
+foo&amp;.==(baz)</code></pre>
 </div>
 </div>
 </div>
@@ -10381,14 +10385,20 @@ foo&amp;.bar { |e| e.baz }</code></pre>
 foo.try!(:bar)
 foo.try!(:bar, baz)
 foo.try!(:bar) { |e| e.baz }
+foo.try!(&amp;:bar)
 foo.try(:bar)
 foo.try(:bar, baz)
 foo.try(:bar) { |e| e.baz }
+foo.try(&amp;:bar)
+foo.try(:[], 0)
+foo.try(:==, baz)
 
 # good
 foo&amp;.bar
 foo&amp;.bar(baz)
-foo&amp;.bar { |e| e.baz }</code></pre>
+foo&amp;.bar { |e| e.baz }
+foo&amp;.[](0)
+foo&amp;.==(baz)</code></pre>
 </div>
 </div>
 </div>
