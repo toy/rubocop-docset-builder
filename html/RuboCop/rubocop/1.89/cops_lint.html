@@ -105,13 +105,19 @@ x != y # or x = !y</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.48</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Checks for ambiguous block association with method
 when param passed without parentheses.</p>
+</div>
+<div class="paragraph">
+<p>This cop also detects <code>do…​end</code> blocks that are likely intended for
+an enumerable method in the arguments but actually bind to the outer
+method call. For example, in <code>render json: data.map do |x| x end</code>,
+Ruby parses the <code>do…​end</code> block as belonging to <code>render</code>, not <code>map</code>.</p>
 </div>
 <div class="paragraph">
 <p>This cop can customize allowed methods with <code>AllowedMethods</code>.
@@ -130,6 +136,18 @@ some_method a { |val| puts val }
 some_method(a { |val| puts val })
 # or (different meaning)
 some_method(a) { |val| puts val }
+
+# bad
+render json: data.map do |item|
+  item.to_h
+end
+
+# good
+render json: data.map { |item| item.to_h }
+
+# good
+mapped = data.map { |item| item.to_h }
+render json: mapped
 
 # good
 # Operator methods require no disambiguation
@@ -1435,7 +1453,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.86</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -1469,6 +1487,13 @@ that want to enable this cop which is disabled by default.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, only genuinely ambiguous constants are reported: those
+that resolve to a different declaration through the surrounding
+nesting than they would fully qualified. This makes the cop practical
+to enable without <code>Only</code>/<code>Ignore</code> lists.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-lintconstantresolution">
@@ -2074,6 +2099,99 @@ OpenSSL::Digest::SHA256.digest('foo')
 
 # good
 OpenSSL::Digest.digest('SHA256', 'foo')</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lintdeprecatedreference" data-type="test">
+<a class="anchor" href="#lintdeprecatedreference"></a>Lint/DeprecatedReference</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for calls to methods and references to constants that are documented
+as deprecated with a YARD <code>@deprecated</code> tag.</p>
+</div>
+<div class="paragraph">
+<p>The check is powered by the project-wide index, so it only runs when
+<code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is installed.
+Without the index the cop does nothing.</p>
+</div>
+<div class="paragraph">
+<p>Only references that can be resolved without type inference are checked:
+constants, method calls without an explicit receiver (or with <code>self</code>),
+which are looked up in the enclosing class or module and its ancestry,
+and calls whose receiver is a constant, which are looked up in that
+namespace’s singleton class. Calls on arbitrary objects are not checked.</p>
+</div>
+<div class="paragraph">
+<p>References made from a definition that is itself deprecated are allowed,
+so deprecated implementations can keep calling each other.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-lintdeprecatedreference">
+<a class="anchor" href="#examples-lintdeprecatedreference"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># Given a deprecated method and constant:
+#
+#   class Api
+#     # @deprecated Use `#new_method` instead.
+#     def old_method
+#     end
+#
+#     # @deprecated
+#     OLD_TIMEOUT = 10
+#   end
+
+# bad
+class Client &lt; Api
+  def call
+    old_method
+  end
+
+  def timeout
+    OLD_TIMEOUT
+  end
+end
+
+# good
+class Client &lt; Api
+  def call
+    new_method
+  end
+
+  def timeout
+    NEW_TIMEOUT
+  end
+end</code></pre>
 </div>
 </div>
 </div>
@@ -2751,7 +2869,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.29</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -2769,6 +2887,28 @@ definitions.</p>
 Aliasing a method to itself is allowed, as it indicates that
 the developer intends to suppress Ruby’s method redefinition warnings.
 See <a href="https://bugs.ruby-lang.org/issues/13574" class="bare">https://bugs.ruby-lang.org/issues/13574</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>By default the cop can only detect duplicates within a single file.
+When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is installed,
+the cop additionally consults the project-wide index and reports methods
+whose duplicate definition lives in another file.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The project index does not record whether a definition in another
+file is wrapped in a conditional, so a platform-specific redefinition in
+another file may still be reported. Aliasing the method to itself (see above)
+before redefining marks the redefinition as intentional and is respected
+across files.
 </td>
 </tr>
 </table>
@@ -2895,6 +3035,49 @@ end</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="delegatingmethods_-__delegate__-_expose__-_default_-__delegate___-lintduplicatemethods" title="Lint/DuplicateMethods: DelegatingMethods: ['delegate', 'expose'] (default: ['delegate'])" data-type="setting">
+<a class="anchor" href="#delegatingmethods_-__delegate__-_expose__-_default_-__delegate___-lintduplicatemethods"></a>DelegatingMethods: ['delegate', 'expose'] (default: ['delegate'])</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># A project's own `delegate`-shaped macros can be registered so the
+# methods they define are recognized (with
+# `AllCops/ActiveSupportExtensionsEnabled: true`).
+
+# bad
+def foo
+  1
+end
+
+expose :foo, to: :bar</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-lintduplicatemethods">
+<a class="anchor" href="#configurable-attributes-lintduplicatemethods"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DelegatingMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delegate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -5275,7 +5458,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.41</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.26</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -5283,6 +5466,12 @@ end</code></pre>
 <p>Looks for error classes inheriting from <code>Exception</code>.
 It is configurable to suggest using either <code>StandardError</code> (default) or
 <code>RuntimeError</code> instead.</p>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, indirect inheritance is also detected: a class whose parent
+(defined anywhere in the project) ultimately inherits from <code>Exception</code>
+is reported, without autocorrection.</p>
 </div>
 <div class="sect2">
 <h3 id="safety-lintinheritexception">
@@ -6034,7 +6223,7 @@ x += 1
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.89</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -6059,6 +6248,14 @@ classes from this cop, for example in the case of an abstract class that is
 not meant to be called with <code>super</code>. In those cases, you can use the
 <code>AllowedParentClasses</code> option to specify which classes should be allowed
 <strong>in addition to</strong> <code>Object</code> and <code>BasicObject</code>.</p>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is installed,
+the constructor check additionally consults the project-wide index: if the
+class' entire ancestry is resolvable and no ancestor defines <code>initialize</code>,
+no offense is registered, since <code>super</code> would only reach the no-op
+<code>Object#initialize</code>. Classes whose ancestry contains an unresolvable
+superclass or mixin (e.g. one defined in a gem) are still reported.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-lintmissingsuper">
@@ -6346,6 +6543,150 @@ x &lt; y &amp;&amp; y &lt; z
 10 &lt;= x &amp;&amp; x &lt;= 20</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lintnametypo" data-type="test">
+<a class="anchor" href="#lintnametypo"></a>Lint/NameTypo</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for probable typos in constant and method names: a name that
+does not resolve anywhere in the project, used in a namespace the
+project does define, with a close-named sibling to suggest instead.</p>
+</div>
+<div class="paragraph">
+<p>The check is powered by the project-wide index, so it only runs when
+<code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is installed.
+Without the index the cop does nothing.</p>
+</div>
+<div class="paragraph">
+<p>Constants are checked only in qualified references (<code>Foo::Bar</code>) whose
+namespace resolves in the index; bare names cannot be distinguished
+from constants provided by gems or the standard library. Methods are
+checked only in calls on constant receivers (<code>Foo.bar</code>) whose entire
+indexed ancestry is resolved, so methods gained through gem classes or
+dynamic definitions never produce offenses. In both cases an offense
+requires a similarly named alternative to exist — an unknown name
+alone is not reported, since the index does not see gems or the
+standard library.</p>
+</div>
+<div class="paragraph">
+<p>Names that appear as symbols or inside string literals in the same
+file are never reported, since they usually belong to runtime
+definitions the index cannot see (<code>stub_const</code>, <code>const_set</code>,
+<code>define_method</code>, and the like).</p>
+</div>
+<div class="sect2">
+<h3 id="examples-lintnametypo">
+<a class="anchor" href="#examples-lintnametypo"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - Services::UserCraetor is not defined, Services::UserCreator is
+Services::UserCraetor.new
+
+# good
+Services::UserCreator.new
+
+# bad - Report.generate_sumary is not defined, Report.generate_summary is
+Report.generate_sumary
+
+# good
+Report.generate_summary</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="checkconstants_-false-lintnametypo" title="Lint/NameTypo: CheckConstants: false" data-type="setting">
+<a class="anchor" href="#checkconstants_-false-lintnametypo"></a>CheckConstants: false</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good - constant references are not checked
+Services::UserCraetor.new</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="checkmethods_-false-lintnametypo" title="Lint/NameTypo: CheckMethods: false" data-type="setting">
+<a class="anchor" href="#checkmethods_-false-lintnametypo"></a>CheckMethods: false</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good - method calls are not checked
+Report.generate_sumary</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowednames_-__generate_sumary__-lintnametypo" title="Lint/NameTypo: AllowedNames: ['generate_sumary']" data-type="setting">
+<a class="anchor" href="#allowednames_-__generate_sumary__-lintnametypo"></a>AllowedNames: ['generate_sumary']</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good - the name is explicitly allowed
+Report.generate_sumary</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-lintnametypo">
+<a class="anchor" href="#configurable-attributes-lintnametypo"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CheckConstants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CheckMethods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedNames</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -9693,9 +10034,9 @@ Requires Ruby version 2.3
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.47</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.77</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -9705,6 +10046,17 @@ nil. If you chain an ordinary method call after a safe
 navigation operator, it raises NoMethodError. We should use a
 safe navigation operator after a safe navigation operator.
 This cop checks for the problem outlined above.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-lintsafenavigationchain">
+<a class="anchor" href="#safety-lintsafenavigationchain"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop’s autocorrection is unsafe because it changes the behavior of
+the code: <code>x&amp;.foo.bar</code> raises <code>NoMethodError</code> when <code>x</code> or <code>x&amp;.foo</code> is <code>nil</code>,
+whereas the corrected <code>x&amp;.foo&amp;.bar</code> returns <code>nil</code> instead. The autocorrection
+also assumes that extending safe navigation through the chain is intended,
+while removing the first <code>&amp;.</code> may be what was intended instead.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-lintsafenavigationchain">
@@ -12615,6 +12967,95 @@ end</code></pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="lintunusedprivatemethod" data-type="test">
+<a class="anchor" href="#lintunusedprivatemethod"></a>Lint/UnusedPrivateMethod</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for private instance methods that are not referenced anywhere
+in the project.</p>
+</div>
+<div class="paragraph">
+<p>The check is powered by the project-wide index, so it only runs when
+<code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is installed.
+Without the index the cop does nothing.</p>
+</div>
+<div class="paragraph">
+<p>A method counts as referenced when a call with its name appears anywhere
+in the indexed project (regardless of the receiver), when it is the source
+of an <code>alias</code>, or when its name appears in the same file as a symbol or
+inside a string literal (covering <code>send(:name)</code> and declarative DSLs like
+<code>before_action :name</code>). Methods defined in classes or modules with
+descendants are not checked, since they may be invoked through <code>super</code>
+or inherited dispatch, and neither are methods whose names are built
+dynamically (e.g. <code>send("do_#{action}")</code>).</p>
+</div>
+<div class="paragraph">
+<p>The cop is disabled by default because symbol-based references from
+<strong>other</strong> files (e.g. a Rails callback declared in a concern) cannot be
+detected and would be reported as false positives. It is best suited
+for occasional dead-code sweeps rather than permanent enforcement.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-lintunusedprivatemethod">
+<a class="anchor" href="#examples-lintunusedprivatemethod"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad - `helper` is never referenced anywhere in the project
+class Service
+  def call
+    do_something
+  end
+
+  private
+
+  def helper
+  end
+end
+
+# good
+class Service
+  def call
+    do_something(helper)
+  end
+
+  private
+
+  def helper
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="linturiescapeunescape" data-type="test">
 <a class="anchor" href="#linturiescapeunescape"></a>Lint/UriEscapeUnescape</h2>
 <div class="sectionbody">
@@ -14051,11 +14492,24 @@ enumerator.each { |item| item &gt;= 2 } #=&gt; [2, 3]</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Return values in assignment method definitions such as <code>def foo=(arg)</code> are
-detected because they are in a void context. However, autocorrection does not remove
-the return value, as that would change behavior. In such cases, whether to remove
-the return value or rename the method to something more appropriate should be left to
-the user.
+The last expression in an assignment method definition such as <code>def foo=(arg)</code>
+is not flagged. Ruby discards it (the method returns its argument), but the method can
+still be called directly and its return value relied upon, so flagging it would be a
+false positive for this lint.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A constant used in a void context is flagged but not autocorrected, since
+referencing a constant can trigger autoloading side effects (e.g. forcing a file to
+load before a monkey-patch), so removing it may change behavior.
 </td>
 </tr>
 </table>

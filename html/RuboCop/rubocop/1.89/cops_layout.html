@@ -1044,7 +1044,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.52</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.53</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -1298,7 +1298,7 @@ end</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ExpectedOrder</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>module_inclusion</code>, <code>constants</code>, <code>public_class_methods</code>, <code>initializer</code>, <code>public_methods</code>, <code>protected_methods</code>, <code>private_methods</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>module_inclusion</code>, <code>constants</code>, <code>public_class_methods</code>, <code>initializer</code>, <code>public_methods</code>, <code>protected_methods</code>, <code>private_class_methods</code>, <code>private_methods</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
@@ -6762,6 +6762,34 @@ name = 'John'      #: String</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="allowyardcommentblockseparator_-false-_default_-layoutleadingcommentspace" title="Layout/LeadingCommentSpace: AllowYARDCommentBlockSeparator: false (default)" data-type="setting">
+<a class="anchor" href="#allowyardcommentblockseparator_-false-_default_-layoutleadingcommentspace"></a>AllowYARDCommentBlockSeparator: false (default)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+
+# Copyright (c) Example Corp
+#-
+class Client
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowyardcommentblockseparator_-true-layoutleadingcommentspace" title="Layout/LeadingCommentSpace: AllowYARDCommentBlockSeparator: true" data-type="setting">
+<a class="anchor" href="#allowyardcommentblockseparator_-true-layoutleadingcommentspace"></a>AllowYARDCommentBlockSeparator: true</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+
+# Copyright (c) Example Corp
+#-
+class Client
+end</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="configurable-attributes-layoutleadingcommentspace">
@@ -6797,6 +6825,11 @@ name = 'John'      #: String</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AllowSteepAnnotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowYARDCommentBlockSeparator</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 </tr>

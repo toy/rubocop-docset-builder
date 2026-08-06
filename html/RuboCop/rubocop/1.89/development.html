@@ -83,7 +83,7 @@ The following rake task can only be run inside the rubocop project directory its
 <pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ bundle exec rake 'new_cop[Department/Name]'
 [create] lib/rubocop/cop/department/name.rb
 [create] spec/rubocop/cop/department/name_spec.rb
-[modify] lib/rubocop.rb - `require_relative 'rubocop/cop/department/name'` was injected.
+[modify] lib/rubocop/cop/department.rb - `register_cop :Name, "#{__dir__}/department/name"` was injected.
 [modify] A configuration for the cop is added into config/default.yml.
 Do 4 steps:
   1. Modify the description of Department/Name in config/default.yml
@@ -92,6 +92,42 @@ Do 4 steps:
      e.g. "Add new `Department/Name` cop"
   4. Run `bundle exec rake changelog:new` to generate a changelog entry
      for your new cop.</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cop-lazy-loading" data-type="section">
+<a class="anchor" href="#cop-lazy-loading"></a>Cop lazy loading</h3>
+<div class="paragraph">
+<p>Cops are not required from <code>lib/rubocop.rb</code>. Instead, each department has a module file
+(e.g. <code>lib/rubocop/cop/style.rb</code>) that registers its cops with the global registry through
+<code>RuboCop::Cop::LazyLoader#register_cop</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">module RuboCop
+  module Cop
+    # Cops for the `Style` department. ...
+    module Style
+      extend LazyLoader
+
+      register_cop :HashSyntax, "#{__dir__}/style/hash_syntax"
+      # ...
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A registered cop appears in the registry by name right away, but its file is loaded only
+when the cop class is needed, e.g. when the cop is enabled for an inspection run.
+This significantly speeds up loading RuboCop, since a typical run loads only the enabled cops.
+The path passed to <code>register_cop</code> must be absolute so that loading does not depend on <code>$LOAD_PATH</code>;
+interpolating <code>__dir__</code> as in the example above is the intended usage. Plugin authors can adopt
+the same mechanism for their own department modules.</p>
+</div>
+<div class="paragraph">
+<p>The <code>new_cop</code> rake task maintains the <code>register_cop</code> directives for you, so usually there is
+no need to edit the department module file by hand.</p>
 </div>
 </div>
 </div>

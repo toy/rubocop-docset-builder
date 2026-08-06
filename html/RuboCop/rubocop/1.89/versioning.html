@@ -245,6 +245,47 @@ The command-line option takes precedence over the <code>.rubocop.yml</code> file
 </div>
 </div>
 <div class="sect2">
+<h3 id="enablingdisabling-pending-cops-per-department" data-type="section">
+<a class="anchor" href="#enablingdisabling-pending-cops-per-department"></a>Enabling/Disabling Pending Cops per Department</h3>
+<div class="paragraph">
+<p>A single version in <code>AllCops</code> cannot express which pending cops to enable, because extension gems follow their own version schemes.
+Instead, <code>NewCops</code> can be set for a department, in which case it takes precedence over the <code>AllCops</code> setting for the cops of that department.
+In addition to <code>enable</code>, <code>disable</code>, and <code>pending</code>, a department accepts a version, which enables all pending cops of the department
+that were added in the specified version or earlier:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  NewCops: disable # keywords only, as before
+
+Lint:
+  NewCops: enable  # a department overrides `AllCops`
+
+Style:
+  NewCops: '1.19'  # enables pending cops with `VersionAdded` &lt;= 1.19
+
+Minitest:
+  NewCops: '0.10'  # an extension is pinned to its own version</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pending cops added in a later version keep emitting the warning, so you can review them and bump the version at your own pace.
+Since each department is pinned to its own version, this also works for extensions whose version schemes differ from RuboCop’s.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Quote the version to avoid YAML interpreting it as a number (for example, an unquoted <code>1.20</code> is read as <code>1.2</code>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
 <h3 id="enablingdisabling-individual-pending-cops" data-type="section">
 <a class="anchor" href="#enablingdisabling-individual-pending-cops"></a>Enabling/Disabling Individual Pending Cops</h3>
 <div class="paragraph">

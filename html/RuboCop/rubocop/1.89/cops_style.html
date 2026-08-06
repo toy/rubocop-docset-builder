@@ -1331,6 +1331,21 @@ only cases where exactly one argument is provided can be replaced with
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the block form, <code>include?</code> is only detected when its receiver is
+an array literal, because <code>include?</code> is defined with different semantics
+on many non-array classes (e.g. <code>String#include?</code> checks for substrings).
+<code>member?</code> does not have this restriction.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="safety-stylearrayintersect">
 <a class="anchor" href="#safety-stylearrayintersect"></a>Safety</h3>
@@ -1356,7 +1371,7 @@ array1.intersection(array2).none?
 
 # bad
 array1.any? { |elem| array2.member?(elem) }
-array1.none? { |elem| array2.include?(elem) }
+array1.none? { |elem| [1, 2].include?(elem) }
 
 # good
 array1.intersect?(array2)
@@ -2827,7 +2842,7 @@ That’s a good use case of a <code>?</code> literal so it doesn’t count as an
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.19</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.74</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -2871,9 +2886,15 @@ value will be used.</p>
 <div class="paragraph">
 <p>Moving from <code>compact</code> to <code>nested</code> children requires knowledge of whether the
 outer parent is a module or a class. Moving from <code>nested</code> to <code>compact</code> requires
-verification that the outer parent is defined elsewhere. RuboCop does not
-have the knowledge to perform either operation safely and thus requires
+verification that the outer parent is defined elsewhere. By default RuboCop does
+not have the knowledge to perform either operation safely and thus requires
 manual oversight.</p>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is installed,
+the project-wide index is consulted to resolve whether the outer parent is a
+class or a module, and compacting is skipped when the outer parent is not
+defined elsewhere.</p>
 </div>
 </div>
 <div class="sect2">
@@ -5807,7 +5828,7 @@ Dir.empty?('path/to/dir')</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.82</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -5819,6 +5840,19 @@ and not quickly disabled with a comment.</p>
 <div class="paragraph">
 <p>Specific cops can be allowed with the <code>AllowedCops</code> configuration. Note that
 if this configuration is set, <code>rubocop:disable all</code> is still disallowed.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, specific cops can be disallowed with the <code>DisallowedCops</code>
+configuration. When <code>DisallowedCops</code> is set, only directives for the listed
+cops (and <code>all</code>) will be flagged. This is useful when you want
+to protect a small set of critical cops from being disabled rather than
+allowlisting all other cops. <code>AllowedCops</code> and <code>DisallowedCops</code> should not
+both be set at the same time; if <code>DisallowedCops</code> is set, it takes precedence.</p>
+</div>
+<div class="paragraph">
+<p>This cop cannot be disabled via directive comments when it is explicitly
+enabled with <code>Enabled: true</code>. This prevents users from bypassing the cop
+with <code># rubocop:disable Style/DisableCopsWithinSourceCodeDirective</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-styledisablecopswithinsourcecodedirective">
@@ -5849,6 +5883,23 @@ end
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="disallowedcops_-_lintvoid_-styledisablecopswithinsourcecodedirective" title="Style/DisableCopsWithinSourceCodeDirective: DisallowedCops: [Lint/Void]" data-type="setting">
+<a class="anchor" href="#disallowedcops_-_lintvoid_-styledisablecopswithinsourcecodedirective"></a>DisallowedCops: [Lint/Void]</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+# rubocop:disable Lint/Void
+foo
+# rubocop:enable Lint/Void
+
+# good
+# rubocop:disable Metrics/AbcSize
+foo
+# rubocop:enable Metrics/AbcSize</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="configurable-attributes-styledisablecopswithinsourcecodedirective">
@@ -5869,6 +5920,11 @@ end
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AllowedCops</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DisallowedCops</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
@@ -6027,7 +6083,7 @@ class_eval("def #{unsafe_method}!(*params); end # def capitalize!(*params); end"
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.9</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -6042,6 +6098,12 @@ declarations.</p>
 <p>The documentation requirement is annulled if the class or module has
 a <code><mark>:nodoc:</mark></code> comment next to it. Likewise, <code>:nodoc: all</code> does the
 same for all its children.</p>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, a reopened class or module is not reported when any of its
+other definition sites (in the same or another file) carries a
+documentation comment.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-styledocumentation">
@@ -15954,7 +16016,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.56</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -15984,6 +16046,12 @@ delegator.respond_to?(:upcase) # =&gt; false
 # But you can call it.
 delegator.upcase # =&gt; FOO</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, <code>respond_to_missing?</code> defined in another definition of the
+same class or module (e.g. a reopening in another file) also
+satisfies the check.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-stylemissingrespondtomissing">
@@ -17438,7 +17506,10 @@ CONST = Struct.new do
   def foo
     puts 1
   end
-end.freeze</code></pre>
+end.freeze
+
+# good - `Data.define` declares an immutable value type
+CONST = Data.define(:foo, :bar)</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -21996,6 +22067,10 @@ x.join</code></pre>
 <div class="paragraph">
 <p>Checks for redundant assignment before returning.</p>
 </div>
+<div class="paragraph">
+<p>When there are comments between the assignment and reference,
+the cop will report an offense but it will not autocorrect.</p>
+</div>
 <div class="sect2">
 <h3 id="examples-styleredundantassignment">
 <a class="anchor" href="#examples-styleredundantassignment"></a>Examples</h3>
@@ -22430,7 +22505,7 @@ x != y</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.40</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -22456,6 +22531,12 @@ that want to enable <code>Lint/ConstantResolution</code> cop which is disabled b
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, a leading <code>::</code> inside a namespace is also reported when the
+constant provably resolves to the same declaration with and without
+the base, i.e. nothing in the surrounding nesting shadows it.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-styleredundantconstantbase">
@@ -23677,10 +23758,13 @@ String.new("#{foo} bar")
 <p>Checks for redundant line continuation.</p>
 </div>
 <div class="paragraph">
-<p>This cop marks a line continuation as redundant if removing the backslash
-does not result in a syntax error.
-However, a backslash at the end of a comment or
-for string concatenation is not redundant and is not considered an offense.</p>
+<p>A line continuation is redundant when removing the backslash does not
+change how the program parses: the source is reparsed without the
+backslash and the resulting AST is compared to the original. Only
+backslashes that are pure noise are reported; backslashes that are
+significant — inside strings, for string concatenation, before an
+operator or argument that would otherwise start a new statement, and
+so on — are left alone, as are backslashes in comments.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-styleredundantlinecontinuation">
@@ -25847,6 +25931,17 @@ x &amp;&amp; x.foo  # return false
 x&amp;.foo      # raises NoMethodError</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Additionally, when a method chain is converted, a <code>NoMethodError</code> that
+the original code raised for an intermediate <code>nil</code> value is suppressed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">x = Struct.new(:foo).new(nil)
+x &amp;&amp; x.foo.bar  # raises NoMethodError
+x&amp;.foo&amp;.bar     # returns nil</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-stylesafenavigation">
@@ -27901,7 +27996,7 @@ There are two different styles. Defaults to <code>require_parentheses</code>.</p
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -27909,6 +28004,12 @@ There are two different styles. Defaults to <code>require_parentheses</code>.</p
 <p>Checks for places where classes with only class methods can be
 replaced with a module. Classes should be used only when it makes sense to create
 instances out of them.</p>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, classes that are subclassed anywhere in the project are
+not reported, since converting them to modules would break their
+subclasses.</p>
 </div>
 <div class="sect2">
 <h3 id="safety-stylestaticclass">

@@ -50,7 +50,7 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.50</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -72,6 +72,12 @@ and setters (<code>set_attribute(value)</code>) must have exactly one.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, methods that override a method defined by an ancestor
+elsewhere in the project are not reported, since renaming an override
+breaks the inherited contract.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-namingaccessormethodname">
@@ -2194,7 +2200,7 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.50</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.75</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
 </tr>
 </tbody>
 </table>
@@ -2220,6 +2226,12 @@ prefix.</p>
 <p>When <code>UseSorbetSigs</code> is set to true (optional), the cop will only report
 offenses if the method has a Sorbet <code>sig</code> with a return type of
 <code>T::Boolean</code>. Dynamic methods are not supported with this configuration.</p>
+</div>
+<div class="paragraph">
+<p>When <code>AllCops/UseProjectIndex</code> is enabled and the <code>rubydex</code> gem is
+installed, methods that override a method defined by an ancestor
+elsewhere in the project are not reported, since renaming an override
+breaks the inherited contract.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-namingpredicateprefix">
