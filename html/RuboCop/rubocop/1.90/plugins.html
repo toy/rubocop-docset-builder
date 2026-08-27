@@ -132,6 +132,39 @@ again as when Bundler loads gems.
 </div>
 </div>
 <div class="sect1">
+<h2 id="custom-allcops-settings" data-type="section">
+<a class="anchor" href="#custom-allcops-settings"></a>Custom <code>AllCops</code> Settings</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A plugin can introduce its own settings under <code>AllCops</code> (for example, <code>rubocop-rails</code> provides <code>AllCops: TargetRailsVersion</code>)
+by declaring the key with a nil value in the <code>AllCops</code> section of its own configuration file, shown here for a hypothetical
+<code>TargetFrameworkVersion</code> setting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># config/default.yml in the plugin gem.
+AllCops:
+  TargetFrameworkVersion: ~</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the plugin is loaded, its <code>AllCops</code> keys are merged into the default configuration, so users of the plugin can set
+the key in their project’s configuration and pass configuration validation without
+"AllCops does not support X parameter" warnings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml"># A project's .rubocop.yml.
+plugins:
+  - rubocop-framework # The plugin declaring `TargetFrameworkVersion`
+
+AllCops:
+  TargetFrameworkVersion: 7.1</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="plugin-suggestions" data-type="section">
 <a class="anchor" href="#plugin-suggestions"></a>Plugin Suggestions</h2>
 <div class="sectionbody">

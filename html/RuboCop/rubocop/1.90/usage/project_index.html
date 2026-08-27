@@ -221,6 +221,16 @@ when a similarly named alternative exists, and suggests it. <code>CheckConstants
 <code>CheckMethods</code> toggle the two checks independently.</p>
 </div>
 <div class="paragraph">
+<p><code>Lint/ArgumentMismatch</code> (pending) reports calls on a constant receiver (<code>Foo.bar</code>) that pass
+the wrong number of positional arguments to a singleton method defined in the project, when
+the receiver and its whole ancestry are resolved in the index.</p>
+</div>
+<div class="paragraph">
+<p><code>Lint/SuperArgumentMismatch</code> (pending) reports <code>super</code> calls with explicit arguments that
+pass the wrong number of positional arguments to the overridden implementation, when the
+enclosing class and its whole ancestry are resolved in the index.</p>
+</div>
+<div class="paragraph">
 <p>Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.</p>
 </div>
 </div>
@@ -248,6 +258,11 @@ offenses as a full run.</p>
 <p>The index is rebuilt once per <code>rubocop</code> invocation; no on-disk index is shared between
 runs. Indexing is fast (roughly 100ms for a couple thousand files), but very large
 monorepos will notice the per-run cost on single-file runs.</p>
+</li>
+<li>
+<p>The language server is the exception: it builds the index once per session and reuses it
+across requests, rebuilding only when a file is saved or a watched file changes. Editing a
+buffer therefore does not pay the indexing cost on every keystroke.</p>
 </li>
 </ul>
 </div>

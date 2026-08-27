@@ -131,6 +131,10 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock">Only output safe correctable offense messages.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--display-suppressed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Also output offenses suppressed by directive comments, tagged <code>[Suppressed]</code> (with their <code>--</code> justification in the JSON formatter). Suppressed offenses do not affect the exit code.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--enable-all-cops</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Run with all cops enabled, including those disabled by default. Overrides <code>AllCops/EnabledByDefault</code> and <code>AllCops/DisabledByDefault</code> in configuration files.</p></td>
 </tr>
@@ -237,6 +241,10 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--regenerate-todo</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Regenerate the TODO list using the same options as the last time it was generated with <code>--auto-gen-config</code> (generation options can be overridden).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--report-unused-todo-entries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Also report <code>.rubocop_todo.yml</code> <code>Exclude</code> entries that are no longer needed - files the cop would not flag anymore, or files that no longer exist - and fail the run when any are found. Unlike <code>--regenerate-todo</code> it never absorbs new offenses, which makes it safe as a CI ratchet; see <a href="auto_gen_config.html#keeping-the-todo-from-rotting" class="xref page">Keeping the TODO from rotting</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--safe</code></p></td>

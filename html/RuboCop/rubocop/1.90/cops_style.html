@@ -1226,6 +1226,9 @@ arr[0][-2]</code></pre>
 <div class="ulist">
 <ul>
 <li>
+<p><a href="https://rubystyle.guide#first-and-last" class="bare">https://rubystyle.guide#first-and-last</a></p>
+</li>
+<li>
 <p>#first-and-last</p>
 </li>
 </ul>
@@ -5094,6 +5097,17 @@ end</code></pre>
 </tbody>
 </table>
 </div>
+<div class="sect2">
+<h3 id="references-styleconditionalassignment">
+<a class="anchor" href="#references-styleconditionalassignment"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#use-if-case-returns" class="bare">https://rubystyle.guide#use-if-case-returns</a></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -5515,7 +5529,7 @@ something.to_time</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://rubystyle.guide#date-time" class="bare">https://rubystyle.guide#date-time</a></p>
+<p><a href="https://rubystyle.guide#no-datetime" class="bare">https://rubystyle.guide#no-datetime</a></p>
 </li>
 </ul>
 </div>
@@ -5802,6 +5816,93 @@ Dir.empty?('path/to/dir')</code></pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="styledirectivescope" data-type="test">
+<a class="anchor" href="#styledirectivescope"></a>Style/DirectiveScope</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for directive scopes that can be expressed with the tighter
+<code>disable-next</code> form: a <code>disable</code>/<code>enable</code> pair wrapping exactly one
+statement, or a <code>push</code>/<code>pop</code> that only disables cops around exactly
+one statement. A statement-scoped directive cannot drift as the
+surrounding code changes and needs no closing boundary.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-styledirectivescope">
+<a class="anchor" href="#safety-styledirectivescope"></a>Safety</h3>
+<div class="paragraph">
+<p>The autocorrection is unsafe because the suppression scope shrinks
+from the whole region to the statement: offenses of the suppressed
+cops located on the directive lines themselves resurface.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-styledirectivescope">
+<a class="anchor" href="#examples-styledirectivescope"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+# rubocop:enable Metrics/AbcSize
+
+# good
+# rubocop:disable-next Metrics/AbcSize
+def foo
+end
+
+# bad
+# rubocop:push -Metrics/AbcSize
+def foo
+end
+# rubocop:pop
+
+# good
+# rubocop:disable-next Metrics/AbcSize
+def foo
+end
+
+# good - the region spans more than one statement
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+
+def bar
+end
+# rubocop:enable Metrics/AbcSize</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="styledisablecopswithinsourcecodedirective" data-type="test">
 <a class="anchor" href="#styledisablecopswithinsourcecodedirective"></a>Style/DisableCopsWithinSourceCodeDirective</h2>
 <div class="sectionbody">
@@ -5828,7 +5929,7 @@ Dir.empty?('path/to/dir')</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.82</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.89</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.90</p></td>
 </tr>
 </tbody>
 </table>
@@ -5848,6 +5949,13 @@ cops (and <code>all</code>) will be flagged. This is useful when you want
 to protect a small set of critical cops from being disabled rather than
 allowlisting all other cops. <code>AllowedCops</code> and <code>DisallowedCops</code> should not
 both be set at the same time; if <code>DisallowedCops</code> is set, it takes precedence.</p>
+</div>
+<div class="paragraph">
+<p>With <code>AllowTrailingComment</code> set to <code>true</code>, a disable directive carrying
+a <code>--</code> trailing justification comment is allowed, so a team can require
+every disable to be documented instead of banning them outright. Enable
+directives are not checked in this mode, since they end a suppression
+rather than start one.</p>
 </div>
 <div class="paragraph">
 <p>This cop cannot be disabled via directive comments when it is explicitly
@@ -5900,6 +6008,19 @@ foo
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="allowtrailingcomment_-true-styledisablecopswithinsourcecodedirective" title="Style/DisableCopsWithinSourceCodeDirective: AllowTrailingComment: true" data-type="setting">
+<a class="anchor" href="#allowtrailingcomment_-true-styledisablecopswithinsourcecodedirective"></a>AllowTrailingComment: true</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+x = 0 # rubocop:disable Layout/SpaceAroundOperators
+
+# good
+x = 0 # rubocop:disable Layout/SpaceAroundOperators -- would misalign the table</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="configurable-attributes-styledisablecopswithinsourcecodedirective">
@@ -5927,6 +6048,11 @@ foo
 <td class="tableblock halign-left valign-top"><p class="tableblock">DisallowedCops</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowTrailingComment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 </tr>
 </tbody>
 </table>
@@ -7016,6 +7142,17 @@ end</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="references-styleemptyclassdefinition">
+<a class="anchor" href="#references-styleemptyclassdefinition"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#single-line-classes" class="bare">https://rubystyle.guide#single-line-classes</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -9020,6 +9157,17 @@ null_devices = %w[/dev/null nul]
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="references-stylefilenull">
+<a class="anchor" href="#references-stylefilenull"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#null-devices" class="bare">https://rubystyle.guide#null-devices</a></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -9110,6 +9258,17 @@ end
 # good - use File.read for one-shot reads
 File.read('file')</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-stylefileopen">
+<a class="anchor" href="#references-stylefileopen"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#auto-release-resources" class="bare">https://rubystyle.guide#auto-release-resources</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -10098,6 +10257,17 @@ sprintf("%&lt;greeting&gt;s", greeting: 'Hello')
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="references-styleformatstringtoken">
+<a class="anchor" href="#references-styleformatstringtoken"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#named-format-tokens" class="bare">https://rubystyle.guide#named-format-tokens</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -12051,6 +12221,17 @@ baz.map { |k, v| [k.to_s, v] }.to_h</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="references-stylehashtransformkeys">
+<a class="anchor" href="#references-stylehashtransformkeys"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#hash-transform-methods" class="bare">https://rubystyle.guide#hash-transform-methods</a></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -12136,6 +12317,17 @@ foo.merge(bar).transform_values { |v| v.to_s }
 foo.bar.each_with_object({}) { |(k, v), h| h[k] = v.to_s }
 baz.map { |k, v| [k, v.to_s] }.to_h</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-stylehashtransformvalues">
+<a class="anchor" href="#references-stylehashtransformvalues"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#hash-transform-methods" class="bare">https://rubystyle.guide#hash-transform-methods</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -13812,7 +14004,7 @@ end</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://rubystyle.guide#keyword-parameters-order" class="bare">https://rubystyle.guide#keyword-parameters-order</a></p>
+<p><a href="https://rubystyle.guide#keyword-arguments-order" class="bare">https://rubystyle.guide#keyword-arguments-order</a></p>
 </li>
 </ul>
 </div>
@@ -14127,6 +14319,17 @@ some_str = 'ala' &lt;&lt;
 some_str = 'ala' \
            'bala'</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-stylelineendconcatenation">
+<a class="anchor" href="#references-stylelineendconcatenation"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#heredoc-long-strings" class="bare">https://rubystyle.guide#heredoc-long-strings</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -17939,7 +18142,7 @@ end</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://rubystyle.guide#if-for-negatives" class="bare">https://rubystyle.guide#if-for-negatives</a></p>
+<p><a href="https://rubystyle.guide#unless-for-negatives" class="bare">https://rubystyle.guide#unless-for-negatives</a></p>
 </li>
 </ul>
 </div>
@@ -19855,6 +20058,17 @@ end</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="references-styleoneclassperfile">
+<a class="anchor" href="#references-styleoneclassperfile"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#one-class-per-file" class="bare">https://rubystyle.guide#one-class-per-file</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -23826,6 +24040,17 @@ some_method \
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="references-styleredundantlinecontinuation">
+<a class="anchor" href="#references-styleredundantlinecontinuation"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#no-trailing-backslash" class="bare">https://rubystyle.guide#no-trailing-backslash</a></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -24248,6 +24473,17 @@ Regexp.compile('regexp')</code></pre>
 # good
 /[+\-]\d/</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-styleredundantregexpescape">
+<a class="anchor" href="#references-styleredundantregexpescape"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#limit-escapes" class="bare">https://rubystyle.guide#limit-escapes</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -26177,6 +26413,20 @@ user.address.zip if user</code></pre>
 <p>Identifies usages of <code>shuffle.first</code>,
 <code>shuffle.last</code>, and <code>shuffle[]</code> and change them to use
 <code>sample</code> instead.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+An offense involving a <code>random:</code> argument is registered but not autocorrected:
+<code>shuffle</code> and <code>sample</code> consume the given generator differently, so for a seeded generator
+the correction would select different elements.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="examples-stylesample">
@@ -29820,6 +30070,70 @@ foo = (bar = baz) ? a : b</code></pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="styletimenow" data-type="test">
+<a class="anchor" href="#styletimenow"></a>Style/TimeNow</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for <code>Time.new</code> without arguments, which is an implicit way
+to retrieve the current system time. Prefer the more explicit <code>Time.now</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-styletimenow">
+<a class="anchor" href="#examples-styletimenow"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Time.new
+
+# good
+Time.now
+
+# good - `Time.new` with arguments constructs a specific time
+Time.new(2026, 8, 19)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-styletimenow">
+<a class="anchor" href="#references-styletimenow"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#time-now" class="bare">https://rubystyle.guide#time-now</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="styletoplevelmethoddefinition" data-type="test">
 <a class="anchor" href="#styletoplevelmethoddefinition"></a>Style/TopLevelMethodDefinition</h2>
 <div class="sectionbody">
@@ -31058,6 +31372,17 @@ a, b, _something = foo</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="references-styletrailingunderscorevariable">
+<a class="anchor" href="#references-styletrailingunderscorevariable"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#trailing-underscore-variables" class="bare">https://rubystyle.guide#trailing-underscore-variables</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
