@@ -12,3 +12,10 @@ updates:
       applies-to: version-updates
       patterns: ["*"]
       update-types: [patch, minor]
+- package-ecosystem: docker
+  directory: /
+  schedule:
+    interval: cron
+    cronjob: "30 4 * * 0"
+  cooldown:
+    default-days: 7

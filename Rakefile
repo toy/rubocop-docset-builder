@@ -92,8 +92,10 @@ class RubocopDocBuilder
       antora_playbook_path.carefull_write(antora_playbook)
     end
 
+    sh(*%W[docker build -t antora:pinned .])
+
     dir antora_html_path => antora_playbook_path do
-      sh(*docker_run_args('antora/antora') + %W[
+      sh(*docker_run_args('antora:pinned') + %W[
         --fetch
         --cache-dir #{ANTORA_CACHE_DIR}
         #{antora_playbook_path}
