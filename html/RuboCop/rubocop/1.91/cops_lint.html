@@ -633,7 +633,9 @@ single positional hash they collapse into, matching Ruby’s semantics.</p>
 <div class="paragraph">
 <p>Constructor calls (<code>Foo.new</code>) and keyword-argument validation are out of
 scope: only positional arity of explicitly defined singleton methods is
-checked.</p>
+checked. <code>new</code> is skipped outright, because <code>Class#new</code> is not in the
+index: any <code>new</code> the index does find sits below it in the method
+resolution order, where Ruby would never reach it.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-lintargumentmismatch">
@@ -1685,11 +1687,11 @@ Login</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.72</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.91</p></td>
 </tr>
 </tbody>
 </table>
@@ -1717,12 +1719,11 @@ are strictly formatted.</p>
 # good
 # rubocop:disable all
 
-# bad
+# bad - only the first directive takes effect
 # rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
 
 # good
-# rubocop:disable Layout/LineLength
-# rubocop:disable Style/Encoding
+# rubocop:disable Layout/LineLength, Style/Encoding
 
 # bad
 # rubocop:wrongmode Layout/LineLength
@@ -6222,6 +6223,126 @@ end</code></pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="lintmisplacedmagiccomment" data-type="test">
+<a class="anchor" href="#lintmisplacedmagiccomment"></a>Lint/MisplacedMagicComment</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.91</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for magic comments placed where Ruby silently ignores them.</p>
+</div>
+<div class="paragraph">
+<p>The <code>encoding</code> magic comment is only honored on the first line of a file,
+or on the second line when the first line is a shebang. Anywhere else it
+is silently ignored - even directly below another comment or a blank line.</p>
+</div>
+<div class="paragraph">
+<p>Other magic comments (such as <code>frozen_string_literal</code>) are honored
+anywhere before the first token of code, but are ignored after any code,
+with a warning emitted only when running Ruby with <code>-w</code>.</p>
+</div>
+<div class="paragraph">
+<p>A magic comment misplaced ahead of a shebang also renders the shebang
+ineffective, since a shebang is only recognized on the first line.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+An <code>encoding</code> comment that is only preceded by other magic
+comments is not flagged by this cop; that case is handled by
+<code>Lint/OrderedMagicComments</code>. <code>shareable_constant_value</code> is never
+flagged, as Ruby intentionally allows it mid-file with block scoping.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="safety-lintmisplacedmagiccomment">
+<a class="anchor" href="#safety-lintmisplacedmagiccomment"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop’s autocorrection is unsafe because moving the magic comment
+to its effective position activates it, which changes runtime
+behavior (e.g. the source encoding or string mutability).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-lintmisplacedmagiccomment">
+<a class="anchor" href="#examples-lintmisplacedmagiccomment"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+# Documentation comment
+# encoding: ascii-8bit
+puts 'hello'
+
+# good
+# encoding: ascii-8bit
+# Documentation comment
+puts 'hello'
+
+# bad
+require 'foo'
+# frozen_string_literal: true
+
+# good
+# frozen_string_literal: true
+require 'foo'
+
+# bad
+# frozen_string_literal: true
+#!/usr/bin/env ruby
+puts 'hello'
+
+# good
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+puts 'hello'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-lintmisplacedmagiccomment">
+<a class="anchor" href="#references-lintmisplacedmagiccomment"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://rubystyle.guide#magic-comments-first" class="bare">https://rubystyle.guide#magic-comments-first</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="lintmissingcopenabledirective" data-type="test">
 <a class="anchor" href="#lintmissingcopenabledirective"></a>Lint/MissingCopEnableDirective</h2>
 <div class="sectionbody">
@@ -8000,7 +8121,7 @@ CONST = 1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.53</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.37</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.91</p></td>
 </tr>
 </tbody>
 </table>

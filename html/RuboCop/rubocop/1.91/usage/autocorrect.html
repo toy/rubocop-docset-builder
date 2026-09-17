@@ -177,6 +177,54 @@ automatically. This is useful for gradually adopting new cops.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="previewing-corrections" data-type="section">
+<a class="anchor" href="#previewing-corrections"></a>Previewing corrections</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --diff</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>--diff</code> flag prints a unified diff of what autocorrection would change and
+leaves every file untouched. It turns on safe autocorrection by itself, and
+follows the mode you pick when combined with <code>-A</code> or <code>-x</code>.</p>
+</div>
+<div class="paragraph">
+<p>The exit status is non-zero whenever there is something to correct - a patch
+means work is left, whatever <code>--fail-level</code> says. That makes it a useful CI
+check: the build fails with the patch that would fix it right there in the log.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Fail the build when anything is not formatted the way the project wants,
+# and show what would change.
+$ rubocop --diff
+
+# Take the patch and apply it locally.
+$ rubocop --diff --format quiet | git apply</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It cannot be combined with <code>--auto-gen-config</code>, which exists to write a file.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Offenses still show up in the report as corrected, because they were
+corrected in memory. Nothing is written to disk. Use <code>--format quiet</code> to see the
+diff on its own.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="configuring-autocorrect-per-cop" data-type="section">
 <a class="anchor" href="#configuring-autocorrect-per-cop"></a>Configuring autocorrect per cop</h2>
 <div class="sectionbody">

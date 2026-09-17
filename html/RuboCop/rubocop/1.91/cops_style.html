@@ -531,6 +531,34 @@ alias_method :bar, :foo</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylealias" title="Style/Alias: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylealias"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>prefer_alias</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>prefer_alias_method</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylealias">
 <a class="anchor" href="#references-stylealias"></a>References</h3>
 <div class="ulist">
@@ -2438,6 +2466,34 @@ things.map { |thing|
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleblockdelimiters" title="Style/BlockDelimiters: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleblockdelimiters"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleblockdelimiters">
 <a class="anchor" href="#references-styleblockdelimiters"></a>References</h3>
 <div class="ulist">
@@ -2969,6 +3025,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyleForModules</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;none&gt;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;none&gt;</code>, <code>nested</code>, <code>compact</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-styleclassandmodulechildren" title="Style/ClassAndModuleChildren: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleclassandmodulechildren"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -5362,6 +5446,11 @@ Inheriting from <code>Data.define</code> adds a superfluous level in inheritance
 <p>Autocorrection is unsafe because it will change the inheritance
 tree (e.g. return value of <code>Module#ancestors</code>) of the constant.</p>
 </div>
+<div class="paragraph">
+<p>It is also unsafe because constants that the class body resolves through its
+ancestors (e.g. one provided by an included module) fall out of scope inside
+the block.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-styledatainheritance">
@@ -5842,16 +5931,16 @@ Dir.empty?('path/to/dir')</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.90</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.91</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Checks for directive scopes that can be expressed with the tighter
-<code>disable-next</code> form: a <code>disable</code>/<code>enable</code> pair wrapping exactly one
-statement, or a <code>push</code>/<code>pop</code> that only disables cops around exactly
-one statement. A statement-scoped directive cannot drift as the
-surrounding code changes and needs no closing boundary.</p>
+next-statement forms: a <code>disable</code>/<code>enable</code> pair, an
+<code>enable</code>/<code>disable</code> pair, or a <code>push</code>/<code>pop</code> with signed arguments
+wrapping exactly one statement. A statement-scoped directive cannot
+drift as the surrounding code changes and needs no closing boundary.</p>
 </div>
 <div class="sect2">
 <h3 id="safety-styledirectivescope">
@@ -5888,6 +5977,21 @@ end
 # rubocop:disable-next Metrics/AbcSize
 def foo
 end
+
+# bad
+# rubocop:disable Metrics/AbcSize
+# rubocop:push +Metrics/AbcSize
+def foo
+end
+# rubocop:pop
+# rubocop:enable Metrics/AbcSize
+
+# good
+# rubocop:disable Metrics/AbcSize
+# rubocop:enable-next Metrics/AbcSize
+def foo
+end
+# rubocop:enable Metrics/AbcSize
 
 # good - the region spans more than one statement
 # rubocop:disable Metrics/AbcSize
@@ -5943,6 +6047,11 @@ and not quickly disabled with a comment.</p>
 if this configuration is set, <code>rubocop:disable all</code> is still disallowed.</p>
 </div>
 <div class="paragraph">
+<p><code>AllowedCops</code> and <code>DisallowedCops</code> accept cop names and department names
+alike. Listing a cop does not cover its whole department: a directive
+disabling <code>Metrics</code> is broader than one disabling <code>Metrics/AbcSize</code>.</p>
+</div>
+<div class="paragraph">
 <p>Alternatively, specific cops can be disallowed with the <code>DisallowedCops</code>
 configuration. When <code>DisallowedCops</code> is set, only directives for the listed
 cops (and <code>all</code>) will be flagged. This is useful when you want
@@ -5951,7 +6060,14 @@ allowlisting all other cops. <code>AllowedCops</code> and <code>DisallowedCops</
 both be set at the same time; if <code>DisallowedCops</code> is set, it takes precedence.</p>
 </div>
 <div class="paragraph">
-<p>With <code>AllowTrailingComment</code> set to <code>true</code>, a disable directive carrying
+<p><code>AllowedDirectives</code> names directive forms - <code>disable</code>, <code>todo</code>,
+<code>disable-next</code>, <code>todo-next</code>, <code>push</code>, <code>next</code> - and exempts them from the
+cop entirely. <code>rubocop:todo</code> is the usual candidate, since
+<code>--disable-uncorrectable</code> generates those and they record debt rather
+than a decision someone should be asked to justify.</p>
+</div>
+<div class="paragraph">
+<p>With <code>AllowWithReason</code> set to <code>true</code>, a disable directive carrying
 a <code>--</code> trailing justification comment is allowed, so a team can require
 every disable to be documented instead of banning them outright. Enable
 directives are not checked in this mode, since they end a suppression
@@ -6009,8 +6125,34 @@ foo
 </div>
 </div>
 <div class="sect3">
-<h4 id="allowtrailingcomment_-true-styledisablecopswithinsourcecodedirective" title="Style/DisableCopsWithinSourceCodeDirective: AllowTrailingComment: true" data-type="setting">
-<a class="anchor" href="#allowtrailingcomment_-true-styledisablecopswithinsourcecodedirective"></a>AllowTrailingComment: true</h4>
+<h4 id="alloweddirectives_-_todo_-styledisablecopswithinsourcecodedirective" title="Style/DisableCopsWithinSourceCodeDirective: AllowedDirectives: [todo]" data-type="setting">
+<a class="anchor" href="#alloweddirectives_-_todo_-styledisablecopswithinsourcecodedirective"></a>AllowedDirectives: [todo]</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good - the cop does not look at `todo` directives at all
+x = 0 # rubocop:todo Layout/SpaceAroundOperators
+
+# bad
+x = 0 # rubocop:disable Layout/SpaceAroundOperators</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowedcops_-_metrics_-styledisablecopswithinsourcecodedirective" title="Style/DisableCopsWithinSourceCodeDirective: AllowedCops: [Metrics]" data-type="setting">
+<a class="anchor" href="#allowedcops_-_metrics_-styledisablecopswithinsourcecodedirective"></a>AllowedCops: [Metrics]</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good - every cop the directive disables is in an exempt department
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+# rubocop:enable Metrics/AbcSize</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allowwithreason_-true-styledisablecopswithinsourcecodedirective" title="Style/DisableCopsWithinSourceCodeDirective: AllowWithReason: true" data-type="setting">
+<a class="anchor" href="#allowwithreason_-true-styledisablecopswithinsourcecodedirective"></a>AllowWithReason: true</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
@@ -6050,9 +6192,14 @@ x = 0 # rubocop:disable Layout/SpaceAroundOperators -- would misalign the table<
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AllowTrailingComment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowWithReason</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AllowedDirectives</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 </tr>
 </tbody>
 </table>
@@ -6328,6 +6475,34 @@ end</code></pre>
 </tbody>
 </table>
 </div>
+<div class="sect2">
+<h3 id="preview-defaults-styledocumentation" title="Style/Documentation: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styledocumentation"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -6535,64 +6710,6 @@ end</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="styledoublecopdisabledirective" data-type="test">
-<a class="anchor" href="#styledoublecopdisabledirective"></a>Style/DoubleCopDisableDirective</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Enabled by default</th>
-<th class="tableblock halign-left valign-top">Safe</th>
-<th class="tableblock halign-left valign-top">Supports autocorrection</th>
-<th class="tableblock halign-left valign-top">Version Added</th>
-<th class="tableblock halign-left valign-top">Version Changed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.73</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Detects double disable comments on one line. This is mostly to catch
-automatically generated comments that need to be regenerated.</p>
-</div>
-<div class="sect2">
-<h3 id="examples-styledoublecopdisabledirective">
-<a class="anchor" href="#examples-styledoublecopdisabledirective"></a>Examples</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
-def f # rubocop:disable Style/For # rubocop:disable Metrics/AbcSize
-end
-
-# good
-# rubocop:disable Metrics/AbcSize
-def f # rubocop:disable Style/For
-end
-# rubocop:enable Metrics/AbcSize
-
-# if both fit on one line
-def f # rubocop:disable Style/For, Metrics/AbcSize
-end</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="styledoublenegation" data-type="test">
 <a class="anchor" href="#styledoublenegation"></a>Style/DoubleNegation</h2>
 <div class="sectionbody">
@@ -6734,6 +6851,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>allowed_in_returns</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>allowed_in_returns</code>, <code>forbidden</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-styledoublenegation" title="Style/DoubleNegation: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styledoublenegation"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -7708,6 +7853,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>compact</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>compact</code>, <code>expanded</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-styleemptymethod" title="Style/EmptyMethod: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleemptymethod"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compact</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>expanded</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -9958,6 +10131,34 @@ puts '%10s' % 'foo'</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleformatstring" title="Style/FormatString: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleformatstring"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleformatstring">
 <a class="anchor" href="#references-styleformatstring"></a>References</h3>
 <div class="ulist">
@@ -10259,6 +10460,34 @@ sprintf("%&lt;greeting&gt;s", greeting: 'Hello')
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleformatstringtoken" title="Style/FormatStringToken: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleformatstringtoken"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleformatstringtoken">
 <a class="anchor" href="#references-styleformatstringtoken"></a>References</h3>
 <div class="ulist">
@@ -10448,6 +10677,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Exclude</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>**/*.arb</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylefrozenstringliteralcomment" title="Style/FrozenStringLiteralComment: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylefrozenstringliteralcomment"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -10826,6 +11083,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AllowConsecutiveConditionals</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-styleguardclause" title="Style/GuardClause: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleguardclause"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -12745,6 +13030,34 @@ end</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleifunlessmodifier" title="Style/IfUnlessModifier: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleifunlessmodifier"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleifunlessmodifier">
 <a class="anchor" href="#references-styleifunlessmodifier"></a>References</h3>
 <div class="ulist">
@@ -14135,6 +14448,34 @@ f = -&gt;(x) do
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylelambda" title="Style/Lambda: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylelambda"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylelambda">
 <a class="anchor" href="#references-stylelambda"></a>References</h3>
 <div class="ulist">
@@ -14361,7 +14702,7 @@ some_str = 'ala' \
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.35</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.91</p></td>
 </tr>
 </tbody>
 </table>
@@ -16678,6 +17019,34 @@ end</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylemodulefunction" title="Style/ModuleFunction: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylemodulefunction"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylemodulefunction">
 <a class="anchor" href="#references-stylemodulefunction"></a>References</h3>
 <div class="ulist">
@@ -17916,6 +18285,34 @@ end</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylenegatedif" title="Style/NegatedIf: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylenegatedif"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylenegatedif">
 <a class="anchor" href="#references-stylenegatedif"></a>References</h3>
 <div class="ulist">
@@ -18726,6 +19123,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AllowConsecutiveConditionals</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylenext" title="Style/Next: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylenext"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -19590,6 +20015,34 @@ only correct to the standard pattern of an <code>_</code> every 3 digits.
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylenumericliterals" title="Style/NumericLiterals: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylenumericliterals"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylenumericliterals">
 <a class="anchor" href="#references-stylenumericliterals"></a>References</h3>
 <div class="ulist">
@@ -19789,6 +20242,34 @@ bar.baz.positive?</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Exclude</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spec/**/*</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylenumericpredicate" title="Style/NumericPredicate: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylenumericpredicate"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -20787,6 +21268,34 @@ c = 3</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleparallelassignment" title="Style/ParallelAssignment: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleparallelassignment"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleparallelassignment">
 <a class="anchor" href="#references-styleparallelassignment"></a>References</h3>
 <div class="ulist">
@@ -21306,6 +21815,34 @@ puts Regexp.last_match(1)</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleperlbackrefs" title="Style/PerlBackrefs: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleperlbackrefs"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleperlbackrefs">
 <a class="anchor" href="#references-styleperlbackrefs"></a>References</h3>
 <div class="ulist">
@@ -21803,6 +22340,34 @@ fail 'message'</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AllowedCompactTypes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-styleraiseargs" title="Style/RaiseArgs: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleraiseargs"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -25384,6 +25949,34 @@ x =~ /home\//</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-styleregexpliteral" title="Style/RegexpLiteral: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleregexpliteral"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-styleregexpliteral">
 <a class="anchor" href="#references-styleregexpliteral"></a>References</h3>
 <div class="ulist">
@@ -25729,6 +26322,34 @@ end</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>explicit</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>implicit</code>, <code>explicit</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylerescuestandarderror" title="Style/RescueStandardError: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylerescuestandarderror"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>explicit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>implicit</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -27310,6 +27931,34 @@ explicit_receiver.raise</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylesignalexception" title="Style/SignalException: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylesignalexception"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylesignalexception">
 <a class="anchor" href="#references-stylesignalexception"></a>References</h3>
 <div class="ulist">
@@ -28104,6 +28753,34 @@ puts $*</code></pre>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylespecialglobalvars" title="Style/SpecialGlobalVars: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylespecialglobalvars"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylespecialglobalvars">
 <a class="anchor" href="#references-stylespecialglobalvars"></a>References</h3>
 <div class="ulist">
@@ -28773,6 +29450,34 @@ there are instances when string keys are required.</p>
 </table>
 </div>
 <div class="sect2">
+<h3 id="preview-defaults-stylestringliterals" title="Style/StringLiterals: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylestringliterals"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>single_quotes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>double_quotes</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="references-stylestringliterals">
 <a class="anchor" href="#references-stylestringliterals"></a>References</h3>
 <div class="ulist">
@@ -28891,6 +29596,34 @@ regexp = /Tests #{success ? "PASS" : "FAIL"}/</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>single_quotes</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>single_quotes</code>, <code>double_quotes</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylestringliteralsininterpolation" title="Style/StringLiteralsInInterpolation: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylestringliteralsininterpolation"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>single_quotes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>double_quotes</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -29066,6 +29799,11 @@ adds a superfluous level in inheritance tree.</p>
 <div class="paragraph">
 <p>Autocorrection is unsafe because it will change the inheritance
 tree (e.g. return value of <code>Module#ancestors</code>) of the constant.</p>
+</div>
+<div class="paragraph">
+<p>It is also unsafe because constants that the class body resolves through its
+ancestors (e.g. one provided by an included module) fall out of scope inside
+the block.</p>
 </div>
 </div>
 <div class="sect2">
@@ -29479,6 +30217,34 @@ array of 2 or fewer elements.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MinSize</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylesymbolarray" title="Style/SymbolArray: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylesymbolarray"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>percent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>brackets</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -30063,6 +30829,34 @@ foo = (bar = baz) ? a : b</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AllowSafeAssignment</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-styleternaryparentheses" title="Style/TernaryParentheses: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-styleternaryparentheses"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>require_no_parentheses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>require_parentheses_when_complex</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -32342,6 +33136,34 @@ array of 2 or fewer elements.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">WordRegex</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="preview-defaults-stylewordarray" title="Style/WordArray: Preview defaults" data-type="section">
+<a class="anchor" href="#preview-defaults-stylewordarray"></a>Preview defaults</h3>
+<div class="paragraph">
+<p>These defaults apply under <a href="versioning.html#preview" class="xref page">Preview</a> and are expected to become the regular defaults in the next major release.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Current default</th>
+<th class="tableblock halign-left valign-top">Preview default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EnforcedStyle</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>percent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>brackets</code></p></td>
 </tr>
 </tbody>
 </table>

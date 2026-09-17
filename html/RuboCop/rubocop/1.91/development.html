@@ -741,6 +741,74 @@ end</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="shipping-unstable-behavior-with-preview" data-type="section">
+<a class="anchor" href="#shipping-unstable-behavior-with-preview"></a>Shipping unstable behavior with <code>preview?</code>
+</h3>
+<div class="paragraph">
+<p>Making an existing cop report a case it used to miss, or correct one
+differently, changes results for every project that has the cop enabled. Such a
+change normally has to wait for a major release. <code>preview?</code> is the way to ship
+it sooner, to the projects that ask for it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">def on_send(node)
+  return unless redundant_call?(node)
+  # Flagging the safe-navigation form is new; it is behind preview until we
+  # have heard from enough projects to make it the default.
+  return if node.csend_type? &amp;&amp; !preview?
+
+  add_offense(node)
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The gate is on for projects running with <code>AllCops: Preview: true</code> or
+<code>--preview</code>, and off for everyone else. Cover both sides in the specs, since the
+stable path is the one most users are on:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">context 'when preview is enabled' do
+  let(:all_cops_config) { super().merge('Preview' =&gt; true) }
+
+  it 'registers an offense for the safe-navigation form' do
+    expect_offense(&lt;&lt;~RUBY)
+      foo&amp;.bar
+      ^^^^^^^^ Remove the redundant call.
+    RUBY
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Reach for this only when the change is genuinely contested. A change that is
+plainly a bug fix should just ship, and a whole new cop belongs in <code>pending</code>
+instead. See <a href="versioning.html#preview" class="xref page">"Preview"</a> for the full rule and the
+lifecycle a preview change follows afterwards.</p>
+</div>
+<div class="paragraph">
+<p>A change to a cop’s <strong>defaults</strong> does not need <code>preview?</code> at all. Give the cop’s
+entry in <code>config/default.yml</code> a <code>Preview</code> section with the values it is expected
+to adopt in the next major release, and the configuration loader applies them
+under preview. <code>AllCops</code> can carry such a section too, for settings like
+<code>FailLevel</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Style/Documentation:
+  Enabled: true
+  Preview:
+    Enabled: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The section is rendered in the cop’s documentation as a "Preview defaults" table
+and never appears in the resolved configuration, so the cop itself reads its
+settings the same way whether preview is on or off.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">

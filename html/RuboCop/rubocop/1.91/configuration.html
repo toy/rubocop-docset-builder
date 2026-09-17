@@ -181,6 +181,34 @@ directories, <code>config/default.yml</code> will be used.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="fail-level" data-type="section">
+<a class="anchor" href="#fail-level"></a>Choosing what fails a run</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default any offense at <code>refactor</code> severity or above makes <code>rubocop</code> exit with
+a non-zero status, which is every enabled cop except those at <code>info</code>. To draw
+the line higher, so that style offenses are reported without failing the build,
+set <code>FailLevel</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  FailLevel: warning</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this, only <code>Lint</code> and <code>Security</code> offenses, and anything else configured to
+report at <code>warning</code> or above, fail the run; everything below is still printed.
+This is the default under <a href="versioning.html#preview" class="xref page">Preview</a>, and is expected
+to become the default in the next major release.
+The <code>--fail-level</code> command line option overrides the setting for a single run,
+and <code>--display-only-fail-level-offenses</code> hides everything below the line. See
+<a href="configuration/cop_settings.html#severity" class="xref page">Severity</a> for what each level
+means.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="setting-the-target-ruby-version" data-type="section">
 <a class="anchor" href="#setting-the-target-ruby-version"></a>Setting the target Ruby version</h2>
 <div class="sectionbody">

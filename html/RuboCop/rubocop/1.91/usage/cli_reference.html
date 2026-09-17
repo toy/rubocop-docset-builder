@@ -95,6 +95,10 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock">Store and reuse results for faster operation.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--changed[=REVISION]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inspect only the files that differ from a git revision, defaulting to <code>HEAD</code>. Untracked files count as changed.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-d/--debug</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Displays some extra debug output.</p></td>
 </tr>
@@ -109,6 +113,10 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--disable-uncorrectable</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used with --autocorrect to annotate any offenses that do not support autocorrect with <code>rubocop:todo</code> comments.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--diff</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Print a unified diff of what autocorrection would change, without writing any files. See <a href="autocorrect.html" class="xref page">Autocorrect</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-D/--[no-]display-cop-names</code></p></td>
@@ -164,7 +172,7 @@
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--fail-level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum <a href="../configuration/cop_settings.html#severity" class="xref page">severity</a> for exit with error code. Full severity name or upper case initial can be given. Normally, autocorrected offenses are ignored. Use <code>A</code> or <code>autocorrect</code> if you’d like any autocorrectable offense to trigger failure, regardless of severity.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum <a href="../configuration/cop_settings.html#severity" class="xref page">severity</a> for exit with error code. Full severity name or upper case initial can be given. Normally, autocorrected offenses are ignored. Use <code>A</code> or <code>autocorrect</code> if you’d like any autocorrectable offense to trigger failure, regardless of severity. Overrides <code>AllCops: FailLevel</code> in the configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--force-exclusion</code></p></td>
@@ -229,6 +237,10 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--raise-cop-error</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Raise cop-related errors with cause and location. This is used to prevent cops from failing silently. Default is false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--[no-]preview</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Opt in to unstable behavior: cops that are <code>Enabled: preview</code>, and changes to existing cops that are not the default yet. See <a href="../versioning.html#preview" class="xref page">Preview</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>--plugin</code></p></td>

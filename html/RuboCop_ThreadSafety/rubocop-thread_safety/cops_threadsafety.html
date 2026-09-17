@@ -23,6 +23,67 @@
 <article class="doc">
 <h1 class="page" data-type="category">ThreadSafety</h1>
 <div class="sect1">
+<h2 id="threadsafetyactivesupportcallbacks" data-type="test">
+<a class="anchor" href="#threadsafetyactivesupportcallbacks"></a>ThreadSafety/ActiveSupportCallbacks</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid mutating ActiveSupport callback chains at runtime.</p>
+</div>
+<div class="paragraph">
+<p>Calls such as <code>User.skip_callback</code> and <code>User.set_callback</code> mutate callback
+chains at process scope.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetyactivesupportcallbacks">
+<a class="anchor" href="#examples-threadsafetyactivesupportcallbacks"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Site.skip_callback(:commit, :after, :after_owner_change)
+
+# bad
+Site.set_callback(
+  :commit, :after, :after_owner_change,
+  if: :saved_change_to_owner?
+)
+
+# good
+class User &lt; ApplicationRecord
+  skip_callback :commit, :after, :after_owner_change
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="threadsafetyclassandmoduleattributes" data-type="test">
 <a class="anchor" href="#threadsafetyclassandmoduleattributes"></a>ThreadSafety/ClassAndModuleAttributes</h2>
 <div class="sectionbody">
@@ -250,7 +311,7 @@ FileUtils.chdir("/var/run")</code></pre>
 <a class="anchor" href="#allowcallwithblock_-false-_default_-threadsafetydirchdir"></a>AllowCallWithBlock: false (default)</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
 Dir.chdir("/var/run") do
   puts Dir.pwd
 end</code></pre>
@@ -262,7 +323,7 @@ end</code></pre>
 <a class="anchor" href="#allowcallwithblock_-true-threadsafetydirchdir"></a>AllowCallWithBlock: true</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
 Dir.chdir("/var/run") do
   puts Dir.pwd
 end</code></pre>
@@ -294,6 +355,195 @@ end</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetyenvmutation" data-type="test">
+<a class="anchor" href="#threadsafetyenvmutation"></a>ThreadSafety/EnvMutation</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid mutating <code>ENV</code>.</p>
+</div>
+<div class="paragraph">
+<p>Environment variables are process-wide. Mutating them can affect other
+threads, requests, jobs, or subprocesses running in the same Ruby
+process.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetyenvmutation">
+<a class="anchor" href="#examples-threadsafetyenvmutation"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+ENV['TZ'] = 'UTC'
+
+# bad
+ENV.update('FOO' =&gt; 'bar')
+
+# good
+system({ 'TZ' =&gt; 'UTC' }, 'date')
+
+# good
+ENV.fetch('TZ', 'UTC')</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetylazysynchronizationprimitive" data-type="test">
+<a class="anchor" href="#threadsafetylazysynchronizationprimitive"></a>ThreadSafety/LazySynchronizationPrimitive</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid lazily initializing synchronization primitives with <code>||=</code>.</p>
+</div>
+<div class="paragraph">
+<p>The check-then-set performed by <code>||=</code> is not atomic, so concurrent threads
+can observe an uninitialized primitive or create more than one instance.
+Eagerly assign the primitive (for example in <code>initialize</code>) or use a constant.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetylazysynchronizationprimitive">
+<a class="anchor" href="#examples-threadsafetylazysynchronizationprimitive"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+def mutex
+  @mutex ||= Mutex.new
+end
+
+# bad
+def mutex = @mutex ||= Mutex.new
+
+# good
+def initialize
+  @mutex = Mutex.new
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="threadsafetymethodredefinition" data-type="test">
+<a class="anchor" href="#threadsafetymethodredefinition"></a>ThreadSafety/MethodRedefinition</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid the thread-unsafe combination of remove_method followed by defining a method with the same name.
+This can lead to a race condition, as these two actions are not atomic.
+As a safer alternative, consider aliasing the method to itself instead.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-threadsafetymethodredefinition">
+<a class="anchor" href="#examples-threadsafetymethodredefinition"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+remove_method :foo
+def foo; end
+
+# good
+alias_method :foo, :foo
+def foo; end
+
+# good
+alias foo foo
+def foo; end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-threadsafetymethodredefinition">
+<a class="anchor" href="#references-threadsafetymethodredefinition"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://bugs.ruby-lang.org/issues/13574" class="bare">https://bugs.ruby-lang.org/issues/13574</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>

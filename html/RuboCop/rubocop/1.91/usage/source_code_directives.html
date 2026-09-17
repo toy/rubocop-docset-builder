@@ -173,6 +173,64 @@ directives existed at all.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="toggling-cops-for-the-next-statement" data-type="section">
+<a class="anchor" href="#toggling-cops-for-the-next-statement"></a>Toggling Cops for the Next Statement</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>next</code> directive combines the statement scope of <code>disable-next</code> with the
+<code>`/`-` argument syntax of `push`: each `-` argument disables a cop for the
+next statement, and each `</code> argument enables one there. It shines when a
+single statement needs settings toggled in both directions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># rubocop:disable Metrics/MethodLength
+def big_method
+  # ...
+
+  # rubocop:next +Metrics/MethodLength -Style/GuardClause -- this part is settled
+  def helper
+    return unless valid?
+
+    process
+  end
+
+  # ...
+end
+# rubocop:enable Metrics/MethodLength</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code># rubocop:next -Cop</code> is equivalent to <code># rubocop:disable-next Cop</code>. A <code>+</code>
+argument suspends the enclosing disable - whether it comes from a <code>disable</code>
+directive, a pushed <code>-</code> setting, or the cop being disabled in the
+configuration - for exactly one statement, with no <code>enable</code>/<code>disable</code> or
+<code>pop</code> bookkeeping. Attachment follows the <code>disable-next</code> rules: the
+directive must sit on its own comment line, chains past other comment
+lines, and a blank line detaches it.</p>
+</div>
+<div class="paragraph">
+<p>When you only enable, <code>enable-next</code> says the same thing without the sign
+soup - it is to <code>next +Cop</code> what <code>disable-next</code> is to <code>next -Cop</code>, and it
+also accepts <code>all</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># rubocop:disable Metrics/AbcSize
+# ...
+
+# rubocop:enable-next Metrics/AbcSize -- this method is settled
+def finished_method
+  # checked again from here on
+end
+
+# ...
+# rubocop:enable Metrics/AbcSize</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="temporarily-enabling-cops-in-source-code" data-type="section">
 <a class="anchor" href="#temporarily-enabling-cops-in-source-code"></a>Temporarily Enabling Cops in Source Code</h2>
 <div class="sectionbody">
@@ -383,6 +441,16 @@ from the code itself, so it never needs re-adjusting when the statement
 grows or shrinks.</p>
 </li>
 <li>
+<p><strong><code>enable-next</code></strong> - the mirror image of <code>disable-next</code>: re-enables a cop
+for one statement inside a disabled region.</p>
+</li>
+<li>
+<p><strong><code>next</code></strong> - the same statement scope, with <code>push</code>-style <code>+</code>/<code>-</code> arguments,
+for the rare statement that needs settings toggled in both directions at
+once. <code>next -Cop</code> is <code>disable-next Cop</code>; <code>next +Cop</code> is
+<code>enable-next Cop</code>.</p>
+</li>
+<li>
 <p><strong><code>disable</code> / <code>enable</code> pair</strong> - an explicit region spanning several
 statements. The boundaries are yours to maintain:
 <code>Lint/MissingCopEnableDirective</code> guards against forgetting the closing
@@ -403,8 +471,92 @@ a suppression you intend to revisit rather than a deliberate exception.</p>
 </div>
 <div class="paragraph">
 <p>The <code>Style/DirectiveScope</code> cop can enforce the tightest-form preference: it
-flags <code>disable</code>/<code>enable</code> pairs and disable-only <code>push</code>/<code>pop</code> scopes that
-wrap a single statement, and converts them to <code>disable-next</code>.</p>
+flags <code>disable</code>/<code>enable</code> and <code>enable</code>/<code>disable</code> pairs as well as <code>push</code>/<code>pop</code>
+scopes with signed arguments that wrap a single statement, and converts them
+to the matching next-statement form (<code>disable-next</code>, <code>enable-next</code> or
+<code>next</code>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cops-that-check-directives" data-type="section">
+<a class="anchor" href="#cops-that-check-directives"></a>Cops That Check Directives</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Directives are code too, and a handful of cops keep them honest. All but the
+last two are on by default, so most of this happens without any configuration.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Cop</th>
+<th class="tableblock halign-left valign-top">What it reports</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_lint.html#lintcopdirectivesyntax" class="xref page"><code>Lint/CopDirectiveSyntax</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A directive RuboCop cannot act on: a missing or misspelled mode, cop names
+  that are not comma-separated, a trailing comment that does not start with
+  <code>--</code>, a second directive on the same line, or a cop name that does not
+  exist. These suppress nothing, silently, which is what makes them worth
+  reporting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_migration.html#migrationdepartmentname" class="xref page"><code>Migration/DepartmentName</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A cop named without its department, such as <code># rubocop:disable LineLength</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_lint.html#lintredundantcopdisabledirective" class="xref page"><code>Lint/RedundantCopDisableDirective</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>disable</code> that is no longer suppressing anything - the offense it was
+  hiding is gone. Autocorrection removes the directive along with its <code>--</code>
+  reason.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_lint.html#lintredundantcopenabledirective" class="xref page"><code>Lint/RedundantCopEnableDirective</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An <code>enable</code> for a cop that was not disabled at that point.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_lint.html#lintmissingcopenabledirective" class="xref page"><code>Lint/MissingCopEnableDirective</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>disable</code> that is never closed, so it runs to the end of the file.
+  <code>MaxRangeSize</code> bounds how many lines a region may span before it is
+  reported.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_style.html#styledirectivescope" class="xref page"><code>Style/DirectiveScope</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>disable</code>/<code>enable</code> pair or a <code>push</code>/<code>pop</code> scope that wraps a single
+  statement and could use the tighter next-statement form.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../cops_style.html#styledisablecopswithinsourcecodedirective" class="xref page"><code>Style/DisableCopsWithinSourceCodeDirective</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directives themselves, for projects that would rather not have them. It can
+  forbid them outright, restrict which cops may be suppressed with
+  <code>AllowedCops</code>/<code>DisallowedCops</code>, exempt whole directive forms with
+  <code>AllowedDirectives</code>, or - with <code>AllowWithReason</code> - permit any directive that
+  carries a <code>--</code> justification.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Two of these are deliberately hard to silence with a directive, for the obvious
+reason. <code>Lint/RedundantCopDisableDirective</code> is not covered by
+<code># rubocop:disable all</code> or by disabling the <code>Lint</code> department - a pointless
+directive is exactly what it exists to report - so it has to be named to be
+turned off. <code>Style/DisableCopsWithinSourceCodeDirective</code> goes further: once it is
+explicitly enabled, no directive can disable it at all.</p>
 </div>
 </div>
 </div>

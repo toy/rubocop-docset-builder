@@ -180,6 +180,68 @@ Review the diff after running autocorrect, especially with <code>-A</code>. See 
 </div>
 </div>
 <div class="sect1">
+<h2 id="inspecting-only-what-changed" data-type="section">
+<a class="anchor" href="#inspecting-only-what-changed"></a>Inspecting Only What Changed</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On a large project you often care only about the code you just touched.
+<code>--changed</code> asks git which files differ and inspects those:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Files you have modified since the last commit, including untracked ones
+$ rubocop --changed
+
+# Everything your branch changes relative to main - useful on CI
+$ rubocop --changed=main</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deleted files are skipped, and <code>Include</code>/<code>Exclude</code> still apply, so the result is
+the intersection of "what git says changed" and "what RuboCop would inspect
+anyway". Paths given on the command line narrow it further, so
+<code>rubocop --changed lib</code> inspects the changed files under <code>lib</code>.</p>
+</div>
+<div class="paragraph">
+<p>Two things it is good for. On a large codebase that is mid-adoption, it keeps a
+local run fast and focused on the code you are actually touching:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ rubocop --changed --diff</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And on CI, it holds new code to a standard the whole repository does not meet
+yet, without a todo file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">$ git fetch origin main --depth=1
+$ rubocop --changed=origin/main</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The whole file is inspected, not just the lines that changed, so a file you
+touched can still report an offense from a part you did not write. Tools like
+<a href="https://github.com/prontolabs/pronto">Pronto</a> exist for line-level filtering.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In a repository without any commits every file counts as changed, and outside a
+git repository <code>--changed</code> reports the error rather than guessing.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="editor-integration" data-type="section">
 <a class="anchor" href="#editor-integration"></a>Editor Integration</h2>
 <div class="sectionbody">
