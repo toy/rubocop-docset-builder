@@ -54,7 +54,7 @@
 </tbody>
 </table>
 <div class="paragraph">
-<p>Checks that tests use RSpec <code>before</code> hook over Rails <code>setup</code> method.</p>
+<p>Checks that tests use RSpec <code>before</code> instead of Rails <code>setup</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-rspecrailsavoidsetuphook">
@@ -80,6 +80,75 @@ end</code></pre>
 <ul>
 <li>
 <p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/AvoidSetupHook" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/AvoidSetupHook</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="rspecrailsfilefixture" data-type="test">
+<a class="anchor" href="#rspecrailsfilefixture"></a>RSpecRails/FileFixture</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.33</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Prefer <code>file_fixture</code> over hardcoded paths into <code>spec/fixtures</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-rspecrailsfilefixture">
+<a class="anchor" href="#safety-rspecrailsfilefixture"></a>Safety</h3>
+<div class="paragraph">
+<p><code>file_fixture</code> uses the configured <code>file_fixture_path</code>, which defaults
+to <code>spec/fixtures/files</code>. A file under <code>spec/fixtures</code> may need to be
+moved or <code>file_fixture_path</code> configured before replacing the path.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailsfilefixture">
+<a class="anchor" href="#examples-rspecrailsfilefixture"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+Rails.root.join('spec', 'fixtures', 'files', 'example.pdf')
+
+# good
+file_fixture('example.pdf')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailsfilefixture">
+<a class="anchor" href="#references-rspecrailsfilefixture"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/FileFixture" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/FileFixture</a></p>
 </li>
 </ul>
 </div>
@@ -121,11 +190,19 @@ end</code></pre>
 <p>Checks that tests use <code>have_http_status</code> instead of equality matchers.</p>
 </div>
 <div class="sect2">
+<h3 id="safety-rspecrailshavehttpstatus">
+<a class="anchor" href="#safety-rspecrailshavehttpstatus"></a>Safety</h3>
+<div class="paragraph">
+<p>The autocorrection is marked as unsafe because
+<code>response.status</code> response is not always an HTTP response status.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="examples-rspecrailshavehttpstatus">
 <a class="anchor" href="#examples-rspecrailshavehttpstatus"></a>Examples</h3>
 <div class="sect3">
-<h4 id="responsemethods_-__response__-_last_response__-_default_-rspecrailshavehttpstatus" title="RSpecRails/HaveHttpStatus: ResponseMethods: ['response', 'last_response'] (default)" data-type="setting">
-<a class="anchor" href="#responsemethods_-__response__-_last_response__-_default_-rspecrailshavehttpstatus"></a>ResponseMethods: ['response', 'last_response'] (default)</h4>
+<h4 id="_responsemethods_-__response__-_last_response___-_default_-rspecrailshavehttpstatus" title="RSpecRails/HaveHttpStatus: ResponseMethods: ['response', 'last_response'] (default)" data-type="setting">
+<a class="anchor" href="#_responsemethods_-__response__-_last_response___-_default_-rspecrailshavehttpstatus"></a><code>ResponseMethods: ['response', 'last_response']</code> (default)</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
@@ -139,8 +216,9 @@ expect(last_response).to have_http_status(200)</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="responsemethods_-__foo_response__-rspecrailshavehttpstatus" title="RSpecRails/HaveHttpStatus: ResponseMethods: ['foo_response']" data-type="setting">
-<a class="anchor" href="#responsemethods_-__foo_response__-rspecrailshavehttpstatus"></a>ResponseMethods: ['foo_response']</h4>
+<h4 id="_responsemethods_-__foo_response___-rspecrailshavehttpstatus" title="RSpecRails/HaveHttpStatus: ResponseMethods: ['foo_response']" data-type="setting">
+<a class="anchor" href="#_responsemethods_-__foo_response___-rspecrailshavehttpstatus"></a><code>ResponseMethods: ['foo_response']</code>
+</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
@@ -477,16 +555,12 @@ end</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_inferences_-configuration-rspecrailsinferredspectype" title="RSpecRails/InferredSpecType: Inferences configuration" data-type="section">
-<a class="anchor" href="#_inferences_-configuration-rspecrailsinferredspectype"></a><code>Inferences</code> configuration</h4>
+<h4 id="_inferences_-_services_-service__-rspecrailsinferredspectype" title="RSpecRails/InferredSpecType: Inferences: {services: service}" data-type="setting">
+<a class="anchor" href="#_inferences_-_services_-service__-rspecrailsinferredspectype"></a><code>Inferences: {services: service}</code>
+</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># .rubocop.yml
-# RSpecRails/InferredSpecType:
-#   Inferences:
-#     services: service
-
-# bad
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
 # spec/services/user_spec.rb
 RSpec.describe User, type: :service do
 end
@@ -574,11 +648,11 @@ end</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Check if using Minitest-like matchers.</p>
+<p>Detects Minitest-like matchers.</p>
 </div>
 <div class="paragraph">
-<p>Check the use of minitest-like matchers
-starting with <code>assert_</code> or <code>refute_</code>.</p>
+<p>Detects the use of Minitest-like matchers
+(those starting with <code>assert_</code> or <code>refute_</code>).</p>
 </div>
 <div class="sect2">
 <h3 id="examples-rspecrailsminitestassertions">
@@ -595,6 +669,7 @@ refute_empty(b)
 assert_true(a)
 assert_false(a)
 assert_response :ok
+assert_redirected_to '/users'
 
 # good
 expect(b).to eq(a)
@@ -605,7 +680,8 @@ expect(a).to eq(nil)
 expect(a).not_to be_empty
 expect(a).to be(true)
 expect(a).to be(false)
-expect(response).to have_http_status(:ok)</code></pre>
+expect(response).to have_http_status(:ok)
+expect(response).to redirect_to('/users')</code></pre>
 </div>
 </div>
 </div>
@@ -668,8 +744,8 @@ the test target is an instance of <code>ActiveModel::Validations`</code>.</p>
 <h3 id="examples-rspecrailsnegationbevalid">
 <a class="anchor" href="#examples-rspecrailsnegationbevalid"></a>Examples</h3>
 <div class="sect3">
-<h4 id="enforcedstyle_-not_to-_default_-rspecrailsnegationbevalid" title="RSpecRails/NegationBeValid: EnforcedStyle: not_to (default)" data-type="setting">
-<a class="anchor" href="#enforcedstyle_-not_to-_default_-rspecrailsnegationbevalid"></a>EnforcedStyle: not_to (default)</h4>
+<h4 id="_enforcedstyle_-not_to_-_default_-rspecrailsnegationbevalid" title="RSpecRails/NegationBeValid: EnforcedStyle: not_to (default)" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-not_to_-_default_-rspecrailsnegationbevalid"></a><code>EnforcedStyle: not_to</code> (default)</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
@@ -684,8 +760,9 @@ expect(foo).to be_invalid.and be_odd</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="enforcedstyle_-be_invalid-rspecrailsnegationbevalid" title="RSpecRails/NegationBeValid: EnforcedStyle: be_invalid" data-type="setting">
-<a class="anchor" href="#enforcedstyle_-be_invalid-rspecrailsnegationbevalid"></a>EnforcedStyle: be_invalid</h4>
+<h4 id="_enforcedstyle_-be_invalid_-rspecrailsnegationbevalid" title="RSpecRails/NegationBeValid: EnforcedStyle: be_invalid" data-type="setting">
+<a class="anchor" href="#_enforcedstyle_-be_invalid_-rspecrailsnegationbevalid"></a><code>EnforcedStyle: be_invalid</code>
+</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
@@ -739,6 +816,89 @@ expect(foo).to be_invalid.or be_even</code></pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="rspecrailsreceiveperformlater" data-type="test">
+<a class="anchor" href="#rspecrailsreceiveperformlater"></a>RSpecRails/ReceivePerformLater</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.33</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Prefer <code>have_enqueued_job</code> over <code>receive(:perform_later)</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>have_enqueued_job</code> matcher is preferred for testing ActiveJob
+enqueuing. It is more explicit and provides better clarity than
+using <code>receive(:perform_later)</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-rspecrailsreceiveperformlater">
+<a class="anchor" href="#examples-rspecrailsreceiveperformlater"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(MyJob).to receive(:perform_later)
+do_something
+
+# bad
+allow(MyJob).to receive(:perform_later)
+do_something
+expect(MyJob).to have_received(:perform_later)
+
+# bad
+expect(MyJob).to receive(:perform_later).with(user, order)
+
+# good
+expect { do_something }.to have_enqueued_job(MyJob)
+
+# good
+expect { do_something }.to have_enqueued_job(MyJob).with(user, order)
+
+# good
+expect { do_something }
+  .to have_enqueued_job(MyJob)
+  .on_queue('mailers')
+  .at(Date.tomorrow.noon)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-rspecrailsreceiveperformlater">
+<a class="anchor" href="#references-rspecrailsreceiveperformlater"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/ReceivePerformLater" class="bare">https://www.rubydoc.info/gems/rubocop-rspec_rails/RuboCop/Cop/RSpecRails/ReceivePerformLater</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="rspecrailstravelaround" data-type="test">
 <a class="anchor" href="#rspecrailstravelaround"></a>RSpecRails/TravelAround</h2>
 <div class="sectionbody">
@@ -770,19 +930,31 @@ expect(foo).to be_invalid.or be_even</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Prefer to travel in <code>before</code> rather than <code>around</code>.</p>
+<p>Checks for time travel helpers in <code>around</code> hooks.</p>
+</div>
+<div class="paragraph">
+<p>In Rails example groups, <code>freeze_time</code> in a <code>before</code> hook does not need
+a block: Rails' <code>after_teardown</code> calls <code>travel_back</code> after each example.
+This also allows an example to use block-form time travel, which Rails
+does not allow inside another time travel block.
+See <a href="https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html" class="bare">https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html</a></p>
 </div>
 <div class="sect2">
 <h3 id="safety-rspecrailstravelaround">
 <a class="anchor" href="#safety-rspecrailstravelaround"></a>Safety</h3>
 <div class="paragraph">
-<p>This cop is unsafe because the automatic <code>travel_back</code> is only run
-on test cases that are considered as Rails related.</p>
+<p>The automatic <code>travel_back</code> requires both
+<code>ActiveSupport::Testing::TimeHelpers</code> and RSpec Rails' lifecycle
+hooks. RSpec Rails applies those hooks to example groups with Rails
+<code>type:</code> metadata. File paths set that metadata only when
+<code>infer_spec_type_from_file_location!</code> is enabled. In a plain RSpec
+group that only includes TimeHelpers, use a block or call
+<code>travel_back</code> explicitly.
+See <a href="https://rspec.info/features/7-1/rspec-rails/directory-structure/" class="bare">https://rspec.info/features/7-1/rspec-rails/directory-structure/</a></p>
 </div>
 <div class="paragraph">
-<p>And also, this cop’s autocorrection is unsafe because the order of
-execution will change if other steps exist before traveling in
-<code>around</code>.</p>
+<p>Autocorrection can change execution order: <code>around</code> starts before
+all <code>before</code> hooks, while <code>before</code> runs in normal hook order.</p>
 </div>
 </div>
 <div class="sect2">
