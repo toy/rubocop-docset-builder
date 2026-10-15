@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>AI Agents :: RuboCop</title>
+    <link rel="prev" href="mcp.html">
+    <link rel="next" href="server.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="stylesheet" href="../../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="guide">AI Agents</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Coding agents such as Claude Code, Codex or Cursor run RuboCop the way a
+developer does, only far more often and with less tolerance for noise, since
+everything RuboCop prints ends up in the agent’s context. They can drive it in
+two ways: from the command line, which works with any agent that can run a
+shell command, or through the <a href="mcp.html" class="xref page">MCP server</a>, which keeps
+RuboCop loaded and answers with structured tool results. This page covers what
+makes either work well.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="command-line" data-type="section">
+<a class="anchor" href="#command-line"></a>Command Line</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A handful of options matter more to an agent than to a person at a terminal:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>--format json</code></dt>
+<dd>
+<p>Reports each offense with 1-based lines and columns, whether autocorrection can
+fix it, and the edits that fix would make, marked safe or unsafe. See the
+<a href="../formatters.html#json-formatter" class="xref page">JSON formatter</a>. An agent can apply the
+edits itself, but <a href="../formatters.html#corrections" class="xref page">Corrections</a> lists the
+catches, and running <code>-a</code> is usually simpler. A cop that crashes on a file is
+listed with that file’s results, not only on stderr (see
+<a href="../formatters.html#errors-and-warnings" class="xref page">Errors and Warnings</a>).</p>
+</dd>
+<dt class="hdlist1"><code>--max-offenses-per-cop=COUNT</code></dt>
+<dd>
+<p>Caps how many offenses each cop reports. A codebase new to RuboCop easily has
+thousands of offenses from a few cops, and an agent fed all of them spends its
+context reading near-duplicates. With a cap it still sees every kind of
+problem, and a note on stderr says how many were held back.</p>
+</dd>
+<dt class="hdlist1"><code>--explain COP</code></dt>
+<dd>
+<p>Prints what a cop checks, its bad and good examples, its configuration as the
+project resolves it, and whether it autocorrects. The offense message alone is
+often too terse to fix the code the way the cop wants.</p>
+</dd>
+<dt class="hdlist1">
+<code>--only</code>, <code>--except</code> and <code>--changed</code>
+</dt>
+<dd>
+<p>Narrow a run to some cops or departments, or to the files that differ from a
+git revision. An agent that just edited three files doesn’t need the whole
+project checked again. On a branch, <code>--changed=$(git merge-base main HEAD)</code>
+covers the branch’s commits as well as the edits not committed yet.</p>
+</dd>
+<dt class="hdlist1">
+<code>-a</code> and <code>-A</code>
+</dt>
+<dd>
+<p><code>-a</code> applies only the corrections that are safe. <code>-A</code> adds the ones that can
+change what the code does, so an agent should stick to <code>-a</code> unless told
+otherwise. See <a href="autocorrect.html#safe-vs-unsafe" class="xref page">Safe vs. unsafe</a>.</p>
+</dd>
+<dt class="hdlist1"><code>--server</code></dt>
+<dd>
+<p>Keeps RuboCop loaded between runs, which takes most of the startup time out of
+repeated checks. See <a href="server.html" class="xref page">Server Mode</a>. It isn’t available on
+Windows or JRuby.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The exit status tells an agent whether it’s done without parsing anything: <code>0</code>
+for no offenses, <code>1</code> for offenses at or above the
+<a href="../configuration.html#fail-level" class="xref page">fail level</a>, <code>2</code> for an error. See
+<a href="cli_reference.html#exit-codes" class="xref page">Exit codes</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="cutting-the-noise" data-type="section">
+<a class="anchor" href="#cutting-the-noise"></a>Cutting the Noise</h3>
+<div class="paragraph">
+<p>RuboCop prints two notices that are meant for people, and an agent pays for
+them in context. The pending cops notice goes to stderr on every run, listing
+each cop added since the configuration last decided what to do about new cops;
+setting <a href="../versioning.html#pending-cops" class="xref page"><code>NewCops</code></a> to <code>enable</code> or <code>disable</code>
+silences it. The extension suggestions follow the default progress output,
+though never <code>--format json</code>, and go away with
+<a href="../plugins.html#plugin-suggestions" class="xref page"><code>SuggestExtensions: false</code></a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AllCops:
+  NewCops: enable
+  SuggestExtensions: false</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mcp-server" data-type="section">
+<a class="anchor" href="#mcp-server"></a>MCP Server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="mcp.html" class="xref page">MCP server</a> offers inspection, autocorrection and cop
+explanations as tools. A call is answered by a process that’s already running,
+so there’s no startup cost, and the agent learns how to use the tools from their
+descriptions rather than from instructions about command-line options.
+Inspection results have the same shape as <code>--format json</code>, and a cop that
+crashes on a file is reported next to the other cops' results instead of
+failing the call. Inspection and autocorrection both take <code>only</code>, <code>except</code> and
+<code>changed</code>, which work like the command-line options.</p>
+</div>
+<div class="paragraph">
+<p>Unlike the command line, the server holds back corrections from cops with
+<code>AutoCorrect: contextual</code>, such as <code>Lint/UselessAssignment</code>, because the code
+is assumed to be mid-edit. An agent that’s done editing gets them by setting
+<code>contextual</code> to <code>true</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="instructing-the-agent" data-type="section">
+<a class="anchor" href="#instructing-the-agent"></a>Instructing the Agent</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Agents read standing instructions from a file at the project root, usually
+<code>AGENTS.md</code> or <code>CLAUDE.md</code>. A few lines about RuboCop spare the agent from
+guessing how the project wants it run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-markdown hljs" data-lang="markdown">## Linting
+
+- Before finishing, check what you changed with `bundle exec rubocop --changed --format json`.
+- Fix offenses with `bundle exec rubocop -a FILES`. Don't use `-A` unless asked.
+- If an offense is unclear, run `bundle exec rubocop --explain Department/CopName`.
+- Don't edit `.rubocop.yml` or `.rubocop_todo.yml` to make offenses go away,
+  and don't regenerate the todo file.
+- When an offense has to stay, disable the cop on that line and say why:
+  `# rubocop:disable Department/CopName -- the reason`.</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="justified-suppressions" data-type="section">
+<a class="anchor" href="#justified-suppressions"></a>Justified Suppressions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An agent told to get RuboCop passing can do it with a directive, and a
+<code># rubocop:disable</code> is quicker to write than a fix. Banning directives outright
+is too blunt, since some offenses really are better left alone. Requiring a
+reason for each one works better: the agent has to say why, and the reason is
+there for whoever reviews the change.</p>
+</div>
+<div class="paragraph">
+<p><a href="../cops_style.html#styledisablecopswithinsourcecodedirective" class="xref page"><code>Style/DisableCopsWithinSourceCodeDirective</code></a>
+enforces that with <code>AllowWithReason</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: true
+  AllowWithReason: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A directive that disables a cop without a <code>--</code> justification is then an
+offense, <code>todo</code> and <code>disable-next</code> included. Once the cop is explicitly enabled
+no directive can turn it off, and it doesn’t autocorrect, since only the agent
+or a person can supply the reason.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+name = "fixture" # rubocop:disable Style/StringLiterals
+
+# good
+name = "fixture" # rubocop:disable Style/StringLiterals -- matches the recorded output</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Any reason passes, whichever cop the directive disables. Combining
+<code>AllowWithReason</code> with <code>DisallowedCops</code> doesn’t put some cops off limits; it
+only narrows which directives need a reason. <code>AllowedDirectives: [todo]</code>
+exempts the <code>rubocop:todo</code> comments that <code>--disable-uncorrectable</code> writes, but
+it also gives the agent a way to skip the reason.</p>
+</div>
+<div class="paragraph">
+<p>To review what the directives in a codebase hide, <code>--display-suppressed</code>
+reports the suppressed offenses too, and the JSON formatter gives each its
+<code>justification</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-console hljs" data-lang="console">$ rubocop --display-suppressed --format json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Lint/RedundantCopDisableDirective</code>, which is on by default, reports a
+directive that outlived the offense it was hiding. None of this covers the
+configuration: an agent can still loosen <code>.rubocop.yml</code> or add an <code>Exclude</code>.
+Most agents can be denied write access to particular files, which is the surer
+way to keep the configuration out of their reach.</p>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>MCP (Model Context Protocol) :: RuboCop</title>
     <link rel="prev" href="lsp.html">
-    <link rel="next" href="server.html">
+    <link rel="next" href="ai_agents.html">
     <meta name="generator" content="Antora 3.1.15">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/fixes.css">
@@ -76,7 +76,7 @@ This is based on the same principles as <a href="server.html" class="xref page">
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">gem 'mcp', '~&gt; 0.6'</code></pre>
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">gem 'mcp'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -102,19 +102,35 @@ This is based on the same principles as <a href="server.html" class="xref page">
 <a class="anchor" href="#available-tools"></a>Available Tools</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The MCP server exposes two tools:</p>
+<p>The MCP server exposes these tools:</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>rubocop_inspection</code></dt>
 <dd>
-<p>Inspect Ruby code for offenses. Accepts a <code>path</code> to check files on disk or <code>source_code</code> to check inline code. Returns detected offenses as JSON.</p>
+<p>Inspect Ruby code for offenses. Accepts a <code>path</code> to check files on disk or <code>source_code</code> to check inline code. Each offense is reported the way <a href="../formatters.html#json-formatter" class="xref page"><code>--format json</code></a> reports it, with 1-based lines and columns and the edits its correction would make. Either way the result has the same <code>files</code> and <code>summary</code>: inline code is reported as a single file, named after <code>path</code> when one is given and <code>example.rb</code> otherwise. An optional <code>max_offenses_per_cop</code> caps how many offenses each cop reports across the files inspected, as <a href="cli_reference.html" class="xref page"><code>--max-offenses-per-cop</code></a> does, and the summary’s <code>unreported_offenses</code> counts what each capped cop left out. A file missing from <code>files</code> under a cap can still have offenses; they were just counted rather than listed. A cop that crashes on a file does not fail the request: the crash is listed in that file’s <code>errors</code>, counted in the summary’s <code>error_count</code>, and the other cops still report. Warnings a cop raises are listed the same way, under <code>warnings</code> and <code>warning_count</code>.</p>
 </dd>
 <dt class="hdlist1"><code>rubocop_autocorrection</code></dt>
 <dd>
-<p>Autocorrect RuboCop offenses in Ruby code. Accepts <code>path</code> or <code>source_code</code> like the inspection tool, plus a <code>safety</code> boolean (defaults to <code>true</code>). When <code>safety</code> is <code>true</code>, only safe corrections are applied; set it to <code>false</code> to include unsafe corrections.</p>
+<p>Autocorrect RuboCop offenses in Ruby code. Accepts <code>path</code> or <code>source_code</code> like the inspection tool, plus a required <code>safety</code> boolean. When <code>safety</code> is <code>true</code>, only safe corrections are applied; set it to <code>false</code> to include unsafe corrections. Setting <code>contextual</code> to <code>true</code> also applies the corrections held back while code is being edited, described below. With <code>dry_run</code> set to <code>true</code> nothing is written: each file that would be corrected comes with the <code>diff</code> that would be applied, and the offenses left over are located in the code as it would be after it.</p>
+<div class="paragraph">
+<p>When correcting files, the result lists each file that was corrected or still has offenses, with the offenses left over in the inspection tool’s format, located in the corrected file. Those are what an agent has to fix itself, so it doesn’t need to inspect again. They come back after the files are written, so each cop lists at most five of them unless <code>max_offenses_per_cop</code> says otherwise, and the summary’s <code>unreported_offenses</code> counts the rest. Files with nothing to report are only counted, and a file with nothing to correct isn’t written.</p>
+</div>
+<div class="paragraph">
+<p>A cop that crashes while correcting a file is listed in its <code>errors</code> and the other cops' corrections are still applied. A file whose corrections go back and forth between cops is left unchanged, with the loop listed in its <code>errors</code> and the offenses it still has. Inline <code>source_code</code> comes back as plain corrected text, so a crash there fails the call instead and nothing is written.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>rubocop_explain</code></dt>
+<dd>
+<p>Explain what cops do, the way <a href="cli_reference.html" class="xref page"><code>--explain</code></a> does: the description, the bad and good examples from the cop’s own documentation, its configuration as the project resolves it, and whether it autocorrects. Takes a <code>cop_names</code> list, plus an optional <code>path</code> to explain the configuration that applies to that file, which can differ from the project root’s. An agent can ask about the cops an inspection reported instead of guessing their intent from a one-line message.</p>
 </dd>
 </dl>
+</div>
+<div class="paragraph">
+<p>An inspected offense tells an agent what autocorrection will do with it. <code>correctable</code> says whether <code>rubocop_autocorrection</code> fixes it at all, and <code>correction.safe</code> whether that takes <code>safety: false</code>. An offense can carry a <code>correction</code> without being <code>correctable</code>: cops with <code>AutoCorrect: contextual</code>, such as <code>Lint/UselessAssignment</code>, are not corrected while code is being edited, since the variable may be about to be used. Their edits are still reported, and an agent that has finished editing can have them applied by passing <code>contextual: true</code> to <code>rubocop_autocorrection</code>. <a href="../formatters.html#corrections" class="xref page">Corrections</a> covers what to watch for when applying edits directly.</p>
+</div>
+<div class="paragraph">
+<p>Both <code>rubocop_inspection</code> and <code>rubocop_autocorrection</code> can narrow what they do, the way the matching command-line options do. <code>only</code> and <code>except</code> take lists of cop or department names, as <a href="cli_reference.html" class="xref page"><code>--only</code> and <code>--except</code></a> do, so an agent can check just <code>Lint</code>, or apply a single cop’s corrections. When checking files, <code>changed</code> sticks to the files git says changed, like <code>--changed</code>: <code>true</code> for changes since the last commit, or a revision to compare against, such as <code>main</code>.</p>
 </div>
 </div>
 </div>

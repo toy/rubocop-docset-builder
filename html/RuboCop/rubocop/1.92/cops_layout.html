@@ -6519,6 +6519,10 @@ end</code></pre>
 <p>Checks that the indentation method is consistent.
 Either tabs only or spaces only are used for indentation.</p>
 </div>
+<div class="paragraph">
+<p>With <code>EnforcedStyle: tabs</code>, spaces that follow the indenting tabs are
+taken to be alignment rather than indentation, and are left alone.</p>
+</div>
 <div class="sect2">
 <h3 id="examples-layoutindentationstyle">
 <a class="anchor" href="#examples-layoutindentationstyle"></a>Examples</h3>
@@ -10276,7 +10280,8 @@ x = 1; y = 2</code></pre>
 <p>Checks the spacing inside and after block parameters pipes. Line breaks
 inside parameter pipes are checked by <code>Layout/MultilineBlockLayout</code> and
 not by this cop. Spaces inside a lambda’s parameter parentheses are left
-to <code>Layout/SpaceInsideParens</code> when that cop enforces a conflicting style.</p>
+to <code>Layout/SpaceInsideParens</code> when that cop is enabled, so the examples
+below apply to a lambda only when it is not.</p>
 </div>
 <div class="sect2">
 <h3 id="examples-layoutspacearoundblockparameters">

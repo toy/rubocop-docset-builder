@@ -6033,7 +6033,7 @@ end
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0.82</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.90</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.92</p></td>
 </tr>
 </tbody>
 </table>
@@ -6071,7 +6071,8 @@ than a decision someone should be asked to justify.</p>
 a <code>--</code> trailing justification comment is allowed, so a team can require
 every disable to be documented instead of banning them outright. Enable
 directives are not checked in this mode, since they end a suppression
-rather than start one.</p>
+rather than start one. Offenses in this mode are not autocorrected,
+since only a human can supply the missing justification.</p>
 </div>
 <div class="paragraph">
 <p>This cop cannot be disabled via directive comments when it is explicitly
@@ -8683,6 +8684,11 @@ end</code></pre>
 <div class="paragraph">
 <p>Checks for exact regexp match inside <code>Regexp</code> literals.</p>
 </div>
+<div class="paragraph">
+<p><code>=~</code> returns an index and <code>match</code> returns <code>MatchData</code>, so they are only
+autocorrected when their value is used as a condition. The same goes for
+safe navigation calls, which return <code>nil</code> for a <code>nil</code> receiver.</p>
+</div>
 <div class="sect2">
 <h3 id="examples-styleexactregexpmatch">
 <a class="anchor" href="#examples-styleexactregexpmatch"></a>Examples</h3>
@@ -8690,7 +8696,7 @@ end</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
 string =~ /\Astring\z/
-string === /\Astring\z/
+/\Astring\z/ === string
 string.match(/\Astring\z/)
 string.match?(/\Astring\z/)
 
@@ -11927,7 +11933,10 @@ hash[key]
 hash.fetch(key, default)
 
 # good - fetch with block is allowed
-hash.fetch(key) { default }</code></pre>
+hash.fetch(key) { default }
+
+# good - `ENV.fetch` is left to `Style/FetchEnvVar` when it is enabled
+ENV.fetch(key)</code></pre>
 </div>
 </div>
 </div>
@@ -17637,7 +17646,8 @@ end</code></pre>
 <td class="content">
 <code>return if …​ else …​ end</code> is syntax error. If <code>return</code> is used before
 multiline ternary operator expression, it will be autocorrected to single-line
-ternary operator. The same is true for <code>break</code>, <code>next</code>, and method call.
+ternary operator. The same is true for <code>break</code>, <code>next</code>, <code>yield</code>, <code>super</code>,
+<code>defined?</code> without parentheses, and method call.
 </td>
 </tr>
 </table>
@@ -18641,10 +18651,10 @@ bar while !foo &amp;&amp; baz</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.84</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.92</p></td>
 </tr>
 </tbody>
 </table>
@@ -18657,6 +18667,17 @@ Also handles range patterns like <code>arr[0..(arr.length - n)]</code>.</p>
 <p>The cop recognizes preserving methods (<code>sort</code>, <code>reverse</code>, <code>shuffle</code>, <code>rotate</code>)
 and their combinations, allowing safe replacement when the receiver matches.
 It works with variables, instance variables, class variables, and constants.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-stylenegativearrayindex">
+<a class="anchor" href="#safety-stylenegativearrayindex"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop is unsafe because the receiver may not be an Array. For a Hash,
+<code>hash[hash.size - 1]</code> looks up the key <code>hash.size - 1</code>, which <code>hash[-1]</code>
+does not. Even for an Array, <code>arr[arr.length - n]</code> wraps around to an
+element from the end when <code>n</code> exceeds the length, while <code>arr[-n]</code>
+returns <code>nil</code>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="examples-stylenegativearrayindex">

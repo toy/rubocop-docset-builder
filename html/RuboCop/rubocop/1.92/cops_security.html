@@ -286,6 +286,23 @@ goal of being secure by default in the next major version 3.0.0.
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Before <code>json</code> gem version 2.17.0, <code>JSON.load</code> only takes options as its third
+argument. A hash passed as the second argument is taken as the <code>proc</code> argument, so
+its <code>create_additions</code> option is ignored. Which <code>json</code> version runs can’t be told
+statically (the lockfile may resolve a newer one than the default gem loaded in
+production), so options passed as the second argument are always reported. Pass
+<code>nil</code> as the second argument instead.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="safety-securityjsonload">
 <a class="anchor" href="#safety-securityjsonload"></a>Safety</h3>
@@ -305,13 +322,16 @@ Other similar issues may apply.</p>
 JSON.load('{}')
 JSON.restore('{}')
 
+# bad - ignored by `json` older than 2.17.0
+JSON.load('{}', create_additions: false)
+
 # good
 JSON.parse('{}')
 JSON.unsafe_load('{}')
 
 # good - explicit use of `create_additions` option
-JSON.load('{}', create_additions: true)
-JSON.load('{}', create_additions: false)</code></pre>
+JSON.load('{}', nil, create_additions: true)
+JSON.load('{}', nil, create_additions: false)</code></pre>
 </div>
 </div>
 </div>
