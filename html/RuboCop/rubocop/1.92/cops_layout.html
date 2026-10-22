@@ -4891,6 +4891,20 @@ and_now_for_something = [
 <p>Checks for a line break before the first element in a
 multi-line array.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+An array whose first element is an array literal is not checked when
+<code>Layout/SpaceInsideArrayLiteralBrackets</code> is enabled with <code>EnforcedStyle: compact</code>,
+since that style joins the two opening brackets.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="examples-layoutfirstarrayelementlinebreak">
 <a class="anchor" href="#examples-layoutfirstarrayelementlinebreak"></a>Examples</h3>

@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Capybara :: RuboCop Capybara</title>
+    <link rel="prev" href="development.html">
+    <link rel="next" href="cops_capybara_rspec.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="stylesheet" href="../../_/css/fixes.css">
+<style>:root{--docsearch-primary-color: #bd362f} </style>
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+  </head>
+  <body class="article">
+
+<div class="body">
+
+<main class="article">
+
+  <div class="content">
+
+<article class="doc">
+<h1 class="page" data-type="category">Capybara</h1>
+<div class="sect1">
+<h2 id="capybaraabsolutexpathinelementscope" data-type="test">
+<a class="anchor" href="#capybaraabsolutexpathinelementscope"></a>Capybara/AbsoluteXPathInElementScope</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for absolute XPath searches on Capybara elements.</p>
+</div>
+<div class="paragraph">
+<p>An XPath starting with <code>//</code> searches from the document root, even when
+the query is called on an element. Use <code>.//</code> to stay within it.
+Direct RSpec <code>let</code> and named <code>subject</code> element definitions are
+recognized.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraabsolutexpathinelementscope">
+<a class="anchor" href="#examples-capybaraabsolutexpathinelementscope"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+page.find('.dialog').find(:xpath, '//button')
+dialog = page.find('.dialog')
+dialog.find(:xpath, '//button')
+RSpec.describe 'dialog' do
+  let(:dialog) { find('.dialog') }
+  it { dialog.find(:xpath, '//button') }
+end
+
+# good
+page.find('.dialog').find(:xpath, './/button')
+page.find(:xpath, '//button')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraabsolutexpathinelementscope">
+<a class="anchor" href="#references-capybaraabsolutexpathinelementscope"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AbsoluteXPathInElementScope" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AbsoluteXPathInElementScope</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraalwaystruecountquery" data-type="test">
+<a class="anchor" href="#capybaraalwaystruecountquery"></a>Capybara/AlwaysTrueCountQuery</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for positive queries that succeed when there are no matches.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraalwaystruecountquery">
+<a class="anchor" href="#examples-capybaraalwaystruecountquery"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+expect(page).to have_css('.item', minimum: 0)
+page.has_css?('.item', minimum: 0)
+
+# good
+expect(page).to have_css('.item')
+expect(page).to have_css('.item', minimum: 0, maximum: 2)
+all('.item', minimum: 0)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraalwaystruecountquery">
+<a class="anchor" href="#references-capybaraalwaystruecountquery"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AlwaysTrueCountQuery" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AlwaysTrueCountQuery</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraambiguousclick" data-type="test">
+<a class="anchor" href="#capybaraambiguousclick"></a>Capybara/AmbiguousClick</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specify the exact target to click on.</p>
+</div>
+<div class="paragraph">
+<p>In projects where accessibility needs to be considered,
+it is crucial to specify the click target precisely.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraambiguousclick">
+<a class="anchor" href="#examples-capybaraambiguousclick"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+click_link_or_button('foo')
+click_on('foo')
+
+# good
+click_link('foo')
+click_button('foo')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraambiguousclick">
+<a class="anchor" href="#references-capybaraambiguousclick"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AmbiguousClick" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AmbiguousClick</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraassertstyle" data-type="test">
+<a class="anchor" href="#capybaraassertstyle"></a>Capybara/AssertStyle</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for usage of deprecated assert style method.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraassertstyle">
+<a class="anchor" href="#examples-capybaraassertstyle"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+page.find(:css, '#first').assert_style(display: 'block')
+
+# good
+page.find(:css, '#first').assert_matches_style(display: 'block')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraassertstyle">
+<a class="anchor" href="#references-capybaraassertstyle"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AssertStyle" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/AssertStyle</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybarachainedfind" data-type="test">
+<a class="anchor" href="#capybarachainedfind"></a>Capybara/ChainedFind</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Avoid chaining <code>find</code> methods and combine selectors.</p>
+</div>
+<div class="paragraph">
+<p>Combining selectors into a single <code>find</code> call is more efficient than
+chaining multiple <code>find</code> calls, as it reduces the number of DOM queries.
+Only recognizable Capybara finder chains with string locators are
+checked.
+Set <code>DefaultSelector</code> to match <code>Capybara.default_selector</code>, or to
+<code>null</code> if it varies at runtime. Autocorrection requires <code>css</code> and
+literal strings.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybarachainedfind">
+<a class="anchor" href="#examples-capybarachainedfind"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+page.find('#foo').find('.bar')
+page.find('#foo').find('.bar').find('.baz')
+
+# good
+page.find('#foo .bar')
+page.find('#foo .bar .baz')
+find('#form').find(:button, 'Save')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-capybarachainedfind">
+<a class="anchor" href="#configurable-attributes-capybarachainedfind"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DefaultSelector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>css</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-capybarachainedfind">
+<a class="anchor" href="#references-capybarachainedfind"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/ChainedFind" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/ChainedFind</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybarafindallfirst" data-type="test">
+<a class="anchor" href="#capybarafindallfirst"></a>Capybara/FindAllFirst</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces use of <code>first</code> instead of <code>all</code> with <code>first</code> or <code>[0]</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-capybarafindallfirst">
+<a class="anchor" href="#safety-capybarafindallfirst"></a>Safety</h3>
+<div class="paragraph">
+<p>With default options, <code>all(…​).first</code> and <code>all(…​)[0]</code> return
+<code>nil</code> when no element matches, while <code>first(…​)</code> raises an
+exception. Autocorrection can break code that depends on <code>nil</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-capybarafindallfirst">
+<a class="anchor" href="#examples-capybarafindallfirst"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+all('a').first
+all('a')[0]
+
+# good
+first('a')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybarafindallfirst">
+<a class="anchor" href="#references-capybarafindallfirst"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/FindAllFirst" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/FindAllFirst</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraignoredqueryoption" data-type="test">
+<a class="anchor" href="#capybaraignoredqueryoption"></a>Capybara/IgnoredQueryOption</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for query options that have no effect in Capybara.</p>
+</div>
+<div class="paragraph">
+<p>Count options passed to singular finders are not autocorrected because
+removing them may conceal the author’s intent.</p>
+</div>
+<div class="paragraph">
+<p>This cop targets Capybara’s built-in selectors. Set <code>DefaultSelector</code>
+to match <code>Capybara.default_selector</code>, or to <code>null</code> if it varies at
+runtime. Queries using custom or unknown selectors are skipped.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraignoredqueryoption">
+<a class="anchor" href="#examples-capybaraignoredqueryoption"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find('.row', count: 3)
+find(:css, '.item', exact: true)
+find('.item', text: /foo/, exact_text: true)
+all(:css, '.item', match: :first)
+expect(page).to have_css('.item', count: 3, minimum: 1)
+
+# good
+all('.row', count: 3)
+find(:css, '.item')
+find('.item', text: /foo/)
+all(:css, '.item')
+expect(page).to have_css('.item', count: 3)</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="defaultselector_-custom-capybaraignoredqueryoption" title="Capybara/IgnoredQueryOption: DefaultSelector: custom" data-type="setting">
+<a class="anchor" href="#defaultselector_-custom-capybaraignoredqueryoption"></a>DefaultSelector: custom</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find(:css, '.item', text: /foo/, exact_text: true)
+
+# good
+find('.item', text: /foo/, exact_text: true)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-capybaraignoredqueryoption">
+<a class="anchor" href="#configurable-attributes-capybaraignoredqueryoption"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DefaultSelector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>css</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraignoredqueryoption">
+<a class="anchor" href="#references-capybaraignoredqueryoption"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/IgnoredQueryOption" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/IgnoredQueryOption</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaramodalmethodwithoutblock" data-type="test">
+<a class="anchor" href="#capybaramodalmethodwithoutblock"></a>Capybara/ModalMethodWithoutBlock</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks that modal handling methods are called with a block.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaramodalmethodwithoutblock">
+<a class="anchor" href="#examples-capybaramodalmethodwithoutblock"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+accept_confirm
+page.accept_prompt(with: 'answer')
+
+# good
+accept_confirm { click_button 'Delete' }
+page.accept_prompt(with: 'answer', &amp;trigger_modal)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaramodalmethodwithoutblock">
+<a class="anchor" href="#references-capybaramodalmethodwithoutblock"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/ModalMethodWithoutBlock" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/ModalMethodWithoutBlock</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaranativeattribute" data-type="test">
+<a class="anchor" href="#capybaranativeattribute"></a>Capybara/NativeAttribute</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Enforces use of <code>Element#[]</code> instead of <code>native.attribute</code>.</p>
+</div>
+<div class="paragraph">
+<p>Only calls on Capybara finder chains are checked.</p>
+</div>
+<div class="sect2">
+<h3 id="safety-capybaranativeattribute">
+<a class="anchor" href="#safety-capybaranativeattribute"></a>Safety</h3>
+<div class="paragraph">
+<p>This cop’s autocorrection is unsafe because attribute values may
+differ between the driver API and Capybara’s <code>Element#[]</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaranativeattribute">
+<a class="anchor" href="#examples-capybaranativeattribute"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find('.item').native.attribute(:id)
+page.find('.item').native.attribute('aria-label')
+
+# good
+find('.item')[:id]
+page.find('.item')['aria-label']</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaranativeattribute">
+<a class="anchor" href="#references-capybaranativeattribute"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/NativeAttribute" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/NativeAttribute</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybararedundantwithinfind" data-type="test">
+<a class="anchor" href="#capybararedundantwithinfind"></a>Capybara/RedundantWithinFind</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for redundant <code>within find(…​)</code> calls.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybararedundantwithinfind">
+<a class="anchor" href="#examples-capybararedundantwithinfind"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+within find('foo.bar') do
+  # ...
+end
+
+# good
+within 'foo.bar' do
+  # ...
+end
+
+# bad
+within find_by_id('foo') do
+  # ...
+end
+
+# good
+within :id, 'foo' do
+  # ...
+end</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybararedundantwithinfind">
+<a class="anchor" href="#references-capybararedundantwithinfind"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RedundantWithinFind" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/RedundantWithinFind</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraspecificactions" data-type="test">
+<a class="anchor" href="#capybaraspecificactions"></a>Capybara/SpecificActions</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for there is a more specific actions offered by Capybara.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraspecificactions">
+<a class="anchor" href="#examples-capybaraspecificactions"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find('a[href="/home"]').click
+find('button.cls').click
+find('a[href="/home"]', exact_text: 'foo').click
+find('div button').click
+
+# good
+click_link(href: '/home')
+click_button(class: 'cls')
+click_link(href: '/home', exact_text: 'foo')
+find('div').click_button</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraspecificactions">
+<a class="anchor" href="#references-capybaraspecificactions"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/SpecificActions" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/SpecificActions</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraspecificfinders" data-type="test">
+<a class="anchor" href="#capybaraspecificfinders"></a>Capybara/SpecificFinders</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks if there is a more specific finder offered by Capybara.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraspecificfinders">
+<a class="anchor" href="#examples-capybaraspecificfinders"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find('#some-id')
+find('[id=some-id]')
+find(:css, '#some-id')
+find(:id, 'some-id')
+find(:link, 'Home')
+find(:field, 'Name')
+find('input[placeholder="Email"]')
+find(:css, 'input[type="checkbox"]')
+
+# good
+find_by_id('some-id')
+find_link('Home')
+find_field('Name')
+find_field(placeholder: 'Email')
+find_field(type: 'checkbox')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraspecificfinders">
+<a class="anchor" href="#references-capybaraspecificfinders"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/SpecificFinders" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/SpecificFinders</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaraunorderedwindowaccess" data-type="test">
+<a class="anchor" href="#capybaraunorderedwindowaccess"></a>Capybara/UnorderedWindowAccess</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks positional access to Capybara windows, whose order is undefined.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaraunorderedwindowaccess">
+<a class="anchor" href="#examples-capybaraunorderedwindowaccess"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+popup = windows.last
+original = page.windows.first
+
+# good
+popup = window_opened_by { click_link 'Open' }
+original = current_window</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references-capybaraunorderedwindowaccess">
+<a class="anchor" href="#references-capybaraunorderedwindowaccess"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/UnorderedWindowAccess" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/UnorderedWindowAccess</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="capybaravisibilityoption" data-type="test">
+<a class="anchor" href="#capybaravisibilityoption"></a>Capybara/VisibilityOption</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Enabled by default</th>
+<th class="tableblock halign-left valign-top">Safe</th>
+<th class="tableblock halign-left valign-top">Supports autocorrection</th>
+<th class="tableblock halign-left valign-top">Version Added</th>
+<th class="tableblock halign-left valign-top">Version Changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Checks for boolean values passed to Capybara’s <code>visible</code> option.</p>
+</div>
+<div class="paragraph">
+<p><code>visible: false</code> finds both visible and hidden elements, rather than
+only hidden elements. Use <code>:all</code>, <code>:hidden</code> or <code>:visible</code> instead.
+Only <code>true</code> is autocorrected, to <code>:visible</code>.</p>
+</div>
+<div class="paragraph">
+<p>This cop targets Capybara’s built-in selectors. Set <code>DefaultSelector</code>
+to match <code>Capybara.default_selector</code>, or to <code>null</code> if it varies at
+runtime. Queries using custom or unknown selectors are skipped.</p>
+</div>
+<div class="sect2">
+<h3 id="examples-capybaravisibilityoption">
+<a class="anchor" href="#examples-capybaravisibilityoption"></a>Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find('.menu', visible: true)
+expect(page).to have_css('.menu', visible: false)
+
+# good
+find('.menu', visible: :visible)
+find('.menu', visible: :all)
+find('.menu', visible: :hidden)</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="defaultselector_-custom-capybaravisibilityoption" title="Capybara/VisibilityOption: DefaultSelector: custom" data-type="setting">
+<a class="anchor" href="#defaultselector_-custom-capybaravisibilityoption"></a>DefaultSelector: custom</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
+find(:css, '.menu', visible: true)
+
+# good
+find('.menu', visible: true)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configurable-attributes-capybaravisibilityoption">
+<a class="anchor" href="#configurable-attributes-capybaravisibilityoption"></a>Configurable attributes</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Configurable values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DefaultSelector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>css</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="references-capybaravisibilityoption">
+<a class="anchor" href="#references-capybaravisibilityoption"></a>References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/VisibilityOption" class="bare">https://www.rubydoc.info/gems/rubocop-capybara/RuboCop/Cop/Capybara/VisibilityOption</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright (C) 2012-2026 <a href="https://batsov.com">Bozhidar Batsov</a> and RuboCop contributors.</p>
+  <p>Except where otherwise noted, docs.rubocop.org is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a> (CC BY-SA 4.0).</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

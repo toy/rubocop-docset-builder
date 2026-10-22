@@ -3909,7 +3909,7 @@ items.include?</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Always (Unsafe)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1.77</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.92</p></td>
 </tr>
 </tbody>
 </table>
@@ -3937,6 +3937,15 @@ and <code>size</code>, but it doesn’t include <code>Enumerable</code>.
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>When <code>count</code> is used without a block, it measures the collection’s
+size, so the offense is corrected to <code>empty?</code> or <code>!empty?</code>. The
+predicate methods <code>any?</code>, <code>none?</code> and <code>one?</code> test element truthiness
+instead and would return different results for collections with falsey
+elements (e.g. <code>[false].count.zero?</code> is <code>false</code>, but <code>[false].none?</code>
+is <code>true</code>). For the same reason, <code>count == 1</code> and <code>count &gt; 1</code> without
+a block are not flagged.</p>
+</div>
 <div class="sect2">
 <h3 id="safety-stylecollectionquerying">
 <a class="anchor" href="#safety-stylecollectionquerying"></a>Safety</h3>
@@ -3946,26 +3955,11 @@ it has nonstandard implementation of <code>count</code> or any replacement
 methods.</p>
 </div>
 <div class="paragraph">
-<p>It’s also unsafe because for collections with falsey values, expressions
-with <code>count</code> without a block return a different result than methods <code>any?</code>,
-<code>none?</code> and <code>one?</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby">[nil, false].count.positive?
-[nil].count == 1
-# =&gt; true
-
-[nil, false].any?
-[nil].one?
-# =&gt; false
-
-[nil].count == 0
-# =&gt; false
-
-[nil].none?
-# =&gt; true</code></pre>
-</div>
+<p>Blockless <code>count</code> is corrected to <code>empty?</code>, which <code>Enumerable</code> doesn’t
+define. <code>Range</code>, <code>Enumerator</code> (including lazy ones), <code>Struct</code>, <code>StringIO</code>
+and any class that just includes <code>Enumerable</code> respond to <code>count</code> but not
+to <code>empty?</code>, so <code>(1…​1).count.zero?</code> is <code>true</code> while <code>(1…​1).empty?</code>
+raises <code>NoMethodError</code>.</p>
 </div>
 <div class="paragraph">
 <p>Autocorrection is unsafe when replacement methods don’t iterate over
@@ -3991,12 +3985,14 @@ x.count.positive?
 x.count &gt; 0
 x.count != 0
 
+# good
+!x.empty?
+
+# bad
 x.count(&amp;:foo?).positive?
 x.count { |item| item.foo? }.positive?
 
 # good
-x.any?
-
 x.any?(&amp;:foo?)
 x.any? { |item| item.foo? }
 
@@ -4005,11 +4001,20 @@ x.count.zero?
 x.count == 0
 
 # good
-x.none?
+x.empty?
 
 # bad
-x.count == 1
-x.one?</code></pre>
+x.count(&amp;:foo?).zero?
+x.count(&amp;:foo?) == 0
+
+# good
+x.none?(&amp;:foo?)
+
+# bad
+x.count(&amp;:foo?) == 1
+
+# good
+x.one?(&amp;:foo?)</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -4018,7 +4023,7 @@ x.one?</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># good
-x.count &gt; 1</code></pre>
+x.count(&amp;:foo?) &gt; 1</code></pre>
 </div>
 </div>
 </div>
@@ -4028,10 +4033,10 @@ x.count &gt; 1</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
-x.count &gt; 1
+x.count(&amp;:foo?) &gt; 1
 
 # good
-x.many?</code></pre>
+x.many?(&amp;:foo?)</code></pre>
 </div>
 </div>
 </div>
