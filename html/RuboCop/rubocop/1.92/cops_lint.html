@@ -8342,6 +8342,12 @@ do_something (foo * bar).baz</code></pre>
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting strings.</p>
 </div>
+<div class="paragraph">
+<p>When a quoted string contains whitespace, <code>%w</code> splits it into separate values,
+so removing the quotes would not restore the intended string.
+Such an array is corrected to an array literal instead, as long as its content
+reads as one with only string elements.</p>
+</div>
 <div class="sect2">
 <h3 id="safety-lintpercentstringarray">
 <a class="anchor" href="#safety-lintpercentstringarray"></a>Safety</h3>
@@ -8365,7 +8371,13 @@ and that might have been done purposely.</p>
 %w('foo', "bar")
 
 # good
-%w(foo bar)</code></pre>
+%w(foo bar)
+
+# bad - the quoted strings are split at whitespace
+%w('foo bar', 'baz')
+
+# good
+['foo bar', 'baz']</code></pre>
 </div>
 </div>
 </div>

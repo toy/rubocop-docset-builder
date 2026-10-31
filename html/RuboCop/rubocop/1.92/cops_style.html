@@ -2542,7 +2542,7 @@ things.map { |thing|
 The <code>===</code> operator has different behavior depending on the
 receiver and its use outside of <code>case</code>/<code>when</code> is confusing.
 Prefer more explicit alternatives like <code>is_a?</code>, <code>include?</code>,
-or <code>match?</code>.</p>
+<code>cover?</code>, or <code>match?</code>.</p>
 </div>
 <div class="paragraph">
 <p>If <code>AllowOnConstant</code> option is enabled, the cop will ignore violations when the receiver of
@@ -2573,9 +2573,11 @@ This potentially incompatible transformation is handled by <code>Performance/Reg
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-ruby hljs" data-lang="ruby"># bad
 (1..100) === 7
+('a'..'z') === char
 
 # good
-(1..100).include?(7)</code></pre>
+(1..100).include?(7)
+('a'..'z').cover?(char)</code></pre>
 </div>
 </div>
 <div class="sect3">
