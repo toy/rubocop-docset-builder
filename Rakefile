@@ -55,6 +55,8 @@ class RubocopDocBuilder
   end
 
   def self.define_tasks
+    sh(*%W[docker build -t antora:pinned .])
+
     all(&:define_tasks)
 
     task :clean do
@@ -91,8 +93,6 @@ class RubocopDocBuilder
     file antora_playbook_path do
       antora_playbook_path.carefull_write(antora_playbook)
     end
-
-    sh(*%W[docker build -t antora:pinned .])
 
     dir antora_html_path => antora_playbook_path do
       sh(*docker_run_args('antora:pinned') + %W[
