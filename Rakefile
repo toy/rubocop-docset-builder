@@ -199,6 +199,10 @@ private
             branches: nil,
             tags: tag,
             start_path: 'docs',
+            version: {
+              "v(?<major>+({0..9})).(?<minor>+({0..9})).*" => "$<major>.$<minor>",
+              "*" => nil,
+            },
           },
         ],
       },
