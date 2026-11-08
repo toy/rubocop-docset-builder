@@ -1,1 +1,1 @@
-FROM antora/antora:3.2.1
+FROM antora/antora:3.2.2
